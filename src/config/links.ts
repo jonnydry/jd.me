@@ -44,10 +44,4 @@ export const links: LinkEntry[] = [
     desc: 'AI art with literary quotes', 
     icon: 'twitter' 
   },
-  { 
-    title: 'Portfolio', 
-    url: '#', 
-    desc: 'Selected work', 
-    icon: 'globe' 
-  },
 ]
