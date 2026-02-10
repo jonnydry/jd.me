@@ -28,12 +28,6 @@ export const links: LinkEntry[] = [
     ],
   },
   { 
-    title: 'GitHub', 
-    url: 'https://github.com/jonnydry', 
-    desc: 'Code & projects', 
-    icon: 'github' 
-  },
-  { 
     title: '@JonnyD', 
     url: 'https://x.com/JonnyD', 
     desc: 'personal account', 
@@ -44,6 +38,12 @@ export const links: LinkEntry[] = [
     url: 'https://x.com/imag3nigma', 
     desc: 'AI art with literary quotes', 
     icon: 'twitter' 
+  },
+  { 
+    title: 'GitHub', 
+    url: 'https://github.com/jonnydry', 
+    desc: 'Code & projects', 
+    icon: 'github' 
   },
   { 
     title: 'Resume', 

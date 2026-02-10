@@ -19,6 +19,8 @@ html {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -28,6 +30,7 @@ body {
   line-height: 1.5;
   min-height: 100dvh;
   overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Subtle background depth */
@@ -39,6 +42,83 @@ body::before {
     radial-gradient(ellipse 80% 50% at 50% 0%, rgba(88, 166, 255, 0.03) 0%, transparent 50%);
   pointer-events: none;
   z-index: 0;
+}
+
+/* Laser-etch accent lines */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    /* Primary diagonal stripe */
+    linear-gradient(
+      150deg,
+      transparent 42%,
+      rgba(88, 166, 255, 0.09) 42%,
+      rgba(88, 166, 255, 0.09) 42.12%,
+      transparent 42.12%
+    ),
+    /* Parallel companion — offset, dimmer */
+    linear-gradient(
+      150deg,
+      transparent 43.8%,
+      rgba(88, 166, 255, 0.04) 43.8%,
+      rgba(88, 166, 255, 0.04) 43.88%,
+      transparent 43.88%
+    ),
+    /* Cross accent — opposing angle */
+    linear-gradient(
+      -30deg,
+      transparent 68%,
+      rgba(88, 166, 255, 0.06) 68%,
+      rgba(88, 166, 255, 0.06) 68.1%,
+      transparent 68.1%
+    ),
+    /* Faint horizontal rule — top */
+    linear-gradient(
+      180deg,
+      transparent 24%,
+      rgba(88, 166, 255, 0.035) 24%,
+      rgba(88, 166, 255, 0.035) 24.03%,
+      transparent 24.03%
+    ),
+
+    /* ——— Bottom grounding set ——— */
+
+    /* Bottom diagonal — opposing angle, anchors lower-left */
+    linear-gradient(
+      25deg,
+      transparent 18%,
+      rgba(88, 166, 255, 0.07) 18%,
+      rgba(88, 166, 255, 0.07) 18.1%,
+      transparent 18.1%
+    ),
+    /* Bottom companion — parallel, whisper-thin */
+    linear-gradient(
+      25deg,
+      transparent 16.2%,
+      rgba(88, 166, 255, 0.03) 16.2%,
+      rgba(88, 166, 255, 0.03) 16.28%,
+      transparent 16.28%
+    ),
+    /* Bottom cross accent — steeper cut */
+    linear-gradient(
+      -55deg,
+      transparent 76%,
+      rgba(88, 166, 255, 0.05) 76%,
+      rgba(88, 166, 255, 0.05) 76.1%,
+      transparent 76.1%
+    ),
+    /* Faint horizontal rule — bottom */
+    linear-gradient(
+      180deg,
+      transparent 79%,
+      rgba(88, 166, 255, 0.03) 79%,
+      rgba(88, 166, 255, 0.03) 79.03%,
+      transparent 79.03%
+    );
 }
 
 /* ========== Page Slider ========== */
@@ -64,6 +144,7 @@ body::before {
   overflow-y: auto;
   overflow-x: hidden;
   flex-shrink: 0;
+  -webkit-overflow-scrolling: touch;
 }
 
 .app {
@@ -75,6 +156,7 @@ body::before {
   align-items: center;
   justify-content: center;
   padding: 2rem 1.25rem;
+  padding-bottom: max(2rem, env(safe-area-inset-bottom));
 }
 
 .terminal {
@@ -244,6 +326,9 @@ body::before {
   color: var(--text);
   transition: color 0.15s;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .link-row:hover .link-row-title {
@@ -580,20 +665,62 @@ body::before {
   }
 }
 
-/* Mobile */
+/* Touch devices — no hover available */
+@media (hover: none) {
+  .link-row-glow {
+    display: none;
+  }
+  .link-row-arrow {
+    opacity: 0.4;
+    transform: none;
+  }
+  .link-row:active {
+    background: rgba(88, 166, 255, 0.06);
+  }
+  .link-row:active .link-icon,
+  .link-row:active .link-row-index {
+    color: var(--accent);
+  }
+  .link-row:active .link-row-arrow {
+    opacity: 1;
+    color: var(--accent);
+  }
+}
+
+/* Mobile — larger phones & small tablets */
+@media (max-width: 640px) {
+  .link-row {
+    padding: 1rem 0.75rem;
+    min-height: 48px;
+  }
+  .resume-back {
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* Mobile — phones */
 @media (max-width: 480px) {
   .app {
-    padding: 1rem;
+    padding: 1.5rem 1rem;
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
   }
   .avatar-wrap {
     width: 80px;
     height: 80px;
   }
+  .header {
+    margin-bottom: 2rem;
+  }
   .link-row-desc {
     display: none;
   }
+  .link-row--child {
+    padding-left: 2.5rem;
+  }
   .resume {
     padding: 1.25rem 1rem 2rem;
+    padding-bottom: max(2rem, env(safe-area-inset-bottom));
   }
   .resume-entry-header,
   .resume-role-header,
