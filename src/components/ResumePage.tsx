@@ -88,12 +88,22 @@ export default function ResumePage() {
           </ul>
         </section>
 
-        {/* Skills & Interests */}
+        {/* Skills */}
         <section className="resume-section" style={{ animationDelay: '400ms' }}>
-          <h2 className="resume-section-title">Skills &amp; Interests</h2>
+          <h2 className="resume-section-title">Skills</h2>
           <ul className="resume-simple-list">
             {resume.skills.map((skill, i) => (
               <li key={i}>{skill}</li>
+            ))}
+          </ul>
+        </section>
+
+        {/* Interests */}
+        <section className="resume-section" style={{ animationDelay: '480ms' }}>
+          <h2 className="resume-section-title">Interests</h2>
+          <ul className="resume-simple-list">
+            {resume.interests.map((interest, i) => (
+              <li key={i}>{interest}</li>
             ))}
           </ul>
         </section>

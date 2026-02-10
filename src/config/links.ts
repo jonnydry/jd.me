@@ -30,7 +30,7 @@ export const links: LinkEntry[] = [
   { 
     title: '@JonnyD', 
     url: 'https://x.com/JonnyD', 
-    desc: 'personal account', 
+    desc: 'Personal: hot takes, interests, news', 
     icon: 'twitter' 
   },
   { 
@@ -42,7 +42,7 @@ export const links: LinkEntry[] = [
   { 
     title: 'GitHub', 
     url: 'https://github.com/jonnydry', 
-    desc: 'Code & projects', 
+    desc: 'Code, Projects, Expiriments', 
     icon: 'github' 
   },
   { 

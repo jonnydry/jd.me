@@ -32,6 +32,7 @@ export interface ResumeData {
   additionalExperience: AdditionalEntry[]
   awards: string[]
   skills: string[]
+  interests: string[]
 }
 
 export const resume: ResumeData = {
@@ -138,7 +139,12 @@ export const resume: ResumeData = {
     'Retail leadership, team building, P&L management, merchandising',
     'Purchasing, inventory control, shrink reduction',
     'Customer service excellence, communication, presentation',
+    'Well versed in cutting edge AI tools for productivity, programming and workflow optimization applications',
+    'Basic web design',
+  ],
+
+  interests: [
     'Creative writing and poetry (independent publications)',
-    'Music performance, basic web design',
+    'Music performance',
   ],
 }

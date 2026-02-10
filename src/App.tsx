@@ -15,6 +15,39 @@ const flatLinks: LinkItem[] = links.flatMap((entry) =>
   isGroup(entry) ? entry.children : [entry]
 )
 
+const THEMES = ['default', 'rose', 'paper'] as const
+type Theme = (typeof THEMES)[number]
+
+function ThemeToggle() {
+  const [theme, setTheme] = useState<Theme>(() => {
+    return (localStorage.getItem('theme') as Theme) || 'default'
+  })
+
+  useEffect(() => {
+    if (theme === 'default') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+    localStorage.setItem('theme', theme)
+  }, [theme])
+
+  return (
+    <div className="theme-toggle" role="radiogroup" aria-label="Theme">
+      {THEMES.map((t) => (
+        <button
+          key={t}
+          className={`theme-dot theme-dot--${t}${theme === t ? ' theme-dot--active' : ''}`}
+          onClick={() => setTheme(t)}
+          aria-label={`${t} theme`}
+          role="radio"
+          aria-checked={theme === t}
+        />
+      ))}
+    </div>
+  )
+}
+
 function LinksPage() {
   let rowIndex = 0
 
@@ -37,6 +70,7 @@ function LinksPage() {
             })}
           </div>
         </section>
+        <p className="keyboard-hint" aria-hidden="true">press 1–9 to navigate</p>
       </div>
     </main>
   )
@@ -128,16 +162,19 @@ function App() {
   }, [])
 
   return (
-    <div
-      className={`page-slider${animated ? ' page-slider--animated' : ''}${isResume ? ' page-slider--resume' : ''}`}
-    >
-      <div className="page">
-        <LinksPage />
+    <>
+      <ThemeToggle />
+      <div
+        className={`page-slider${animated ? ' page-slider--animated' : ''}${isResume ? ' page-slider--resume' : ''}`}
+      >
+        <div className="page">
+          <LinksPage />
+        </div>
+        <div className="page" ref={resumePageRef}>
+          <ResumePage />
+        </div>
       </div>
-      <div className="page" ref={resumePageRef}>
-        <ResumePage />
-      </div>
-    </div>
+    </>
   )
 }
 
