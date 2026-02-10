@@ -27,6 +27,7 @@ body {
   color: var(--text);
   line-height: 1.5;
   min-height: 100dvh;
+  overflow: hidden;
 }
 
 /* Subtle background depth */
@@ -38,6 +39,31 @@ body::before {
     radial-gradient(ellipse 80% 50% at 50% 0%, rgba(88, 166, 255, 0.03) 0%, transparent 50%);
   pointer-events: none;
   z-index: 0;
+}
+
+/* ========== Page Slider ========== */
+.page-slider {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  z-index: 1;
+  will-change: transform;
+}
+
+.page-slider--animated {
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page-slider--resume {
+  transform: translateX(-100vw);
+}
+
+.page {
+  width: 100vw;
+  height: 100dvh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-shrink: 0;
 }
 
 .app {
@@ -319,8 +345,225 @@ body::before {
   }
 }
 
+/* ========== Resume Page ========== */
+.resume {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+}
+
+.resume-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.8rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  margin-bottom: 2rem;
+}
+
+.resume-back:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.resume-back:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.resume-back-arrow {
+  transition: transform 0.15s;
+}
+
+.resume-back:hover .resume-back-arrow {
+  transform: translateX(-2px);
+}
+
+.resume-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  animation: fadeIn 0.4s ease-out backwards;
+}
+
+.resume-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+}
+
+.resume-contact {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.resume-email {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.resume-email:hover {
+  text-decoration: underline;
+}
+
+/* Resume sections */
+.resume-section {
+  margin-bottom: 1.75rem;
+  animation: fadeIn 0.4s ease-out backwards;
+}
+
+.resume-section-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Resume entries */
+.resume-entry {
+  margin-bottom: 1rem;
+}
+
+.resume-entry-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.resume-entry-org {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.resume-entry-location {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.resume-entry-period {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.resume-entry-detail {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+/* Company block (groups multiple roles) */
+.resume-company {
+  margin-bottom: 1.25rem;
+  padding: 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.resume-company-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Role within a company */
+.resume-role {
+  margin-bottom: 0.75rem;
+}
+
+.resume-role:last-child {
+  margin-bottom: 0;
+}
+
+.resume-role-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.35rem;
+}
+
+.resume-role-title {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* Bullet lists */
+.resume-bullets {
+  list-style: none;
+  padding: 0;
+}
+
+.resume-bullets li {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  padding-left: 1.1rem;
+  position: relative;
+  margin-bottom: 0.3rem;
+  line-height: 1.55;
+}
+
+.resume-bullets li::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Simple lists (awards, skills) */
+.resume-simple-list {
+  list-style: none;
+  padding: 0;
+}
+
+.resume-simple-list li {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  padding: 0.3rem 0;
+  padding-left: 1.1rem;
+  position: relative;
+  line-height: 1.5;
+}
+
+.resume-simple-list li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 600;
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
+  .page-slider--animated {
+    transition: none;
+  }
   .link-row {
     animation: none;
   }
@@ -330,6 +573,10 @@ body::before {
   }
   .link-row-glow {
     transition: none;
+  }
+  .resume-section,
+  .resume-header {
+    animation: none;
   }
 }
 
@@ -344,5 +591,14 @@ body::before {
   }
   .link-row-desc {
     display: none;
+  }
+  .resume {
+    padding: 1.25rem 1rem 2rem;
+  }
+  .resume-entry-header,
+  .resume-role-header,
+  .resume-company-header {
+    flex-direction: column;
+    gap: 0.15rem;
   }
 }

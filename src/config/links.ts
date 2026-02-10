@@ -2,12 +2,13 @@ export interface LinkItem {
   title: string
   url: string
   desc?: string
-  icon?: 'github' | 'twitter' | 'linkedin' | 'globe' | 'quill' | 'mail'
+  icon?: 'github' | 'twitter' | 'linkedin' | 'globe' | 'quill' | 'mail' | 'file' | 'monitor'
+  internal?: boolean
 }
 
 export interface LinkGroup {
   label: string
-  icon?: 'github' | 'twitter' | 'linkedin' | 'globe' | 'quill' | 'mail'
+  icon?: 'github' | 'twitter' | 'linkedin' | 'globe' | 'quill' | 'mail' | 'file' | 'monitor'
   children: LinkItem[]
 }
 
@@ -20,7 +21,7 @@ export function isGroup(entry: LinkEntry): entry is LinkGroup {
 export const links: LinkEntry[] = [
   {
     label: 'Live Projects',
-    icon: 'quill',
+    icon: 'monitor',
     children: [
       { title: 'Sancho Poetry', url: 'https://sanchopoetry.com', desc: 'Poetic reference and writing tool', icon: 'quill' },
       { title: 'The Harbor', url: 'https://harborpoetry.com', desc: 'Personal poetry', icon: 'quill' },
@@ -43,5 +44,12 @@ export const links: LinkEntry[] = [
     url: 'https://x.com/imag3nigma', 
     desc: 'AI art with literary quotes', 
     icon: 'twitter' 
+  },
+  { 
+    title: 'Resume', 
+    url: '/resume', 
+    desc: 'CV & experience', 
+    icon: 'file',
+    internal: true 
   },
 ]

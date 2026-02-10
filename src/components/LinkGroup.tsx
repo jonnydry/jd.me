@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import type { LinkGroup as LinkGroupType, LinkItem } from '../config/links'
-import { GitHub, Twitter, LinkedIn, Globe, Quill, Mail, ArrowRight } from './Icons'
+import { GitHub, Twitter, LinkedIn, Globe, Quill, Mail, FileText, Monitor, ArrowRight } from './Icons'
 
 const IconMap = {
   github: GitHub,
@@ -9,6 +10,8 @@ const IconMap = {
   globe: Globe,
   quill: Quill,
   mail: Mail,
+  file: FileText,
+  monitor: Monitor,
 }
 
 interface LinkGroupProps {
@@ -18,6 +21,7 @@ interface LinkGroupProps {
 
 function ChildRow({ link }: { link: LinkItem }) {
   const rowRef = useRef<HTMLAnchorElement>(null)
+  const navigate = useNavigate()
   const IconComponent = link.icon ? IconMap[link.icon] : ArrowRight
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -28,14 +32,22 @@ function ChildRow({ link }: { link: LinkItem }) {
     el.style.setProperty('--mouse-y', `${(e.clientY - rect.top)}px`)
   }, [])
 
+  const handleClick = (e: React.MouseEvent) => {
+    if (link.internal) {
+      e.preventDefault()
+      navigate(link.url)
+    }
+  }
+
   return (
     <a
       ref={rowRef}
       href={link.url}
-      target="_blank"
-      rel="noopener noreferrer"
+      target={link.internal ? undefined : '_blank'}
+      rel={link.internal ? undefined : 'noopener noreferrer'}
       className="link-row link-row--child"
       onMouseMove={handleMouseMove}
+      onClick={handleClick}
     >
       <span className="link-row-glow" />
       <span className="link-row-index" />
@@ -44,7 +56,7 @@ function ChildRow({ link }: { link: LinkItem }) {
       </span>
       <span className="link-row-title">{link.title}</span>
       {link.desc && <span className="link-row-desc">{link.desc}</span>}
-      <span className="link-row-arrow">↗</span>
+      <span className="link-row-arrow">{link.internal ? '→' : '↗'}</span>
     </a>
   )
 }
