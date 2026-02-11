@@ -114,21 +114,6 @@ export default function WritingPage() {
           </button>
           <ThemeToggle />
 
-          <nav className="writing-toc">
-            <span className="writing-toc-label">Contents</span>
-            <div className="writing-toc-items">
-              {toc.map((entry) => (
-                <button
-                  key={entry.id}
-                  className="writing-toc-link"
-                  onClick={() => handleTocClick(entry.id)}
-                >
-                  {entry.label}
-                </button>
-              ))}
-            </div>
-          </nav>
-
           <article className="writing-detail" style={{ animationDelay: '80ms' }}>
             <header id="introduction" className="writing-detail-header">
               <h1 className="writing-detail-title">{sample.title}</h1>
@@ -144,6 +129,20 @@ export default function WritingPage() {
                 </div>
               </div>
             </header>
+            <nav className="writing-toc">
+              <span className="writing-toc-label">Contents</span>
+              <div className="writing-toc-items">
+                {toc.map((entry) => (
+                  <button
+                    key={entry.id}
+                    className="writing-toc-link"
+                    onClick={() => handleTocClick(entry.id)}
+                  >
+                    {entry.label}
+                  </button>
+                ))}
+              </div>
+            </nav>
             <div className="writing-detail-body">
               {sample.body.map((block, i) => (
                 <ContentRenderer key={i} block={block} />
