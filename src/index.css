@@ -256,6 +256,12 @@ html::after {
   padding-bottom: max(2rem, env(safe-area-inset-bottom));
 }
 
+/* Resume and writing pages: align content from top so back link & theme toggle stay visible */
+.app:has(.resume),
+.app:has(.writing) {
+  justify-content: flex-start;
+}
+
 .terminal {
   width: 100%;
   max-width: 480px;
