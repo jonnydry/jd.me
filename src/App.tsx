@@ -144,6 +144,29 @@ function App() {
     }
   }, [])
 
+  // Warm route chunks after first paint so navigation feels instant.
+  useEffect(() => {
+    const warmChunks = () => {
+      void import('./components/ResumePage')
+      void import('./components/WritingPage')
+    }
+
+    if (typeof window === 'undefined') return
+
+    const idleWindow = window as Window & {
+      requestIdleCallback?: (cb: IdleRequestCallback) => number
+      cancelIdleCallback?: (id: number) => void
+    }
+
+    if (typeof idleWindow.requestIdleCallback === 'function') {
+      const idleId = idleWindow.requestIdleCallback(() => warmChunks())
+      return () => idleWindow.cancelIdleCallback?.(idleId)
+    }
+
+    const timeoutId = window.setTimeout(warmChunks, 1500)
+    return () => window.clearTimeout(timeoutId)
+  }, [])
+
   return (
     <ThemeProvider>
       <div

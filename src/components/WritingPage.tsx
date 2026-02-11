@@ -25,6 +25,12 @@ function buildToc(sample: WritingSample) {
   return entries
 }
 
+function getResponsiveImageSrcSet(src: string) {
+  if (!src.endsWith('.jpg')) return undefined
+  const base = src.slice(0, -4)
+  return `${base}-800.jpg 800w, ${src} 1200w`
+}
+
 function ContentRenderer({ block }: { block: ContentBlock }) {
   switch (block.type) {
     case 'paragraph':
@@ -57,15 +63,21 @@ function ContentRenderer({ block }: { block: ContentBlock }) {
           )}
         </div>
       )
-    case 'image':
+    case 'image': {
+      const srcSet = getResponsiveImageSrcSet(block.src)
       return (
         <figure className="writing-figure">
           <img
             className="writing-figure-img"
             src={block.src}
+            srcSet={srcSet}
+            sizes="(max-width: 640px) 92vw, 690px"
             alt={block.alt}
+            width={1200}
+            height={1600}
             loading="lazy"
             decoding="async"
+            fetchPriority="low"
           />
           {block.caption && (
             <figcaption className="writing-figure-caption">
@@ -74,6 +86,7 @@ function ContentRenderer({ block }: { block: ContentBlock }) {
           )}
         </figure>
       )
+    }
     case 'citation':
       return (
         <section id="works-cited" className="writing-citations">
