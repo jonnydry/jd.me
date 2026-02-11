@@ -53,7 +53,7 @@ export const links: LinkEntry[] = [
     internal: true
   },
   {
-    title: 'Writing',
+    title: 'Writing Samples',
     url: '/writing',
     desc: 'Essays & fiction',
     icon: 'quill',
