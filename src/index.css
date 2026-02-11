@@ -270,14 +270,12 @@ html::after {
 /* Desktop — scale main content 15% larger (homepage, resume, writing) */
 @media (min-width: 641px) {
   .terminal {
-    transform: scale(1.15);
-    transform-origin: center center;
+    max-width: 552px;
   }
-  /* Resume & writing: anchor scale at top so back link & theme toggle stay visible */
+  /* Keep pages larger on desktop without transform scaling to avoid text shimmer/jitter. */
   .resume,
   .writing {
-    transform: scale(1.15);
-    transform-origin: top center;
+    max-width: 690px;
   }
 }
 
