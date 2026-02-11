@@ -216,10 +216,6 @@ html::after {
   transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.page-slider--resume {
-  transform: translateX(-100vw);
-}
-
 .page {
   width: 100vw;
   height: 100dvh;
@@ -924,6 +920,285 @@ html::after {
   font-weight: 600;
 }
 
+/* ========== Writing Page ========== */
+.writing {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+}
+
+.writing-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  animation: fadeIn 0.4s ease-out backwards;
+}
+
+.writing-page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+}
+
+.writing-page-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Writing list */
+.writing-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid var(--border);
+}
+
+.writing-list-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1rem 0.75rem;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  animation: fadeIn 0.4s ease-out backwards;
+  transition: background 0.15s;
+}
+
+.writing-list-item:hover {
+  background: hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.04);
+}
+
+.writing-list-item:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+}
+
+.writing-list-item-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.writing-list-item-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text);
+  transition: color 0.15s;
+}
+
+.writing-list-item:hover .writing-list-item-title {
+  color: var(--accent);
+}
+
+.writing-list-item-date {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.writing-list-item-excerpt {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.writing-list-item-tags {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+/* Shared tag chip */
+.writing-tag {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Writing detail */
+.writing-detail {
+  animation: fadeIn 0.4s ease-out backwards;
+}
+
+.writing-detail-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.writing-detail-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.3rem;
+}
+
+.writing-detail-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.writing-detail-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.writing-detail-date {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.writing-detail-tags {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.writing-detail-body {
+  line-height: 1.75;
+}
+
+/* Body paragraphs */
+.writing-body-p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1.25rem;
+}
+
+/* Section headings within body */
+.writing-body-heading {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Block quotes */
+.writing-blockquote {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  border-left: 2px solid var(--accent);
+  background: hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.03);
+  border-radius: 0 4px 4px 0;
+}
+
+.writing-blockquote p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  font-style: italic;
+  margin: 0;
+}
+
+.writing-blockquote-cite {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  opacity: 0.7;
+  margin-top: 0.6rem;
+  font-style: normal;
+}
+
+.writing-blockquote-cite::before {
+  content: '\2014 ';
+}
+
+/* Verse / poetry blocks */
+.writing-verse {
+  margin: 1.5rem 0;
+  padding: 1.25rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.writing-verse-line {
+  font-size: 0.82rem;
+  color: var(--text);
+  line-height: 1.7;
+  font-style: italic;
+  display: block;
+}
+
+.writing-verse-cite {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  opacity: 0.7;
+  margin-top: 0.75rem;
+  font-style: normal;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.writing-verse-cite::before {
+  content: '\2014 ';
+}
+
+/* Images / figures */
+.writing-figure {
+  margin: 2rem 0;
+}
+
+.writing-figure-img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  display: block;
+}
+
+.writing-figure-caption {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  opacity: 0.7;
+  text-align: center;
+  margin-top: 0.6rem;
+  font-style: italic;
+}
+
+/* Works cited / citations */
+.writing-citations {
+  margin-top: 2.5rem;
+}
+
+.writing-citations-list {
+  list-style: none;
+  padding: 0;
+}
+
+.writing-citations-list li {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: 0.35rem 0;
+  padding-left: 1.75rem;
+  text-indent: -1.75rem;
+  line-height: 1.55;
+}
+
 /* ========== Theme Toggle ========== */
 .theme-toggle {
   display: flex;
@@ -1026,6 +1301,11 @@ html::after {
   .resume-header {
     animation: none;
   }
+  .writing-header,
+  .writing-list-item,
+  .writing-detail {
+    animation: none;
+  }
   .avatar-wrap {
     animation: none;
   }
@@ -1084,6 +1364,10 @@ html::after {
     min-height: 44px;
     padding: 0.5rem 1rem;
   }
+  .writing-list-item {
+    padding: 1rem 0.75rem;
+    min-height: 48px;
+  }
 }
 
 /* Mobile — phones */
@@ -1108,6 +1392,22 @@ html::after {
   .resume {
     padding: 1.25rem 1rem 2rem;
     padding-bottom: max(2rem, env(safe-area-inset-bottom));
+  }
+  .writing {
+    padding: 1.25rem 1rem 2rem;
+    padding-bottom: max(2rem, env(safe-area-inset-bottom));
+  }
+  .writing-list-item-top {
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .writing-blockquote {
+    padding: 0.75rem 1rem;
+    margin: 1.25rem 0;
+  }
+  .writing-verse {
+    padding: 1rem;
+    margin: 1.25rem 0;
   }
   .resume-entry-header,
   .resume-role-header,

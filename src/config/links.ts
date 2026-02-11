@@ -45,11 +45,18 @@ export const links: LinkEntry[] = [
     desc: 'Code, Projects, Expiriments', 
     icon: 'github' 
   },
-  { 
-    title: 'Resume', 
-    url: '/resume', 
-    desc: 'CV & experience', 
+  {
+    title: 'Resume',
+    url: '/resume',
+    desc: 'CV & experience',
     icon: 'file',
-    internal: true 
+    internal: true
+  },
+  {
+    title: 'Writing',
+    url: '/writing',
+    desc: 'Essays & fiction',
+    icon: 'quill',
+    internal: true
   },
 ]

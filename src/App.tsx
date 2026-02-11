@@ -9,6 +9,7 @@ import LinkCard from './components/LinkCard'
 import LinkGroupComponent from './components/LinkGroup'
 import ThemeToggle from './components/ThemeToggle'
 import ResumePage from './components/ResumePage'
+import WritingPage from './components/WritingPage'
 
 const TAB_TITLES = ['Jonny D | Links', 'Jonny D | vibecoder', 'Jonny D | 🎸', 'Jonny D | writer']
 
@@ -49,9 +50,10 @@ function LinksPage() {
 function App() {
   const location = useLocation()
   const navigate = useNavigate()
-  const isResume = location.pathname === '/resume'
+  const pageIndex = location.pathname.startsWith('/writing') ? 2 : location.pathname === '/resume' ? 1 : 0
   const [animated, setAnimated] = useState(false)
   const resumePageRef = useRef<HTMLDivElement>(null)
+  const writingPageRef = useRef<HTMLDivElement>(null)
 
   // Enable CSS transitions after initial render (prevents animation on direct load)
   useEffect(() => {
@@ -59,12 +61,15 @@ function App() {
     return () => cancelAnimationFrame(raf)
   }, [])
 
-  // Scroll resume page to top when navigating to it
+  // Scroll sub-pages to top when navigating to them
   useEffect(() => {
-    if (isResume && resumePageRef.current) {
+    if (pageIndex === 1 && resumePageRef.current) {
       resumePageRef.current.scrollTop = 0
     }
-  }, [isResume])
+    if (pageIndex === 2 && writingPageRef.current) {
+      writingPageRef.current.scrollTop = 0
+    }
+  }, [pageIndex, location.pathname])
 
   // Keyboard shortcuts: 1-N open flat links
   useEffect(() => {
@@ -134,13 +139,17 @@ function App() {
   return (
     <ThemeProvider>
       <div
-        className={`page-slider${animated ? ' page-slider--animated' : ''}${isResume ? ' page-slider--resume' : ''}`}
+        className={`page-slider${animated ? ' page-slider--animated' : ''}`}
+        style={{ transform: `translateX(-${pageIndex * 100}vw)` }}
       >
         <div className="page">
           <LinksPage />
         </div>
         <div className="page" ref={resumePageRef}>
           <ResumePage />
+        </div>
+        <div className="page" ref={writingPageRef}>
+          <WritingPage />
         </div>
       </div>
     </ThemeProvider>
