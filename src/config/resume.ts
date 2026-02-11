@@ -105,6 +105,19 @@ export const resume: ResumeData = {
         },
       ],
     },
+    {
+      company: 'TripAdvisor / Jetsetter',
+      location: 'Boston, MA',
+      roles: [
+        {
+          title: 'Customer Support & Sales',
+          period: '2015 – 2017',
+          bullets: [
+            'B2B sales, technical troubleshooting, refund handling, and premium feature marketing',
+          ],
+        },
+      ],
+    },
   ],
 
   additionalExperience: [
@@ -113,12 +126,6 @@ export const resume: ResumeData = {
       period: '2013 – 2015',
       description:
         'Guitar Center, Braintree, MA — Keyholding manager overseeing smooth sales floor operations and first-point customer service resolution. Trained new associates on sales techniques, technical knowledge, and customer service standards',
-    },
-    {
-      title: 'Customer Support & Sales',
-      period: '2015 – 2017',
-      description:
-        'TripAdvisor / Jetsetter — B2B sales, technical troubleshooting, refund handling, and premium feature marketing',
     },
     {
       title: 'Assistant Web Designer',

@@ -3,9 +3,11 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { profile } from './config/profile'
 import { links, isGroup } from './config/links'
 import type { LinkItem } from './config/links'
+import { ThemeProvider } from './ThemeContext'
 import Header from './components/Header'
 import LinkCard from './components/LinkCard'
 import LinkGroupComponent from './components/LinkGroup'
+import ThemeToggle from './components/ThemeToggle'
 import ResumePage from './components/ResumePage'
 
 const TAB_TITLES = ['Jonny D | Links', 'Jonny D | vibecoder', 'Jonny D | 🎸', 'Jonny D | writer']
@@ -15,39 +17,6 @@ const flatLinks: LinkItem[] = links.flatMap((entry) =>
   isGroup(entry) ? entry.children : [entry]
 )
 
-const THEMES = ['default', 'rose', 'paper'] as const
-type Theme = (typeof THEMES)[number]
-
-function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>(() => {
-    return (localStorage.getItem('theme') as Theme) || 'default'
-  })
-
-  useEffect(() => {
-    if (theme === 'default') {
-      document.documentElement.removeAttribute('data-theme')
-    } else {
-      document.documentElement.setAttribute('data-theme', theme)
-    }
-    localStorage.setItem('theme', theme)
-  }, [theme])
-
-  return (
-    <div className="theme-toggle" role="radiogroup" aria-label="Theme">
-      {THEMES.map((t) => (
-        <button
-          key={t}
-          className={`theme-dot theme-dot--${t}${theme === t ? ' theme-dot--active' : ''}`}
-          onClick={() => setTheme(t)}
-          aria-label={`${t} theme`}
-          role="radio"
-          aria-checked={theme === t}
-        />
-      ))}
-    </div>
-  )
-}
-
 function LinksPage() {
   let rowIndex = 0
 
@@ -55,6 +24,7 @@ function LinksPage() {
     <main className="app">
       <div className="terminal">
         <Header {...profile} />
+        <ThemeToggle />
         <section className="links-section">
           <div className="links-list">
             {links.map((entry, i) => {
@@ -162,8 +132,7 @@ function App() {
   }, [])
 
   return (
-    <>
-      <ThemeToggle />
+    <ThemeProvider>
       <div
         className={`page-slider${animated ? ' page-slider--animated' : ''}${isResume ? ' page-slider--resume' : ''}`}
       >
@@ -174,7 +143,7 @@ function App() {
           <ResumePage />
         </div>
       </div>
-    </>
+    </ThemeProvider>
   )
 }
 

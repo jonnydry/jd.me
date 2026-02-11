@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { resume } from '../config/resume'
+import ThemeToggle from './ThemeToggle'
 
 export default function ResumePage() {
   const navigate = useNavigate()
@@ -10,6 +11,7 @@ export default function ResumePage() {
         <button className="resume-back" onClick={() => navigate('/')}>
           <span className="resume-back-arrow">←</span> links
         </button>
+        <ThemeToggle />
 
         <header className="resume-header">
           <h1 className="resume-name">{resume.name}</h1>

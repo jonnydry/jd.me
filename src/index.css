@@ -18,6 +18,31 @@
   inherits: true;
 }
 
+/* Line-group hues — each pair of laser lines can drift independently */
+@property --line-hue-a {
+  syntax: '<number>';
+  initial-value: 212;
+  inherits: true;
+}
+
+@property --line-hue-b {
+  syntax: '<number>';
+  initial-value: 212;
+  inherits: true;
+}
+
+@property --line-hue-c {
+  syntax: '<number>';
+  initial-value: 212;
+  inherits: true;
+}
+
+@property --line-hue-d {
+  syntax: '<number>';
+  initial-value: 212;
+  inherits: true;
+}
+
 :root {
   --bg: #0d1117;
   --surface: #161b22;
@@ -29,7 +54,7 @@
   --accent-lit: 67%;
   --accent: hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit));
   --accent-hover: hsl(var(--accent-hue) var(--accent-sat) min(calc(var(--accent-lit) + 7%), 100%));
-  animation: colorDrift 20s ease-in-out infinite;
+  animation: colorDrift 18s ease-in-out infinite;
 }
 
 /* ========== Theme: Rose ========== */
@@ -40,7 +65,7 @@
   --accent-hue: 335;
   --accent-sat: 85%;
   --accent-lit: 65%;
-  animation: colorDriftRose 20s ease-in-out infinite;
+  animation: colorDriftRose 18s ease-in-out infinite;
 }
 
 /* ========== Theme: Paper ========== */
@@ -51,9 +76,9 @@
   --text: #2c2a26;
   --text-muted: #78736a;
   --accent-hue: 215;
-  --accent-sat: 50%;
-  --accent-lit: 35%;
-  animation: colorDriftPaper 20s ease-in-out infinite;
+  --accent-sat: 75%;
+  --accent-lit: 40%;
+  animation: colorDriftPaper 30s ease-in-out infinite;
 }
 
 * {
@@ -104,71 +129,65 @@ body::after {
   pointer-events: none;
   z-index: 0;
   background:
-    /* Primary diagonal stripe */
+    /* Group A — Top diagonal pair */
     linear-gradient(
       150deg,
       transparent 42%,
-      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.14) 42%,
-      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.14) 42.12%,
+      hsl(var(--line-hue-a) var(--accent-sat) var(--accent-lit) / 0.14) 42%,
+      hsl(var(--line-hue-a) var(--accent-sat) var(--accent-lit) / 0.14) 42.12%,
       transparent 42.12%
     ),
-    /* Parallel companion — offset, dimmer */
     linear-gradient(
       150deg,
       transparent 43.8%,
-      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.07) 43.8%,
-      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.07) 43.88%,
+      hsl(var(--line-hue-a) var(--accent-sat) var(--accent-lit) / 0.07) 43.8%,
+      hsl(var(--line-hue-a) var(--accent-sat) var(--accent-lit) / 0.07) 43.88%,
       transparent 43.88%
     ),
-    /* Cross accent — opposing angle */
+    /* Group B — Top cross + horizontal */
     linear-gradient(
       -30deg,
       transparent 68%,
-      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.10) 68%,
-      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.10) 68.1%,
+      hsl(var(--line-hue-b) var(--accent-sat) var(--accent-lit) / 0.10) 68%,
+      hsl(var(--line-hue-b) var(--accent-sat) var(--accent-lit) / 0.10) 68.1%,
       transparent 68.1%
     ),
-    /* Faint horizontal rule — top */
     linear-gradient(
       180deg,
       transparent 24%,
-      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.06) 24%,
-      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.06) 24.03%,
+      hsl(var(--line-hue-b) var(--accent-sat) var(--accent-lit) / 0.06) 24%,
+      hsl(var(--line-hue-b) var(--accent-sat) var(--accent-lit) / 0.06) 24.03%,
       transparent 24.03%
     ),
 
-    /* ——— Bottom grounding set ——— */
-
-    /* Bottom diagonal — opposing angle, anchors lower-left */
+    /* Group C — Bottom diagonal pair */
     linear-gradient(
       25deg,
       transparent 18%,
-      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.11) 18%,
-      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.11) 18.1%,
+      hsl(var(--line-hue-c) var(--accent-sat) var(--accent-lit) / 0.11) 18%,
+      hsl(var(--line-hue-c) var(--accent-sat) var(--accent-lit) / 0.11) 18.1%,
       transparent 18.1%
     ),
-    /* Bottom companion — parallel, whisper-thin */
     linear-gradient(
       25deg,
       transparent 16.2%,
-      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.05) 16.2%,
-      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.05) 16.28%,
+      hsl(var(--line-hue-c) var(--accent-sat) var(--accent-lit) / 0.05) 16.2%,
+      hsl(var(--line-hue-c) var(--accent-sat) var(--accent-lit) / 0.05) 16.28%,
       transparent 16.28%
     ),
-    /* Bottom cross accent — steeper cut */
+    /* Group D — Bottom cross + horizontal */
     linear-gradient(
       -55deg,
       transparent 76%,
-      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.08) 76%,
-      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.08) 76.1%,
+      hsl(var(--line-hue-d) var(--accent-sat) var(--accent-lit) / 0.08) 76%,
+      hsl(var(--line-hue-d) var(--accent-sat) var(--accent-lit) / 0.08) 76.1%,
       transparent 76.1%
     ),
-    /* Faint horizontal rule — bottom */
     linear-gradient(
       180deg,
       transparent 79%,
-      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.05) 79%,
-      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.05) 79.03%,
+      hsl(var(--line-hue-d) var(--accent-sat) var(--accent-lit) / 0.05) 79%,
+      hsl(var(--line-hue-d) var(--accent-sat) var(--accent-lit) / 0.05) 79.03%,
       transparent 79.03%
     );
 }
@@ -260,7 +279,7 @@ html::after {
   height: 88px;
   border-radius: 50%;
   overflow: hidden;
-  animation: avatarPulse 20s ease-in-out infinite;
+  animation: avatarPulse 18s ease-in-out infinite;
   cursor: pointer;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
@@ -632,29 +651,56 @@ html::after {
 
 @keyframes avatarPulse {
   0%, 100% { box-shadow: 0 0 0 0 hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0); }
-  50% { box-shadow: 0 0 16px 3px hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.12); }
+  50% { box-shadow: 0 0 28px 6px hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.3); }
 }
 
 @keyframes colorDrift {
-  0%, 100% { --accent-hue: 212; --accent-sat: 100%; --accent-lit: 67%; }
-  25%       { --accent-hue: 205; --accent-sat: 100%; --accent-lit: 67%; }
-  50%       { --accent-hue: 210; --accent-sat: 10%;  --accent-lit: 96%; }
-  75%       { --accent-hue: 222; --accent-sat: 100%; --accent-lit: 67%; }
+  0%, 100% { --accent-hue: 212; --accent-sat: 100%; --accent-lit: 67%; --line-hue-a: 212; --line-hue-b: 212; --line-hue-c: 212; --line-hue-d: 212; }
+  25%       { --accent-hue: 205; --accent-sat: 100%; --accent-lit: 67%; --line-hue-a: 205; --line-hue-b: 205; --line-hue-c: 205; --line-hue-d: 205; }
+  50%       { --accent-hue: 210; --accent-sat: 10%;  --accent-lit: 96%; --line-hue-a: 210; --line-hue-b: 210; --line-hue-c: 210; --line-hue-d: 210; }
+  75%       { --accent-hue: 222; --accent-sat: 100%; --accent-lit: 67%; --line-hue-a: 222; --line-hue-b: 222; --line-hue-c: 222; --line-hue-d: 222; }
 }
 
 @keyframes colorDriftRose {
-  0%, 100% { --accent-hue: 335; --accent-sat: 85%; --accent-lit: 65%; }
-  25%       { --accent-hue: 345; --accent-sat: 85%; --accent-lit: 65%; }
-  50%       { --accent-hue: 330; --accent-sat: 12%; --accent-lit: 95%; }
-  75%       { --accent-hue: 315; --accent-sat: 85%; --accent-lit: 65%; }
+  0%, 100% { --accent-hue: 335; --accent-sat: 85%; --accent-lit: 65%; --line-hue-a: 335; --line-hue-b: 335; --line-hue-c: 335; --line-hue-d: 335; }
+  25%       { --accent-hue: 345; --accent-sat: 85%; --accent-lit: 65%; --line-hue-a: 345; --line-hue-b: 345; --line-hue-c: 345; --line-hue-d: 345; }
+  50%       { --accent-hue: 330; --accent-sat: 12%; --accent-lit: 95%; --line-hue-a: 330; --line-hue-b: 330; --line-hue-c: 330; --line-hue-d: 330; }
+  75%       { --accent-hue: 315; --accent-sat: 85%; --accent-lit: 65%; --line-hue-a: 315; --line-hue-b: 315; --line-hue-c: 315; --line-hue-d: 315; }
 }
 
+/*
+  Paper lines: each group cycles the same 6 colors but staggered.
+  Accent:  navy→teal→burgundy→plum→green→amber
+  Line A:  +2 offset (burgundy→plum→green→amber→navy→teal)
+  Line B:  +4 offset (green→amber→navy→teal→burgundy→plum)
+  Line C:  reverse   (amber→green→plum→burgundy→teal→navy)
+  Line D:  reverse+2 (plum→burgundy→teal→navy→amber→green)
+*/
 @keyframes colorDriftPaper {
-  0%, 100% { --accent-hue: 215; --accent-sat: 50%; --accent-lit: 35%; }
-  20%       { --accent-hue: 175; --accent-sat: 45%; --accent-lit: 30%; }
-  40%       { --accent-hue: 340; --accent-sat: 50%; --accent-lit: 38%; }
-  60%       { --accent-hue: 275; --accent-sat: 40%; --accent-lit: 36%; }
-  80%       { --accent-hue: 145; --accent-sat: 40%; --accent-lit: 30%; }
+  0%, 100% {
+    --accent-hue: 215; --accent-sat: 75%; --accent-lit: 40%;
+    --line-hue-a: 340; --line-hue-b: 145; --line-hue-c: 30;  --line-hue-d: 275;
+  }
+  17% {
+    --accent-hue: 175; --accent-sat: 70%; --accent-lit: 35%;
+    --line-hue-a: 275; --line-hue-b: 30;  --line-hue-c: 145; --line-hue-d: 340;
+  }
+  33% {
+    --accent-hue: 340; --accent-sat: 75%; --accent-lit: 42%;
+    --line-hue-a: 145; --line-hue-b: 215; --line-hue-c: 275; --line-hue-d: 175;
+  }
+  50% {
+    --accent-hue: 275; --accent-sat: 65%; --accent-lit: 42%;
+    --line-hue-a: 30;  --line-hue-b: 175; --line-hue-c: 340; --line-hue-d: 215;
+  }
+  67% {
+    --accent-hue: 145; --accent-sat: 65%; --accent-lit: 35%;
+    --line-hue-a: 215; --line-hue-b: 340; --line-hue-c: 175; --line-hue-d: 30;
+  }
+  83% {
+    --accent-hue: 30;  --accent-sat: 70%; --accent-lit: 40%;
+    --line-hue-a: 175; --line-hue-b: 275; --line-hue-c: 215; --line-hue-d: 145;
+  }
 }
 
 @keyframes hintFade {
@@ -880,51 +926,80 @@ html::after {
 
 /* ========== Theme Toggle ========== */
 .theme-toggle {
-  position: fixed;
-  bottom: 1.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 100;
   display: flex;
-  gap: 8px;
-  padding: 6px 10px;
-  border-radius: 20px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  opacity: 0.5;
-  transition: opacity 0.25s;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 1.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
 }
 
-.theme-toggle:hover {
-  opacity: 1;
+.theme-prompt {
+  color: var(--text-muted);
+  opacity: 0.4;
+  margin-right: 0.35rem;
+  user-select: none;
+  font-size: 0.65rem;
 }
 
-.theme-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: 1.5px solid;
-  background: transparent;
+.theme-btn {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
   cursor: pointer;
-  padding: 0;
-  transition: transform 0.2s, background 0.2s;
+  padding: 0.3rem 0.5rem;
+  color: var(--text-muted);
+  opacity: 0.45;
+  transition: color 0.15s, opacity 0.15s;
   -webkit-appearance: none;
   appearance: none;
+  position: relative;
 }
 
-.theme-dot:focus-visible {
+.theme-btn:hover {
+  opacity: 0.8;
+}
+
+.theme-btn:focus-visible {
   outline: 1px solid var(--accent);
   outline-offset: 2px;
 }
 
-.theme-dot--default { border-color: hsl(212 100% 67%); }
-.theme-dot--rose    { border-color: hsl(335 85% 65%); }
-.theme-dot--paper   { border-color: hsl(215 40% 55%); }
+.theme-btn--active {
+  color: var(--accent);
+  opacity: 1;
+}
 
-.theme-dot--active { transform: scale(1.25); }
-.theme-dot--active.theme-dot--default { background: hsl(212 100% 67%); }
-.theme-dot--active.theme-dot--rose    { background: hsl(335 85% 65%); }
-.theme-dot--active.theme-dot--paper   { background: hsl(215 40% 55%); }
+.theme-btn--active::before {
+  content: '[';
+  color: var(--border);
+  margin-right: 1px;
+}
+
+.theme-btn--active::after {
+  content: ']';
+  color: var(--border);
+  margin-left: 1px;
+}
+
+/* ========== Theme Wipe ========== */
+.theme-wipe {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  background: var(--bg);
+  animation: themeWipe 0.6s ease-in-out both;
+  will-change: transform;
+}
+
+@keyframes themeWipe {
+  0%   { transform: translateX(-100%); }
+  40%  { transform: translateX(0); }
+  60%  { transform: translateX(0); }
+  100% { transform: translateX(100%); }
+}
 
 /* ========== Media Queries ========== */
 
@@ -968,6 +1043,10 @@ html::after {
   .avatar-modal-inner {
     animation: none;
   }
+  .theme-wipe {
+    animation: none;
+    opacity: 0;
+  }
 }
 
 /* Touch devices — no hover available */
@@ -993,18 +1072,6 @@ html::after {
   .keyboard-hint {
     display: none;
   }
-  .theme-toggle {
-    opacity: 0.7;
-  }
-  .theme-dot {
-    width: 16px;
-    height: 16px;
-    border-width: 2px;
-  }
-  .theme-toggle {
-    gap: 12px;
-    padding: 10px 16px;
-  }
 }
 
 /* Mobile — larger phones & small tablets */
@@ -1021,9 +1088,6 @@ html::after {
 
 /* Mobile — phones */
 @media (max-width: 480px) {
-  .theme-toggle {
-    bottom: max(1rem, env(safe-area-inset-bottom));
-  }
   .app {
     padding: 1.5rem 1rem;
     padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
