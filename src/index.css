@@ -261,6 +261,14 @@ html::after {
   max-width: 480px;
 }
 
+/* Desktop — scale homepage 10% larger */
+@media (min-width: 641px) {
+  .terminal {
+    transform: scale(1.1);
+    transform-origin: center center;
+  }
+}
+
 /* Header */
 .header {
   text-align: center;
