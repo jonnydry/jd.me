@@ -261,9 +261,11 @@ html::after {
   max-width: 480px;
 }
 
-/* Desktop — scale homepage 15% larger */
+/* Desktop — scale main content 15% larger (homepage, resume, writing) */
 @media (min-width: 641px) {
-  .terminal {
+  .terminal,
+  .resume,
+  .writing {
     transform: scale(1.15);
     transform-origin: center center;
   }
