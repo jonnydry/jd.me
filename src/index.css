@@ -261,10 +261,10 @@ html::after {
   max-width: 480px;
 }
 
-/* Desktop — scale homepage 10% larger */
+/* Desktop — scale homepage 15% larger */
 @media (min-width: 641px) {
   .terminal {
-    transform: scale(1.1);
+    transform: scale(1.15);
     transform-origin: center center;
   }
 }
