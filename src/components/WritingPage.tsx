@@ -1,14 +1,40 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { writingSamples } from '../config/writing'
-import type { ContentBlock } from '../config/writing'
+import type { ContentBlock, WritingSample } from '../config/writing'
 import ThemeToggle from './ThemeToggle'
+
+function slugify(text: string) {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+}
+
+function buildToc(sample: WritingSample) {
+  const entries: { id: string; label: string }[] = [
+    { id: 'introduction', label: 'Introduction' },
+  ]
+  for (const block of sample.body) {
+    if (block.type === 'heading') {
+      entries.push({ id: slugify(block.text), label: block.text })
+    }
+    if (block.type === 'citation') {
+      entries.push({ id: 'works-cited', label: 'Works Cited' })
+    }
+  }
+  return entries
+}
 
 function ContentRenderer({ block }: { block: ContentBlock }) {
   switch (block.type) {
     case 'paragraph':
       return <p className="writing-body-p">{block.text}</p>
     case 'heading':
-      return <h2 className="writing-body-heading">{block.text}</h2>
+      return (
+        <h2 id={slugify(block.text)} className="writing-body-heading">
+          {block.text}
+        </h2>
+      )
     case 'quote':
       return (
         <blockquote className="writing-blockquote">
@@ -49,7 +75,7 @@ function ContentRenderer({ block }: { block: ContentBlock }) {
       )
     case 'citation':
       return (
-        <section className="writing-citations">
+        <section id="works-cited" className="writing-citations">
           <h2 className="writing-body-heading">Works Cited</h2>
           <ul className="writing-citations-list">
             {block.entries.map((entry, i) => (
@@ -69,8 +95,17 @@ export default function WritingPage() {
   const slug = match?.[1]
   const sample = slug ? writingSamples.find((s) => s.slug === slug) : null
 
+  const handleTocClick = (id: string) => {
+    const el = document.getElementById(id)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
   // Detail view
   if (sample) {
+    const toc = buildToc(sample)
+
     return (
       <main className="app">
         <div className="writing">
@@ -79,8 +114,23 @@ export default function WritingPage() {
           </button>
           <ThemeToggle />
 
+          <nav className="writing-toc">
+            <span className="writing-toc-label">Contents</span>
+            <div className="writing-toc-items">
+              {toc.map((entry) => (
+                <button
+                  key={entry.id}
+                  className="writing-toc-link"
+                  onClick={() => handleTocClick(entry.id)}
+                >
+                  {entry.label}
+                </button>
+              ))}
+            </div>
+          </nav>
+
           <article className="writing-detail" style={{ animationDelay: '80ms' }}>
-            <header className="writing-detail-header">
+            <header id="introduction" className="writing-detail-header">
               <h1 className="writing-detail-title">{sample.title}</h1>
               {sample.subtitle && (
                 <p className="writing-detail-subtitle">{sample.subtitle}</p>
