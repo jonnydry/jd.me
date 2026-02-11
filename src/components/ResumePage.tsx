@@ -80,22 +80,22 @@ export default function ResumePage() {
           ))}
         </section>
 
-        {/* Awards & Honors */}
-        <section className="resume-section" style={{ animationDelay: '320ms' }}>
-          <h2 className="resume-section-title">Awards &amp; Honors</h2>
-          <ul className="resume-simple-list">
-            {resume.awards.map((award, i) => (
-              <li key={i}>{award}</li>
-            ))}
-          </ul>
-        </section>
-
         {/* Skills */}
-        <section className="resume-section" style={{ animationDelay: '400ms' }}>
+        <section className="resume-section" style={{ animationDelay: '320ms' }}>
           <h2 className="resume-section-title">Skills</h2>
           <ul className="resume-simple-list">
             {resume.skills.map((skill, i) => (
               <li key={i}>{skill}</li>
+            ))}
+          </ul>
+        </section>
+
+        {/* Awards & Honors */}
+        <section className="resume-section" style={{ animationDelay: '400ms' }}>
+          <h2 className="resume-section-title">Awards &amp; Honors</h2>
+          <ul className="resume-simple-list">
+            {resume.awards.map((award, i) => (
+              <li key={i}>{award}</li>
             ))}
           </ul>
         </section>
