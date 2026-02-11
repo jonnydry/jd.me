@@ -65,6 +65,7 @@ function ContentRenderer({ block }: { block: ContentBlock }) {
             src={block.src}
             alt={block.alt}
             loading="lazy"
+            decoding="async"
           />
           {block.caption && (
             <figcaption className="writing-figure-caption">

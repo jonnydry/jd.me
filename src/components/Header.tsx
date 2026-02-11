@@ -59,7 +59,16 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
   return (
     <header className="header">
       <div className="avatar-wrap" onClick={() => setModalOpen(true)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setModalOpen(true) } }}>
-        <img src={avatar} alt="" className="avatar" />
+        <img
+          src={avatar}
+          alt=""
+          className="avatar"
+          width={720}
+          height={720}
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+        />
       </div>
       <h1 className="name">{name}</h1>
       <p className="tagline">
@@ -70,7 +79,15 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
       {modalOpen && (
         <div className="avatar-modal" onClick={closeModal}>
           <div className="avatar-modal-inner" onClick={(e) => e.stopPropagation()}>
-            <img src={avatar} alt={name} className="avatar-modal-img" />
+            <img
+              src={avatar}
+              alt={name}
+              className="avatar-modal-img"
+              width={720}
+              height={720}
+              loading="lazy"
+              decoding="async"
+            />
             <button className="avatar-modal-close" onClick={closeModal} aria-label="Close">x</button>
           </div>
         </div>
