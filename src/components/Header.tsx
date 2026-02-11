@@ -11,7 +11,8 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
   const [doneTyping, setDoneTyping] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
   const reducedMotion = useRef(
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
   )
 
   useEffect(() => {

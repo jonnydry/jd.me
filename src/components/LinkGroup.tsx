@@ -21,13 +21,23 @@ interface LinkGroupProps {
 
 function ChildRow({ link }: { link: LinkItem }) {
   const rowRef = useRef<HTMLAnchorElement>(null)
+  const rectRef = useRef<DOMRect | null>(null)
   const navigate = useNavigate()
   const IconComponent = link.icon ? IconMap[link.icon] : ArrowRight
+
+  const handleMouseEnter = useCallback(() => {
+    rectRef.current = rowRef.current?.getBoundingClientRect() ?? null
+  }, [])
+
+  const handleMouseLeave = useCallback(() => {
+    rectRef.current = null
+  }, [])
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     const el = rowRef.current
     if (!el) return
-    const rect = el.getBoundingClientRect()
+    const rect = rectRef.current ?? el.getBoundingClientRect()
+    if (!rectRef.current) rectRef.current = rect
     el.style.setProperty('--mouse-x', `${(e.clientX - rect.left)}px`)
     el.style.setProperty('--mouse-y', `${(e.clientY - rect.top)}px`)
   }, [])
@@ -46,6 +56,8 @@ function ChildRow({ link }: { link: LinkItem }) {
       target={link.internal ? undefined : '_blank'}
       rel={link.internal ? undefined : 'noopener noreferrer'}
       className="link-row link-row--child"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
       onClick={handleClick}
     >
@@ -64,12 +76,22 @@ function ChildRow({ link }: { link: LinkItem }) {
 export default function LinkGroup({ group, index }: LinkGroupProps) {
   const [open, setOpen] = useState(false)
   const rowRef = useRef<HTMLDivElement>(null)
+  const rectRef = useRef<DOMRect | null>(null)
   const IconComponent = group.icon ? IconMap[group.icon] : ArrowRight
+
+  const handleMouseEnter = useCallback(() => {
+    rectRef.current = rowRef.current?.getBoundingClientRect() ?? null
+  }, [])
+
+  const handleMouseLeave = useCallback(() => {
+    rectRef.current = null
+  }, [])
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const el = rowRef.current
     if (!el) return
-    const rect = el.getBoundingClientRect()
+    const rect = rectRef.current ?? el.getBoundingClientRect()
+    if (!rectRef.current) rectRef.current = rect
     el.style.setProperty('--mouse-x', `${(e.clientX - rect.left)}px`)
     el.style.setProperty('--mouse-y', `${(e.clientY - rect.top)}px`)
   }, [])
@@ -83,6 +105,8 @@ export default function LinkGroup({ group, index }: LinkGroupProps) {
         tabIndex={0}
         onClick={() => setOpen(!open)}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpen(!open) } }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         onMouseMove={handleMouseMove}
       >
         <span className="link-row-glow" />

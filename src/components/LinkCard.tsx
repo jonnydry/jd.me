@@ -22,12 +22,22 @@ const IconMap = {
 export default function LinkCard({ link, index }: LinkCardProps) {
   const IconComponent = link.icon ? IconMap[link.icon] : ArrowRight
   const rowRef = useRef<HTMLAnchorElement>(null)
+  const rectRef = useRef<DOMRect | null>(null)
   const navigate = useNavigate()
+
+  const handleMouseEnter = useCallback(() => {
+    rectRef.current = rowRef.current?.getBoundingClientRect() ?? null
+  }, [])
+
+  const handleMouseLeave = useCallback(() => {
+    rectRef.current = null
+  }, [])
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     const el = rowRef.current
     if (!el) return
-    const rect = el.getBoundingClientRect()
+    const rect = rectRef.current ?? el.getBoundingClientRect()
+    if (!rectRef.current) rectRef.current = rect
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top
     el.style.setProperty('--mouse-x', `${x}px`)
@@ -49,6 +59,8 @@ export default function LinkCard({ link, index }: LinkCardProps) {
       rel={link.internal ? undefined : 'noopener noreferrer'}
       className="link-row"
       style={{ animationDelay: `${index * 60}ms` }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
       onClick={handleClick}
     >

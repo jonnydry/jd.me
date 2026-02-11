@@ -10,44 +10,70 @@ type ThemeContextValue = {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null)
 
+function isTheme(value: string | null): value is Theme {
+  return value === 'default' || value === 'rose' || value === 'paper'
+}
+
 function applyTheme(t: Theme) {
   if (t === 'default') {
     document.documentElement.removeAttribute('data-theme')
   } else {
     document.documentElement.setAttribute('data-theme', t)
   }
-  localStorage.setItem('theme', t)
+  try {
+    localStorage.setItem('theme', t)
+  } catch {
+    // Ignore storage failures (private mode / storage restrictions).
+  }
+}
+
+function getStoredTheme(): Theme {
+  try {
+    const raw = localStorage.getItem('theme')
+    return isTheme(raw) ? raw : 'default'
+  } catch {
+    return 'default'
+  }
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeRaw] = useState<Theme>(() => {
-    return (typeof localStorage !== 'undefined'
-      ? (localStorage.getItem('theme') as Theme)
-      : null) || 'default'
-  })
+  const [theme, setThemeRaw] = useState<Theme>(getStoredTheme)
   const [wiping, setWiping] = useState(false)
-  const pendingTheme = useRef<Theme | null>(null)
+  const midpointTimeoutRef = useRef<number | null>(null)
+  const wipeTimeoutRef = useRef<number | null>(null)
 
-  // Apply theme on initial mount
-  useEffect(() => { applyTheme(theme) }, [])
+  // Keep DOM/localStorage in sync with current theme.
+  useEffect(() => { applyTheme(theme) }, [theme])
+
+  const clearThemeTimers = useCallback(() => {
+    if (midpointTimeoutRef.current !== null) {
+      window.clearTimeout(midpointTimeoutRef.current)
+      midpointTimeoutRef.current = null
+    }
+    if (wipeTimeoutRef.current !== null) {
+      window.clearTimeout(wipeTimeoutRef.current)
+      wipeTimeoutRef.current = null
+    }
+  }, [])
+
+  useEffect(() => clearThemeTimers, [clearThemeTimers])
 
   const setTheme = useCallback((t: Theme) => {
     if (t === theme || wiping) return
-    pendingTheme.current = t
     setWiping(true)
+    clearThemeTimers()
 
     // At midpoint (300ms), swap the theme under the wipe
-    setTimeout(() => {
-      applyTheme(t)
+    midpointTimeoutRef.current = window.setTimeout(() => {
       setThemeRaw(t)
     }, 300)
 
     // After full animation (600ms), remove the wipe
-    setTimeout(() => {
+    wipeTimeoutRef.current = window.setTimeout(() => {
       setWiping(false)
-      pendingTheme.current = null
+      clearThemeTimers()
     }, 600)
-  }, [theme, wiping])
+  }, [clearThemeTimers, theme, wiping])
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
