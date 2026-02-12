@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { LinkItem } from '../config/links'
-import { GitHub, Twitter, LinkedIn, Globe, Quill, Mail, FileText, Monitor, ArrowRight } from './Icons'
+import { GitHub, Twitter, LinkedIn, Globe, Quill, Mail, FileText, Monitor, Heart, Wallet, Coffee, ArrowRight } from './Icons'
 
 interface LinkCardProps {
   link: LinkItem
@@ -17,6 +17,9 @@ const IconMap = {
   mail: Mail,
   file: FileText,
   monitor: Monitor,
+  heart: Heart,
+  wallet: Wallet,
+  coffee: Coffee,
 }
 
 export default function LinkCard({ link, index }: LinkCardProps) {

@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { LinkGroup as LinkGroupType, LinkItem } from '../config/links'
-import { GitHub, Twitter, LinkedIn, Globe, Quill, Mail, FileText, Monitor, ArrowRight } from './Icons'
+import { GitHub, Twitter, LinkedIn, Globe, Quill, Mail, FileText, Monitor, Heart, Wallet, Coffee, ArrowRight } from './Icons'
 
 const IconMap = {
   github: GitHub,
@@ -12,6 +12,9 @@ const IconMap = {
   mail: Mail,
   file: FileText,
   monitor: Monitor,
+  heart: Heart,
+  wallet: Wallet,
+  coffee: Coffee,
 }
 
 interface LinkGroupProps {
@@ -115,7 +118,7 @@ export default function LinkGroup({ group, index }: LinkGroupProps) {
           <IconComponent className="link-icon" />
         </span>
         <span className="link-row-title">{group.label}</span>
-        <span className="link-row-desc">{group.children.length} projects</span>
+        <span className="link-row-desc">{group.children.length} links</span>
         <span className={`link-row-chevron ${open ? 'link-row-chevron--open' : ''}`}>▾</span>
       </div>
       <div className={`link-group-children ${open ? 'link-group-children--open' : ''}`}>
