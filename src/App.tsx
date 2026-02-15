@@ -4,6 +4,7 @@ import { profile } from './config/profile'
 import { links, isGroup } from './config/links'
 import type { LinkItem } from './config/links'
 import { ThemeProvider } from './ThemeContext'
+import { useTimeOfDay } from './hooks/useTimeOfDay'
 import Header from './components/Header'
 import LinkCard from './components/LinkCard'
 import LinkGroupComponent from './components/LinkGroup'
@@ -49,6 +50,7 @@ function LinksPage() {
 }
 
 function App() {
+  useTimeOfDay()
   const location = useLocation()
   const navigate = useNavigate()
   const pageIndex = location.pathname.startsWith('/writing') ? 2 : location.pathname === '/resume' ? 1 : 0
