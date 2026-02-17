@@ -235,4 +235,31 @@ export const writingSamples: WritingSample[] = [
       },
     ],
   },
+  {
+    slug: 'diving-into-the-void',
+    title: 'Diving into the Void',
+    subtitle: 'The Passion According to G.H by Clarice Lispector',
+    date: '2024-11-15',
+    tags: ['literary criticism', 'philosophy', 'existentialism'],
+    excerpt:
+      'An exploration of Clarice Lispector\u2019s *The Passion According to G.H*, a shocking piece of literature which seeks an answer to existence itself, and its relationship to Milan Kundera\u2019s theories on the self and the unbearable lightness of being.',
+    body: [
+      {
+        type: 'paragraph',
+        text: 'Give me your hand: I\u2019m going to try to tell you of how Clarice Lispector gently and earnestly fractured my mere human joints, de-stabilizing the \u201cparalyzing security\u201d(12) of my third leg(s). *The Passion According to G.H* is a shocking piece of literature which seeks an answer to existence itself. In a flowing monologue that is at intervals neurotic, timid, courageous, and poetically unnerving, Lispector asks for the innocent reader\u2019s hand and pulls them into a dark hole, a hole of neutrality, of the indifferent molecular and elemental buzzing that is the blank canvas of all life and perceivable images. When G.H enters her maid\u2019s room to see the haunting hollowness of three figures outlined on the wall, and the cockroach that comes to symbolize a primordial, unthinking existence, she is about to confront \u201ca degree of living so originary that it bordered on the inanimate\u201d(15). This is not a book that can be discussed in any traditional sense. I lack Clarice\u2019s audacity to advise the reader on the unknowable, and so to enter this existential book, you must take her hand and mine, and hope for the best. One must offer their hand, and with fingers splayed half covering their squinting eyes, dare to look into the face of the inhuman, the inexpressive matter, the \u201cwhite matter\u201d, the fabric of the universe, (call it what you will!) that makes possible all that we consider to be reality.',
+      },
+      {
+        type: 'paragraph',
+        text: 'The core of this miniscule volume that somehow wrenches open a galaxy wide chasm of perception, is apprehension of the self. Milan Kundera offers helpful insight on this motif in his book *The Art of the Novel*. First, Kundera notes that \u201cThe paradoxical nature of action is one of the novels great discoveries\u201d(24). He is referring to the strange element in human nature that can make it impossible to predict the actions of an individual. More importantly, the individual\'s own ability to predict his actions is impaired. Humans commit irrationality. To get closer to a \u2018self\u2019, \u201cMan hopes to reveal his own image through his act, but that image bears no resemblance to him\u201d(24). If our own actions are so unintelligible, where do we find the self? The action in *G.H* is minimal, and internal. The largest movement in the whole book is the shocking decision to eat the cockroach in a macabre attempt to understand primal life. Utterly unpredictable, and altogether ineffectual, this event doesn\u2019t help G.H access her essential self (and thank \u2018God\u2019 for that). In fact, she has to *lose* herself momentarily to accomplish it, falling into a daze and waking up after the deed is done. But G.H already knew this about action. She has lived her life doing this or that action carried out by her \u2018third legs\u2019, what she labels as the fabrications humans make to anchor us to a reality. She suspects that reality to be false. She suspects that reality is more inhuman than it is human.',
+      },
+      {
+        type: 'paragraph',
+        text: 'G.H\u2019s losing of herself in that scene which I\u2019ll affectionately term the \u201clunch scene\u201d, raises another of Kundera\u2019s key points. The sensation of vertigo is defined by him as \u201cthe intoxication of the weak. Aware of his weakness, a man decides to give in rather than stand up to it\u201d(31). This weakness comes with the sense of despair that is the subject of one of his novels *\u201cThe Unbearable Lightness of Being\u201d.* It seems that G.H is facing the same lightness in her confrontation of the \u201csingeing nowness\u201d(94) of the divine neutrality of existence. If what G.H tries to see is \u201cGod\u201d, it is a neutral God, content with existence, and is nothing more than the invisible skeleton of the void. Kundera asks, \u201cBut if God is gone and man is no longer master, then who is master? The planet is moving through the void without any master. There it is, the unbearable lightness of being\u201d(41). This fear of the inconsequence of being, the vertigo it produces, and the elusive quest for \u2018the self\u2019, turns human reflection away from \u201cwonder at the immeasurable infinity of the soul\u201d and confounds it with \u201cwonder at the uncertain nature of the self and of its identity\u201d(Kundera 28). This is precisely the wonder that G.H attempts to express to the innocent reader. Lispector as an author seems to hold true to Kundera\u2019s theory that \u201cthe more powerful the lens of the microscope observing the self, the more the self and its uniqueness elude us\u201d(25). Of course, G.H has to go back to her human reality, and although feeling she has just sensed something profound, her humanness leaves the inevitable residue of perplexity. After 170 pages she admits, \u201cI don\u2019t understand what I am saying\u201d(173). Even so, it\u2019s clear she has said *something*, and something that is eerily beautiful. When meeting what we can\u2019t comprehend we either cower in its fearful beauty, or we ignore. G.H manages to *not* ignore for a small amount of time.',
+      },
+      {
+        type: 'paragraph',
+        text: 'When asked \u201cif the self and its uniqueness cannot be grasped in man\u2019s interior life, could it be grasped at all?\u201d, Milan Kundera replied: \u201cOf course not. The quest for the self has always ended, and always will end, in a paradoxical dissatisfaction. I don\u2019t say defeat.\u201d(25).',
+      },
+    ],
+  },
 ]
