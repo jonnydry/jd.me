@@ -1,12 +1,28 @@
+import { useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { resume } from '../config/resume'
 import ThemeToggle from './ThemeToggle'
 
 export default function ResumePage() {
   const navigate = useNavigate()
+  const progressRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const bar = progressRef.current
+    if (!bar) return
+    const page = bar.closest('.page') as HTMLElement | null
+    if (!page) return
+    const update = () => {
+      const max = page.scrollHeight - page.clientHeight
+      bar.style.transform = `scaleX(${max > 0 ? page.scrollTop / max : 0})`
+    }
+    page.addEventListener('scroll', update, { passive: true })
+    return () => page.removeEventListener('scroll', update)
+  }, [])
 
   return (
     <main className="app">
+      <div className="scroll-progress" ref={progressRef} />
       <div className="resume">
         <button className="resume-back" onClick={() => navigate('/')}>
           <span className="resume-back-arrow">←</span> links

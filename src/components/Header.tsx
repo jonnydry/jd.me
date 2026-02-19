@@ -56,9 +56,59 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
 
   const closeModal = useCallback(() => setModalOpen(false), [])
 
+  // 3D tilt on avatar hover
+  const avatarWrapRef = useRef<HTMLDivElement>(null)
+  const tiltRafRef = useRef<number>(0)
+
+  useEffect(() => {
+    return () => { if (tiltRafRef.current) cancelAnimationFrame(tiltRafRef.current) }
+  }, [])
+
+  const handleAvatarMouseEnter = useCallback(() => {
+    if (reducedMotion.current) return
+    const el = avatarWrapRef.current
+    if (!el) return
+    // Disable transform transition during tracking so it follows the cursor instantly
+    el.style.transition = 'box-shadow 0.25s ease'
+  }, [])
+
+  const handleAvatarMouseMove = useCallback((e: React.MouseEvent) => {
+    if (reducedMotion.current) return
+    const el = avatarWrapRef.current
+    if (!el) return
+    const clientX = e.clientX
+    const clientY = e.clientY
+    if (tiltRafRef.current) cancelAnimationFrame(tiltRafRef.current)
+    tiltRafRef.current = requestAnimationFrame(() => {
+      const rect = el.getBoundingClientRect()
+      const rx = ((clientY - rect.top - rect.height / 2) / (rect.height / 2)) * -10
+      const ry = ((clientX - rect.left - rect.width / 2) / (rect.width / 2)) * 10
+      el.style.transform = `perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.08)`
+    })
+  }, [])
+
+  const handleAvatarMouseLeave = useCallback(() => {
+    if (reducedMotion.current) return
+    const el = avatarWrapRef.current
+    if (!el) return
+    // Restore CSS transition for smooth spring-back
+    el.style.transition = ''
+    el.style.transform = ''
+  }, [])
+
   return (
     <header className="header">
-      <div className="avatar-wrap" onClick={() => setModalOpen(true)} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setModalOpen(true) } }}>
+      <div
+        ref={avatarWrapRef}
+        className="avatar-wrap"
+        onClick={() => setModalOpen(true)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setModalOpen(true) } }}
+        onMouseEnter={handleAvatarMouseEnter}
+        onMouseMove={handleAvatarMouseMove}
+        onMouseLeave={handleAvatarMouseLeave}
+      >
         <img
           src={avatar}
           alt=""
