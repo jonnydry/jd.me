@@ -175,6 +175,7 @@ body::before {
     radial-gradient(ellipse 80% 50% at 50% 0%, hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.04) 0%, transparent 50%);
   pointer-events: none;
   z-index: 0;
+  will-change: background;
 }
 
 /* Laser-etch accent lines */
@@ -184,6 +185,7 @@ body::after {
   inset: 0;
   pointer-events: none;
   z-index: 0;
+  will-change: background;
   background:
     /* Group A — Top diagonal pair */
     linear-gradient(
@@ -257,6 +259,8 @@ html::after {
   pointer-events: none;
   opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 300px 300px;
+  transform: translateZ(0);
 }
 
 /* ========== Page Slider ========== */
@@ -281,6 +285,12 @@ html::after {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
+  contain: layout style paint;
+}
+
+/* Skip rendering for off-screen page panels */
+.page:not(:first-child) {
+  content-visibility: auto;
 }
 
 .page::-webkit-scrollbar {
@@ -321,6 +331,7 @@ html::after {
 .terminal {
   width: 100%;
   max-width: 480px;
+  contain: layout style;
 }
 
 /* Desktop — scale main content 15% larger (homepage, resume, writing) */

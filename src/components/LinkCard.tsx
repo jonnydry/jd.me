@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { LinkItem } from '../config/links'
 import { GitHub, Twitter, LinkedIn, Globe, Quill, Mail, FileText, Monitor, Heart, Wallet, Coffee, ArrowRight } from './Icons'
@@ -26,7 +26,12 @@ export default function LinkCard({ link, index }: LinkCardProps) {
   const IconComponent = link.icon ? IconMap[link.icon] : ArrowRight
   const rowRef = useRef<HTMLAnchorElement>(null)
   const rectRef = useRef<DOMRect | null>(null)
+  const rafRef = useRef<number>(0)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
+  }, [])
 
   const handleMouseEnter = useCallback(() => {
     rectRef.current = rowRef.current?.getBoundingClientRect() ?? null
@@ -39,12 +44,15 @@ export default function LinkCard({ link, index }: LinkCardProps) {
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     const el = rowRef.current
     if (!el) return
-    const rect = rectRef.current ?? el.getBoundingClientRect()
-    if (!rectRef.current) rectRef.current = rect
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    el.style.setProperty('--mouse-x', `${x}px`)
-    el.style.setProperty('--mouse-y', `${y}px`)
+    const clientX = e.clientX
+    const clientY = e.clientY
+    if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    rafRef.current = requestAnimationFrame(() => {
+      const rect = rectRef.current ?? el.getBoundingClientRect()
+      if (!rectRef.current) rectRef.current = rect
+      el.style.setProperty('--mouse-x', `${clientX - rect.left}px`)
+      el.style.setProperty('--mouse-y', `${clientY - rect.top}px`)
+    })
   }, [])
 
   const handleClick = (e: React.MouseEvent) => {

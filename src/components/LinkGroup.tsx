@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { LinkGroup as LinkGroupType, LinkItem } from '../config/links'
 import { GitHub, Twitter, LinkedIn, Globe, Quill, Mail, FileText, Monitor, Heart, Wallet, Coffee, ArrowRight } from './Icons'
@@ -25,8 +25,13 @@ interface LinkGroupProps {
 function ChildRow({ link }: { link: LinkItem }) {
   const rowRef = useRef<HTMLAnchorElement>(null)
   const rectRef = useRef<DOMRect | null>(null)
+  const rafRef = useRef<number>(0)
   const navigate = useNavigate()
   const IconComponent = link.icon ? IconMap[link.icon] : ArrowRight
+
+  useEffect(() => {
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
+  }, [])
 
   const handleMouseEnter = useCallback(() => {
     rectRef.current = rowRef.current?.getBoundingClientRect() ?? null
@@ -39,10 +44,15 @@ function ChildRow({ link }: { link: LinkItem }) {
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     const el = rowRef.current
     if (!el) return
-    const rect = rectRef.current ?? el.getBoundingClientRect()
-    if (!rectRef.current) rectRef.current = rect
-    el.style.setProperty('--mouse-x', `${(e.clientX - rect.left)}px`)
-    el.style.setProperty('--mouse-y', `${(e.clientY - rect.top)}px`)
+    const clientX = e.clientX
+    const clientY = e.clientY
+    if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    rafRef.current = requestAnimationFrame(() => {
+      const rect = rectRef.current ?? el.getBoundingClientRect()
+      if (!rectRef.current) rectRef.current = rect
+      el.style.setProperty('--mouse-x', `${clientX - rect.left}px`)
+      el.style.setProperty('--mouse-y', `${clientY - rect.top}px`)
+    })
   }, [])
 
   const handleClick = (e: React.MouseEvent) => {
@@ -80,7 +90,12 @@ export default function LinkGroup({ group, index }: LinkGroupProps) {
   const [open, setOpen] = useState(false)
   const rowRef = useRef<HTMLDivElement>(null)
   const rectRef = useRef<DOMRect | null>(null)
+  const rafRef = useRef<number>(0)
   const IconComponent = group.icon ? IconMap[group.icon] : ArrowRight
+
+  useEffect(() => {
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
+  }, [])
 
   const handleMouseEnter = useCallback(() => {
     rectRef.current = rowRef.current?.getBoundingClientRect() ?? null
@@ -93,10 +108,15 @@ export default function LinkGroup({ group, index }: LinkGroupProps) {
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const el = rowRef.current
     if (!el) return
-    const rect = rectRef.current ?? el.getBoundingClientRect()
-    if (!rectRef.current) rectRef.current = rect
-    el.style.setProperty('--mouse-x', `${(e.clientX - rect.left)}px`)
-    el.style.setProperty('--mouse-y', `${(e.clientY - rect.top)}px`)
+    const clientX = e.clientX
+    const clientY = e.clientY
+    if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    rafRef.current = requestAnimationFrame(() => {
+      const rect = rectRef.current ?? el.getBoundingClientRect()
+      if (!rectRef.current) rectRef.current = rect
+      el.style.setProperty('--mouse-x', `${clientX - rect.left}px`)
+      el.style.setProperty('--mouse-y', `${clientY - rect.top}px`)
+    })
   }, [])
 
   return (
