@@ -18,6 +18,37 @@
   inherits: true;
 }
 
+/* Animatable color properties (for morph transition) */
+@property --bg {
+  syntax: '<color>';
+  initial-value: #0d1117;
+  inherits: true;
+}
+
+@property --surface {
+  syntax: '<color>';
+  initial-value: #161b22;
+  inherits: true;
+}
+
+@property --border {
+  syntax: '<color>';
+  initial-value: #21262d;
+  inherits: true;
+}
+
+@property --text {
+  syntax: '<color>';
+  initial-value: #e6edf3;
+  inherits: true;
+}
+
+@property --text-muted {
+  syntax: '<color>';
+  initial-value: #8b949e;
+  inherits: true;
+}
+
 /* Line-group hues — each pair of laser lines can drift independently */
 @property --line-hue-a {
   syntax: '<number>';
@@ -1570,18 +1601,100 @@ html::after {
   margin-left: 1px;
 }
 
-/* ========== Theme Wipe ========== */
-.theme-wipe {
+/* ========== Theme Transitions ========== */
+
+/* --- Color morph: smooth CSS variable interpolation --- */
+:root.theme-morphing {
+  transition:
+    --bg 500ms ease-in-out,
+    --surface 500ms ease-in-out,
+    --border 500ms ease-in-out,
+    --text 500ms ease-in-out,
+    --text-muted 500ms ease-in-out,
+    --accent-hue 500ms ease-in-out,
+    --accent-sat 500ms ease-in-out,
+    --accent-lit 500ms ease-in-out;
+  animation: none !important;
+}
+
+/* --- View Transitions: fade dissolve --- */
+[data-transition="fade"]::view-transition-old(root) {
+  animation: vtFadeOut 350ms ease-in-out both;
+}
+[data-transition="fade"]::view-transition-new(root) {
+  animation: vtFadeIn 350ms ease-in-out both;
+}
+
+@keyframes vtFadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+@keyframes vtFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* --- View Transitions: blur dissolve --- */
+[data-transition="blur"]::view-transition-old(root) {
+  animation: vtBlurOut 400ms ease-in-out both;
+}
+[data-transition="blur"]::view-transition-new(root) {
+  animation: vtBlurIn 400ms ease-in-out both;
+}
+
+@keyframes vtBlurOut {
+  from { opacity: 1; filter: blur(0); }
+  to   { opacity: 0; filter: blur(6px); }
+}
+@keyframes vtBlurIn {
+  from { opacity: 0; filter: blur(6px); }
+  to   { opacity: 1; filter: blur(0); }
+}
+
+/* --- View Transitions: radial wipe from click --- */
+[data-transition="radial"]::view-transition-old(root) {
+  z-index: 1;
+  animation: none;
+}
+[data-transition="radial"]::view-transition-new(root) {
+  z-index: 2;
+  animation: vtRadialReveal 500ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes vtRadialReveal {
+  from { clip-path: circle(0px at var(--wipe-x, 50%) var(--wipe-y, 50%)); }
+  to   { clip-path: circle(var(--wipe-radius, 150vmax) at var(--wipe-x, 50%) var(--wipe-y, 50%)); }
+}
+
+/* --- View Transitions: horizontal slide --- */
+[data-transition="slide"]::view-transition-old(root) {
+  animation: vtSlideOut 500ms ease-in-out both;
+}
+[data-transition="slide"]::view-transition-new(root) {
+  animation: vtSlideIn 500ms ease-in-out both;
+}
+
+@keyframes vtSlideOut {
+  from { transform: translateX(0); opacity: 1; }
+  to   { transform: translateX(-30%); opacity: 0; }
+}
+@keyframes vtSlideIn {
+  from { transform: translateX(30%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+/* --- Overlay fallback for browsers without View Transitions API --- */
+.theme-wipe-overlay {
   position: fixed;
   inset: 0;
   z-index: 9998;
   pointer-events: none;
   background: var(--bg);
-  animation: themeWipe 0.6s ease-in-out both;
   will-change: transform;
+  animation: themeWipeFallback 0.6s ease-in-out both;
 }
 
-@keyframes themeWipe {
+@keyframes themeWipeFallback {
   0%   { transform: translateX(-100%); }
   40%  { transform: translateX(0); }
   60%  { transform: translateX(0); }
@@ -1635,9 +1748,16 @@ html::after {
   .avatar-modal-inner {
     animation: none;
   }
-  .theme-wipe {
+  .theme-wipe-overlay {
     animation: none;
     opacity: 0;
+  }
+  :root.theme-morphing {
+    transition: none !important;
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
   }
   .name {
     animation: none;

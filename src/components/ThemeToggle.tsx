@@ -18,7 +18,7 @@ export default function ThemeToggle() {
         <button
           key={t}
           className={`theme-btn theme-btn--${t}${theme === t ? ' theme-btn--active' : ''}`}
-          onClick={() => setTheme(t)}
+          onClick={(e) => setTheme(t, e)}
           aria-label={`${t} theme`}
           role="radio"
           aria-checked={theme === t}
