@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { writingSamples } from '../config/writing'
 import type { ContentBlock, WritingSample } from '../config/writing'
@@ -104,6 +105,22 @@ function ContentRenderer({ block }: { block: ContentBlock }) {
 export default function WritingPage() {
   const location = useLocation()
   const navigate = useNavigate()
+  const progressRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const bar = progressRef.current
+    if (!bar) return
+    const page = bar.closest('.page') as HTMLElement | null
+    if (!page) return
+    const update = () => {
+      const el = progressRef.current // fresh ref — handles list↔detail re-renders
+      if (!el) return
+      const max = page.scrollHeight - page.clientHeight
+      el.style.transform = `scaleX(${max > 0 ? page.scrollTop / max : 0})`
+    }
+    page.addEventListener('scroll', update, { passive: true })
+    return () => page.removeEventListener('scroll', update)
+  }, [])
 
   const match = location.pathname.match(/^\/writing\/(.+)$/)
   const slug = match?.[1]
@@ -125,6 +142,7 @@ export default function WritingPage() {
 
     return (
       <main className="app">
+        <div className="scroll-progress" ref={progressRef} />
         <div className="writing">
           <button className="resume-back" onClick={() => navigate('/writing')}>
             <span className="resume-back-arrow">←</span> writing
@@ -174,6 +192,7 @@ export default function WritingPage() {
   // List view
   return (
     <main className="app">
+      <div className="scroll-progress" ref={progressRef} />
       <div className="writing">
         <button className="resume-back" onClick={() => navigate('/')}>
           <span className="resume-back-arrow">←</span> links

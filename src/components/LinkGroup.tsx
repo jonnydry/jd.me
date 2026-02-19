@@ -55,6 +55,18 @@ function ChildRow({ link }: { link: LinkItem }) {
     })
   }, [])
 
+  const handleMouseDown = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
+    const el = rowRef.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    const ripple = document.createElement('span')
+    ripple.className = 'link-ripple'
+    ripple.style.left = `${e.clientX - rect.left - 3}px`
+    ripple.style.top = `${e.clientY - rect.top - 3}px`
+    el.appendChild(ripple)
+    ripple.addEventListener('animationend', () => ripple.remove(), { once: true })
+  }, [])
+
   const handleClick = (e: React.MouseEvent) => {
     if (link.internal) {
       e.preventDefault()
@@ -72,6 +84,7 @@ function ChildRow({ link }: { link: LinkItem }) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
+      onMouseDown={handleMouseDown}
       onClick={handleClick}
     >
       <span className="link-row-glow" />
