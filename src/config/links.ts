@@ -23,7 +23,7 @@ export const links: LinkEntry[] = [
     label: 'Live Projects',
     icon: 'monitor',
     children: [
-      { title: 'Sancho Poetry', url: 'https://sancho-jonnyedry.replit.app', desc: 'Poetic reference and writing tool', icon: 'quill' },
+      { title: 'Sancho Poetry', url: 'https://sanchopoetry.com/', desc: 'Poetic reference and writing tool', icon: 'quill' },
       { title: 'The Harbor', url: 'https://harborpoetry.com', desc: 'Personal poetry', icon: 'quill' },
     ],
   },
