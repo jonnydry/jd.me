@@ -106,6 +106,17 @@ export function Coffee(props: SVGProps<SVGSVGElement>) {
   )
 }
 
+export function Gamepad(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <rect x="2" y="6" width="20" height="12" rx="5" />
+      <path d="M6 12h4M8 10v4" />
+      <circle cx="17" cy="10.5" r="1" fill="currentColor" />
+      <circle cx="14.5" cy="13.5" r="1" fill="currentColor" />
+    </svg>
+  )
+}
+
 export function ArrowRight(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>

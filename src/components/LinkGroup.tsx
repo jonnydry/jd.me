@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { LinkGroup as LinkGroupType, LinkItem } from '../config/links'
-import { GitHub, Twitter, LinkedIn, Globe, Quill, Mail, FileText, Monitor, Heart, Wallet, Coffee, ArrowRight } from './Icons'
+import { GitHub, Twitter, LinkedIn, Globe, Quill, Mail, FileText, Monitor, Heart, Wallet, Coffee, Gamepad, ArrowRight } from './Icons'
 
 const IconMap = {
   github: GitHub,
@@ -15,6 +15,7 @@ const IconMap = {
   heart: Heart,
   wallet: Wallet,
   coffee: Coffee,
+  gamepad: Gamepad,
 }
 
 interface LinkGroupProps {
@@ -28,6 +29,7 @@ function ChildRow({ link }: { link: LinkItem }) {
   const rafRef = useRef<number>(0)
   const navigate = useNavigate()
   const IconComponent = link.icon ? IconMap[link.icon] : ArrowRight
+  const iconSrc = link.iconSrc
 
   useEffect(() => {
     return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
@@ -90,7 +92,11 @@ function ChildRow({ link }: { link: LinkItem }) {
       <span className="link-row-glow" />
       <span className="link-row-index" />
       <span className="link-row-icon">
-        <IconComponent className="link-icon" />
+        {iconSrc ? (
+          <img src={iconSrc} alt="" className="link-icon link-icon--img" width={24} height={24} />
+        ) : (
+          <IconComponent className="link-icon" />
+        )}
       </span>
       <span className="link-row-title">{link.title}</span>
       {link.desc && <span className="link-row-desc">{link.desc}</span>}

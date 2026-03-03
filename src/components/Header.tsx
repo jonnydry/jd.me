@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 
 interface HeaderProps {
   name: string
@@ -96,6 +97,44 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
     el.style.transform = ''
   }, [])
 
+  // Same tilt handlers for the expanded modal avatar
+  const avatarModalWrapRef = useRef<HTMLDivElement>(null)
+  const tiltModalRafRef = useRef<number>(0)
+
+  useEffect(() => {
+    return () => { if (tiltModalRafRef.current) cancelAnimationFrame(tiltModalRafRef.current) }
+  }, [])
+
+  const handleModalAvatarMouseEnter = useCallback(() => {
+    if (reducedMotion.current) return
+    const el = avatarModalWrapRef.current
+    if (!el) return
+    el.style.transition = 'box-shadow 0.25s ease'
+  }, [])
+
+  const handleModalAvatarMouseMove = useCallback((e: React.MouseEvent) => {
+    if (reducedMotion.current) return
+    const el = avatarModalWrapRef.current
+    if (!el) return
+    const clientX = e.clientX
+    const clientY = e.clientY
+    if (tiltModalRafRef.current) cancelAnimationFrame(tiltModalRafRef.current)
+    tiltModalRafRef.current = requestAnimationFrame(() => {
+      const rect = el.getBoundingClientRect()
+      const rx = ((clientY - rect.top - rect.height / 2) / (rect.height / 2)) * -10
+      const ry = ((clientX - rect.left - rect.width / 2) / (rect.width / 2)) * 10
+      el.style.transform = `perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.02)`
+    })
+  }, [])
+
+  const handleModalAvatarMouseLeave = useCallback(() => {
+    if (reducedMotion.current) return
+    const el = avatarModalWrapRef.current
+    if (!el) return
+    el.style.transition = ''
+    el.style.transform = ''
+  }, [])
+
   return (
     <header className="header">
       <div
@@ -126,21 +165,30 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
         <span className={`cursor${doneTyping ? ' cursor--blink' : ''}`} aria-hidden="true">|</span>
       </p>
 
-      {modalOpen && (
+      {modalOpen && createPortal(
         <div className="avatar-modal" onClick={closeModal}>
           <div className="avatar-modal-inner" onClick={(e) => e.stopPropagation()}>
-            <img
-              src={avatar}
-              alt={name}
-              className="avatar-modal-img"
-              width={720}
-              height={720}
-              loading="lazy"
-              decoding="async"
-            />
+            <div
+              ref={avatarModalWrapRef}
+              className="avatar-modal-wrap"
+              onMouseEnter={handleModalAvatarMouseEnter}
+              onMouseMove={handleModalAvatarMouseMove}
+              onMouseLeave={handleModalAvatarMouseLeave}
+            >
+              <img
+                src={avatar}
+                alt={name}
+                className="avatar-modal-img"
+                width={720}
+                height={720}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
             <button className="avatar-modal-close" onClick={closeModal} aria-label="Close">x</button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </header>
   )
