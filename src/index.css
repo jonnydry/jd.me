@@ -56,6 +56,36 @@
   inherits: true;
 }
 
+@property --time-hue-flow {
+  syntax: '<number>';
+  initial-value: 0;
+  inherits: true;
+}
+
+@property --time-line-flow {
+  syntax: '<number>';
+  initial-value: 1;
+  inherits: true;
+}
+
+@property --time-progress {
+  syntax: '<number>';
+  initial-value: 0.5;
+  inherits: true;
+}
+
+@property --time-glow-x {
+  syntax: '<number>';
+  initial-value: 0;
+  inherits: true;
+}
+
+@property --time-glow-y {
+  syntax: '<number>';
+  initial-value: 0;
+  inherits: true;
+}
+
 @property --theme-line-boost {
   syntax: '<number>';
   initial-value: 1;
@@ -107,6 +137,11 @@
   --accent-hue: 212;
   --accent-sat: 100%;
   --accent-lit: 67%;
+  --time-hue-flow: 0;
+  --time-line-flow: 1;
+  --time-progress: 0.5;
+  --time-glow-x: 0;
+  --time-glow-y: 0;
   --accent: hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit));
   --accent-hover: hsl(var(--accent-hue) var(--accent-sat) min(calc(var(--accent-lit) + 7%), 100%));
   animation: colorDrift 18s ease-in-out infinite;
@@ -172,7 +207,11 @@ body::before {
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 50% at 50% 0%, hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.04) 0%, transparent 50%);
+    radial-gradient(
+      ellipse 80% 50% at calc(50% + (var(--time-glow-x) * 10%)) calc(2% + (var(--time-glow-y) * 5%)),
+      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / calc(0.034 + (var(--time-progress) * 0.008))) 0%,
+      transparent 50%
+    );
   pointer-events: none;
   z-index: 0;
   will-change: background;
@@ -187,66 +226,122 @@ body::after {
   z-index: 0;
   will-change: background;
   background:
-    /* Group A — Top diagonal pair */
+    /* Group A — Top diagonal matrix */
     linear-gradient(
       var(--line-angle-a),
       transparent 42%,
-      hsl(calc(var(--line-hue-a) + var(--time-hue-shift)) var(--accent-sat) var(--accent-lit) / calc(0.14 * var(--time-line-dim) * var(--theme-line-boost))) 42%,
-      hsl(calc(var(--line-hue-a) + var(--time-hue-shift)) var(--accent-sat) var(--accent-lit) / calc(0.14 * var(--time-line-dim) * var(--theme-line-boost))) 42.12%,
+      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.14 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 42%,
+      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.14 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 42.12%,
       transparent 42.12%
     ),
     linear-gradient(
       var(--line-angle-a),
       transparent 43.8%,
-      hsl(calc(var(--line-hue-a) + var(--time-hue-shift)) var(--accent-sat) var(--accent-lit) / calc(0.07 * var(--time-line-dim) * var(--theme-line-boost))) 43.8%,
-      hsl(calc(var(--line-hue-a) + var(--time-hue-shift)) var(--accent-sat) var(--accent-lit) / calc(0.07 * var(--time-line-dim) * var(--theme-line-boost))) 43.88%,
+      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.07 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 43.8%,
+      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.07 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 43.88%,
       transparent 43.88%
     ),
-    /* Group B — Top cross + horizontal */
+    linear-gradient(
+      calc(var(--line-angle-a) + 6deg),
+      transparent 45.15%,
+      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.045 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 45.15%,
+      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.045 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 45.21%,
+      transparent 45.21%
+    ),
+    linear-gradient(
+      calc(var(--line-angle-a) - 4deg),
+      transparent 40.2%,
+      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.028 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 40.2%,
+      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.028 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 40.25%,
+      transparent 40.25%
+    ),
+    /* Group B — Top cross + horizontal matrix */
     linear-gradient(
       var(--line-angle-b1),
       transparent 68%,
-      hsl(calc(var(--line-hue-b) + var(--time-hue-shift)) var(--accent-sat) var(--accent-lit) / calc(0.10 * var(--time-line-dim) * var(--theme-line-boost))) 68%,
-      hsl(calc(var(--line-hue-b) + var(--time-hue-shift)) var(--accent-sat) var(--accent-lit) / calc(0.10 * var(--time-line-dim) * var(--theme-line-boost))) 68.1%,
+      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.10 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 68%,
+      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.10 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 68.1%,
       transparent 68.1%
     ),
     linear-gradient(
       var(--line-angle-b2),
       transparent 24%,
-      hsl(calc(var(--line-hue-b) + var(--time-hue-shift)) var(--accent-sat) var(--accent-lit) / calc(0.06 * var(--time-line-dim) * var(--theme-line-boost))) 24%,
-      hsl(calc(var(--line-hue-b) + var(--time-hue-shift)) var(--accent-sat) var(--accent-lit) / calc(0.06 * var(--time-line-dim) * var(--theme-line-boost))) 24.03%,
+      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.06 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 24%,
+      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.06 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 24.03%,
       transparent 24.03%
     ),
+    linear-gradient(
+      calc(var(--line-angle-b1) + 8deg),
+      transparent 69.8%,
+      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.048 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 69.8%,
+      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.048 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 69.86%,
+      transparent 69.86%
+    ),
+    linear-gradient(
+      calc(var(--line-angle-b2) - 4deg),
+      transparent 22.7%,
+      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.028 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 22.7%,
+      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.028 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 22.75%,
+      transparent 22.75%
+    ),
 
-    /* Group C — Bottom diagonal pair */
+    /* Group C — Bottom diagonal matrix */
     linear-gradient(
       var(--line-angle-c),
       transparent 18%,
-      hsl(calc(var(--line-hue-c) + var(--time-hue-shift)) var(--accent-sat) var(--accent-lit) / calc(0.11 * var(--time-line-dim) * var(--theme-line-boost))) 18%,
-      hsl(calc(var(--line-hue-c) + var(--time-hue-shift)) var(--accent-sat) var(--accent-lit) / calc(0.11 * var(--time-line-dim) * var(--theme-line-boost))) 18.1%,
+      hsl(calc(var(--line-hue-c) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.11 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 18%,
+      hsl(calc(var(--line-hue-c) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.11 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 18.1%,
       transparent 18.1%
     ),
     linear-gradient(
       var(--line-angle-c),
       transparent 16.2%,
-      hsl(calc(var(--line-hue-c) + var(--time-hue-shift)) var(--accent-sat) var(--accent-lit) / calc(0.05 * var(--time-line-dim) * var(--theme-line-boost))) 16.2%,
-      hsl(calc(var(--line-hue-c) + var(--time-hue-shift)) var(--accent-sat) var(--accent-lit) / calc(0.05 * var(--time-line-dim) * var(--theme-line-boost))) 16.28%,
+      hsl(calc(var(--line-hue-c) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.05 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 16.2%,
+      hsl(calc(var(--line-hue-c) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.05 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 16.28%,
       transparent 16.28%
     ),
-    /* Group D — Bottom cross + horizontal */
+    linear-gradient(
+      calc(var(--line-angle-c) - 7deg),
+      transparent 20.45%,
+      hsl(calc(var(--line-hue-c) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.046 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 20.45%,
+      hsl(calc(var(--line-hue-c) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.046 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 20.51%,
+      transparent 20.51%
+    ),
+    linear-gradient(
+      calc(var(--line-angle-c) + 5deg),
+      transparent 14.5%,
+      hsl(calc(var(--line-hue-c) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.026 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 14.5%,
+      hsl(calc(var(--line-hue-c) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.026 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 14.56%,
+      transparent 14.56%
+    ),
+    /* Group D — Bottom cross + horizontal matrix */
     linear-gradient(
       var(--line-angle-d1),
       transparent 76%,
-      hsl(calc(var(--line-hue-d) + var(--time-hue-shift)) var(--accent-sat) var(--accent-lit) / calc(0.08 * var(--time-line-dim) * var(--theme-line-boost))) 76%,
-      hsl(calc(var(--line-hue-d) + var(--time-hue-shift)) var(--accent-sat) var(--accent-lit) / calc(0.08 * var(--time-line-dim) * var(--theme-line-boost))) 76.1%,
+      hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.08 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 76%,
+      hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.08 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 76.1%,
       transparent 76.1%
     ),
     linear-gradient(
       var(--line-angle-d2),
       transparent 79%,
-      hsl(calc(var(--line-hue-d) + var(--time-hue-shift)) var(--accent-sat) var(--accent-lit) / calc(0.05 * var(--time-line-dim) * var(--theme-line-boost))) 79%,
-      hsl(calc(var(--line-hue-d) + var(--time-hue-shift)) var(--accent-sat) var(--accent-lit) / calc(0.05 * var(--time-line-dim) * var(--theme-line-boost))) 79.03%,
+      hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.05 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 79%,
+      hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.05 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 79.03%,
       transparent 79.03%
+    ),
+    linear-gradient(
+      calc(var(--line-angle-d1) + 10deg),
+      transparent 73.9%,
+      hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.04 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 73.9%,
+      hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.04 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 73.96%,
+      transparent 73.96%
+    ),
+    linear-gradient(
+      calc(var(--line-angle-d2) - 3deg),
+      transparent 81.3%,
+      hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.026 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 81.3%,
+      hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.026 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 81.36%,
+      transparent 81.36%
     );
 }
 
@@ -877,18 +972,27 @@ html::after {
 /* ========== Time-of-Day Ambient Glow ========== */
 
 [data-time="morning"] body::before {
-  background: radial-gradient(ellipse 70% 60% at 15% 90%,
-    hsl(calc(var(--accent-hue) + 30) 80% 60% / 0.04) 0%, transparent 60%);
+  background: radial-gradient(
+    ellipse 70% 60% at calc(14% + (var(--time-glow-x) * 4%)) calc(90% - (var(--time-progress) * 6%)),
+    hsl(calc(var(--accent-hue) + 30 + (var(--time-hue-flow) * 0.6)) 80% 60% / calc(0.033 + (var(--time-progress) * 0.01))) 0%,
+    transparent 60%
+  );
 }
 
 [data-time="dusk"] body::before {
-  background: radial-gradient(ellipse 60% 70% at 90% 30%,
-    hsl(calc(var(--accent-hue) + 40) 85% 55% / 0.045) 0%, transparent 55%);
+  background: radial-gradient(
+    ellipse 60% 70% at calc(90% - (var(--time-glow-x) * 4%)) calc(30% + (var(--time-glow-y) * 4%)),
+    hsl(calc(var(--accent-hue) + 40 + (var(--time-hue-flow) * 0.55)) 85% 55% / calc(0.038 + (var(--time-line-flow) * 0.007))) 0%,
+    transparent 55%
+  );
 }
 
 [data-time="night"] body::before {
-  background: radial-gradient(ellipse 90% 50% at 50% 0%,
-    hsl(calc(var(--accent-hue) - 20) 70% 40% / 0.03) 0%, transparent 45%);
+  background: radial-gradient(
+    ellipse 90% 50% at calc(50% + (var(--time-glow-x) * 8%)) calc(0% + (var(--time-glow-y) * 3%)),
+    hsl(calc(var(--accent-hue) - 20 + (var(--time-hue-flow) * 0.4)) 70% 40% / calc(0.024 + (var(--time-line-flow) * 0.006))) 0%,
+    transparent 45%
+  );
 }
 
 /* ========== Geometry Drift Animations ========== */

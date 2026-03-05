@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 type TimePeriod = 'morning' | 'afternoon' | 'dusk' | 'night'
+const TIME_FLOW_STEP_MS = 30_000
 
 function getTimePeriod(hour: number): TimePeriod {
   if (hour >= 6 && hour < 12) return 'morning'
@@ -9,29 +10,41 @@ function getTimePeriod(hour: number): TimePeriod {
   return 'night'
 }
 
-function msUntilNextBoundary(): number {
-  const now = new Date()
-  const hour = now.getHours()
-  let nextHour: number
+function getDayProgress(now: Date): number {
+  const minutes = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60
+  return minutes / 1440
+}
 
-  if (hour < 6) nextHour = 6
-  else if (hour < 12) nextHour = 12
-  else if (hour < 17) nextHour = 17
-  else if (hour < 21) nextHour = 21
-  else nextHour = 30 // 6am next day (24 + 6)
+function msUntilNextTimeFlowTick(): number {
+  const now = Date.now()
+  const remainder = now % TIME_FLOW_STEP_MS
+  return remainder === 0 ? TIME_FLOW_STEP_MS : TIME_FLOW_STEP_MS - remainder
+}
 
-  const next = new Date(now)
-  next.setHours(nextHour >= 24 ? nextHour - 24 : nextHour, 0, 0, 0)
-  if (nextHour >= 24) next.setDate(next.getDate() + 1)
+function applyTimeFlowVariables(now: Date): void {
+  const root = document.documentElement
+  const dayProgress = getDayProgress(now)
+  const phase = dayProgress * Math.PI * 2
 
-  return next.getTime() - now.getTime()
+  const hueFlow = Math.sin(phase - Math.PI / 3) * 6 + Math.sin(phase * 2) * 2.5
+  const lineFlow = 1 + Math.sin(phase + Math.PI / 8) * 0.08
+  const glowX = Math.sin(phase - Math.PI / 2)
+  const glowY = Math.cos(phase * 0.75)
+
+  root.style.setProperty('--time-progress', dayProgress.toFixed(6))
+  root.style.setProperty('--time-hue-flow', hueFlow.toFixed(3))
+  root.style.setProperty('--time-line-flow', lineFlow.toFixed(3))
+  root.style.setProperty('--time-glow-x', glowX.toFixed(3))
+  root.style.setProperty('--time-glow-y', glowY.toFixed(3))
 }
 
 export function useTimeOfDay() {
   useEffect(() => {
     const apply = () => {
-      const period = getTimePeriod(new Date().getHours())
+      const now = new Date()
+      const period = getTimePeriod(now.getHours())
       document.documentElement.setAttribute('data-time', period)
+      applyTimeFlowVariables(now)
     }
 
     apply()
@@ -41,7 +54,7 @@ export function useTimeOfDay() {
       timeout = setTimeout(() => {
         apply()
         schedule()
-      }, msUntilNextBoundary())
+      }, msUntilNextTimeFlowTick())
     }
     schedule()
 
