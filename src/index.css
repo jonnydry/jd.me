@@ -1168,6 +1168,8 @@ html::after {
 .resume-section {
   margin-bottom: 1.75rem;
   animation: fadeIn 0.4s ease-out backwards;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
 }
 
 .resume-section-title {
@@ -1360,6 +1362,8 @@ html::after {
   position: relative;
   overflow: hidden;
   contain: paint;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 150px;
 }
 
 .writing-list-item:hover {
