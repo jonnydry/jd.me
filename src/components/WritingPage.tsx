@@ -1,7 +1,8 @@
-import { useRef, useEffect } from 'react'
+import { useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { writingSamples } from '../config/writing'
 import type { ContentBlock, WritingSample } from '../config/writing'
+import { useScrollProgress } from '../hooks/useScrollProgress'
 import ThemeToggle from './ThemeToggle'
 import { useGlow } from '../hooks/useGlow'
 
@@ -138,20 +139,7 @@ export default function WritingPage() {
   const navigate = useNavigate()
   const progressRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    const bar = progressRef.current
-    if (!bar) return
-    const page = bar.closest('.page') as HTMLElement | null
-    if (!page) return
-    const update = () => {
-      const el = progressRef.current
-      if (!el) return
-      const max = page.scrollHeight - page.clientHeight
-      el.style.transform = `scaleX(${max > 0 ? page.scrollTop / max : 0})`
-    }
-    page.addEventListener('scroll', update, { passive: true })
-    return () => page.removeEventListener('scroll', update)
-  }, [])
+  useScrollProgress(progressRef)
 
   const match = location.pathname.match(/^\/writing\/(.+)$/)
   const slug = match?.[1]
@@ -171,7 +159,7 @@ export default function WritingPage() {
     const toc = buildToc(sample)
 
     return (
-      <main className="app">
+      <main className="app app--top">
         <div className="scroll-progress" ref={progressRef} />
         <div className="writing">
           <button className="resume-back" onClick={() => navigate('/writing')}>
@@ -220,7 +208,7 @@ export default function WritingPage() {
   }
 
   return (
-    <main className="app">
+    <main className="app app--top">
       <div className="scroll-progress" ref={progressRef} />
       <div className="writing">
         <button className="resume-back" onClick={() => navigate('/')}>

@@ -7,6 +7,60 @@ interface HeaderProps {
   avatar: string
 }
 
+function useAvatarTilt<T extends HTMLElement>(ref: React.RefObject<T>, scale: number, disabled: boolean) {
+  const rectRef = useRef<DOMRect | null>(null)
+  const pointerRef = useRef({ x: 0, y: 0 })
+  const rafRef = useRef<number>(0)
+
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    }
+  }, [])
+
+  const handleMouseEnter = useCallback(() => {
+    if (disabled) return
+    const el = ref.current
+    if (!el) return
+    rectRef.current = el.getBoundingClientRect()
+    el.style.transition = 'box-shadow 0.25s ease'
+  }, [disabled, ref])
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (disabled) return
+    const el = ref.current
+    if (!el) return
+
+    pointerRef.current.x = e.clientX
+    pointerRef.current.y = e.clientY
+    if (rafRef.current) return
+
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = 0
+      const rect = rectRef.current ?? el.getBoundingClientRect()
+      rectRef.current = rect
+      const rx = ((pointerRef.current.y - rect.top - rect.height / 2) / (rect.height / 2)) * -10
+      const ry = ((pointerRef.current.x - rect.left - rect.width / 2) / (rect.width / 2)) * 10
+      el.style.transform = `perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg) scale(${scale})`
+    })
+  }, [disabled, ref, scale])
+
+  const handleMouseLeave = useCallback(() => {
+    if (disabled) return
+    const el = ref.current
+    if (!el) return
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = 0
+    }
+    rectRef.current = null
+    el.style.transition = ''
+    el.style.transform = ''
+  }, [disabled, ref])
+
+  return { handleMouseEnter, handleMouseMove, handleMouseLeave }
+}
+
 export default function Header({ name, tagline, avatar }: HeaderProps) {
   const [typed, setTyped] = useState('')
   const [doneTyping, setDoneTyping] = useState(false)
@@ -57,83 +111,10 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
 
   const closeModal = useCallback(() => setModalOpen(false), [])
 
-  // 3D tilt on avatar hover
   const avatarWrapRef = useRef<HTMLDivElement>(null)
-  const tiltRafRef = useRef<number>(0)
-
-  useEffect(() => {
-    return () => { if (tiltRafRef.current) cancelAnimationFrame(tiltRafRef.current) }
-  }, [])
-
-  const handleAvatarMouseEnter = useCallback(() => {
-    if (reducedMotion.current) return
-    const el = avatarWrapRef.current
-    if (!el) return
-    // Disable transform transition during tracking so it follows the cursor instantly
-    el.style.transition = 'box-shadow 0.25s ease'
-  }, [])
-
-  const handleAvatarMouseMove = useCallback((e: React.MouseEvent) => {
-    if (reducedMotion.current) return
-    const el = avatarWrapRef.current
-    if (!el) return
-    const clientX = e.clientX
-    const clientY = e.clientY
-    if (tiltRafRef.current) cancelAnimationFrame(tiltRafRef.current)
-    tiltRafRef.current = requestAnimationFrame(() => {
-      const rect = el.getBoundingClientRect()
-      const rx = ((clientY - rect.top - rect.height / 2) / (rect.height / 2)) * -10
-      const ry = ((clientX - rect.left - rect.width / 2) / (rect.width / 2)) * 10
-      el.style.transform = `perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.08)`
-    })
-  }, [])
-
-  const handleAvatarMouseLeave = useCallback(() => {
-    if (reducedMotion.current) return
-    const el = avatarWrapRef.current
-    if (!el) return
-    // Restore CSS transition for smooth spring-back
-    el.style.transition = ''
-    el.style.transform = ''
-  }, [])
-
-  // Same tilt handlers for the expanded modal avatar
   const avatarModalWrapRef = useRef<HTMLDivElement>(null)
-  const tiltModalRafRef = useRef<number>(0)
-
-  useEffect(() => {
-    return () => { if (tiltModalRafRef.current) cancelAnimationFrame(tiltModalRafRef.current) }
-  }, [])
-
-  const handleModalAvatarMouseEnter = useCallback(() => {
-    if (reducedMotion.current) return
-    const el = avatarModalWrapRef.current
-    if (!el) return
-    el.style.transition = 'box-shadow 0.25s ease'
-  }, [])
-
-  const handleModalAvatarMouseMove = useCallback((e: React.MouseEvent) => {
-    if (reducedMotion.current) return
-    const el = avatarModalWrapRef.current
-    if (!el) return
-    const clientX = e.clientX
-    const clientY = e.clientY
-    if (tiltModalRafRef.current) cancelAnimationFrame(tiltModalRafRef.current)
-    tiltModalRafRef.current = requestAnimationFrame(() => {
-      const rect = el.getBoundingClientRect()
-      const rx = ((clientY - rect.top - rect.height / 2) / (rect.height / 2)) * -10
-      const ry = ((clientX - rect.left - rect.width / 2) / (rect.width / 2)) * 10
-      el.style.transform = `perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.02)`
-    })
-  }, [])
-
-  const handleModalAvatarMouseLeave = useCallback(() => {
-    if (reducedMotion.current) return
-    const el = avatarModalWrapRef.current
-    if (!el) return
-    el.style.transition = ''
-    el.style.transform = ''
-  }, [])
+  const avatarTilt = useAvatarTilt(avatarWrapRef, 1.08, reducedMotion.current)
+  const modalAvatarTilt = useAvatarTilt(avatarModalWrapRef, 1.02, reducedMotion.current)
 
   return (
     <header className="header">
@@ -144,9 +125,9 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
         role="button"
         tabIndex={0}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setModalOpen(true) } }}
-        onMouseEnter={handleAvatarMouseEnter}
-        onMouseMove={handleAvatarMouseMove}
-        onMouseLeave={handleAvatarMouseLeave}
+        onMouseEnter={avatarTilt.handleMouseEnter}
+        onMouseMove={avatarTilt.handleMouseMove}
+        onMouseLeave={avatarTilt.handleMouseLeave}
       >
         <img
           src={avatar}
@@ -171,9 +152,9 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
             <div
               ref={avatarModalWrapRef}
               className="avatar-modal-wrap"
-              onMouseEnter={handleModalAvatarMouseEnter}
-              onMouseMove={handleModalAvatarMouseMove}
-              onMouseLeave={handleModalAvatarMouseLeave}
+              onMouseEnter={modalAvatarTilt.handleMouseEnter}
+              onMouseMove={modalAvatarTilt.handleMouseMove}
+              onMouseLeave={modalAvatarTilt.handleMouseLeave}
             >
               <img
                 src={avatar}

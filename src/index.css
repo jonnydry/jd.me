@@ -143,6 +143,7 @@
   --time-glow-x: 0;
   --time-glow-y: 0;
   --accent: hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit));
+  --accent-glow: hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.07);
   --accent-hover: hsl(var(--accent-hue) var(--accent-sat) min(calc(var(--accent-lit) + 7%), 100%));
   animation: colorDrift 18s ease-in-out infinite;
 }
@@ -434,8 +435,7 @@ html::after {
 }
 
 /* Resume and writing pages: align content from top so back link & theme toggle stay visible */
-.app:has(.resume),
-.app:has(.writing) {
+.app--top {
   justify-content: flex-start;
 }
 
@@ -474,6 +474,7 @@ html::after {
   animation: avatarPulse 18s ease-in-out infinite;
   cursor: pointer;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
+  contain: paint;
 }
 
 .avatar-wrap::after {
@@ -573,6 +574,7 @@ html::after {
   overflow: hidden;
   animation: avatarPulse 18s ease-in-out infinite;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
+  contain: paint;
 }
 
 .avatar-modal-img {
@@ -656,6 +658,7 @@ html::after {
   animation: fadeIn 0.4s ease-out backwards;
   transition: none;
   cursor: pointer;
+  contain: paint;
 }
 
 /* Mouse-following glow (GPU-accelerated via transform) */
@@ -670,10 +673,10 @@ html::after {
   pointer-events: none;
   background: radial-gradient(
     circle at center,
-    var(--glow-color, transparent) 0%,
+    var(--accent-glow) 0%,
     transparent 60%
   );
-  transform: translate(calc(var(--glow-x, 0) * 1px), calc(var(--glow-y, 0) * 1px));
+  transform: translate3d(calc(var(--glow-x, 0) * 1px), calc(var(--glow-y, 0) * 1px), 0);
   will-change: transform, opacity;
 }
 
@@ -1356,6 +1359,7 @@ html::after {
   transition: background 0.15s;
   position: relative;
   overflow: hidden;
+  contain: paint;
 }
 
 .writing-list-item:hover {
@@ -1378,10 +1382,10 @@ html::after {
   pointer-events: none;
   background: radial-gradient(
     circle at center,
-    var(--glow-color, transparent) 0%,
+    var(--accent-glow) 0%,
     transparent 60%
   );
-  transform: translate(calc(var(--glow-x, 0) * 1px), calc(var(--glow-y, 0) * 1px));
+  transform: translate3d(calc(var(--glow-x, 0) * 1px), calc(var(--glow-y, 0) * 1px), 0);
   will-change: transform, opacity;
 }
 
