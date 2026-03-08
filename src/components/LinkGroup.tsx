@@ -1,7 +1,8 @@
-import { useState, useCallback, useRef, useEffect } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { LinkGroup as LinkGroupType, LinkItem } from '../config/links'
 import { GitHub, Twitter, LinkedIn, Globe, Quill, Mail, FileText, Monitor, Heart, Wallet, Coffee, Gamepad, ArrowRight } from './Icons'
+import { useGlow } from '../hooks/useGlow'
 
 const IconMap = {
   github: GitHub,
@@ -25,37 +26,11 @@ interface LinkGroupProps {
 
 function ChildRow({ link }: { link: LinkItem }) {
   const rowRef = useRef<HTMLAnchorElement>(null)
-  const rectRef = useRef<DOMRect | null>(null)
-  const rafRef = useRef<number>(0)
   const navigate = useNavigate()
   const IconComponent = link.icon ? IconMap[link.icon] : ArrowRight
   const iconSrc = link.iconSrc
 
-  useEffect(() => {
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
-  }, [])
-
-  const handleMouseEnter = useCallback(() => {
-    rectRef.current = rowRef.current?.getBoundingClientRect() ?? null
-  }, [])
-
-  const handleMouseLeave = useCallback(() => {
-    rectRef.current = null
-  }, [])
-
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
-    const el = rowRef.current
-    if (!el) return
-    const clientX = e.clientX
-    const clientY = e.clientY
-    if (rafRef.current) cancelAnimationFrame(rafRef.current)
-    rafRef.current = requestAnimationFrame(() => {
-      const rect = rectRef.current ?? el.getBoundingClientRect()
-      if (!rectRef.current) rectRef.current = rect
-      el.style.setProperty('--mouse-x', `${clientX - rect.left}px`)
-      el.style.setProperty('--mouse-y', `${clientY - rect.top}px`)
-    })
-  }, [])
+  const glowHandlers = useGlow(rowRef)
 
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     const el = rowRef.current
@@ -83,9 +58,9 @@ function ChildRow({ link }: { link: LinkItem }) {
       target={link.internal ? undefined : '_blank'}
       rel={link.internal ? undefined : 'noopener noreferrer'}
       className="link-row link-row--child"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onMouseMove={handleMouseMove}
+      onMouseEnter={glowHandlers.handleMouseEnter}
+      onMouseLeave={glowHandlers.handleMouseLeave}
+      onMouseMove={glowHandlers.handleMouseMove}
       onMouseDown={handleMouseDown}
       onClick={handleClick}
     >
@@ -108,35 +83,9 @@ function ChildRow({ link }: { link: LinkItem }) {
 export default function LinkGroup({ group, index }: LinkGroupProps) {
   const [open, setOpen] = useState(false)
   const rowRef = useRef<HTMLDivElement>(null)
-  const rectRef = useRef<DOMRect | null>(null)
-  const rafRef = useRef<number>(0)
   const IconComponent = group.icon ? IconMap[group.icon] : ArrowRight
 
-  useEffect(() => {
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
-  }, [])
-
-  const handleMouseEnter = useCallback(() => {
-    rectRef.current = rowRef.current?.getBoundingClientRect() ?? null
-  }, [])
-
-  const handleMouseLeave = useCallback(() => {
-    rectRef.current = null
-  }, [])
-
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const el = rowRef.current
-    if (!el) return
-    const clientX = e.clientX
-    const clientY = e.clientY
-    if (rafRef.current) cancelAnimationFrame(rafRef.current)
-    rafRef.current = requestAnimationFrame(() => {
-      const rect = rectRef.current ?? el.getBoundingClientRect()
-      if (!rectRef.current) rectRef.current = rect
-      el.style.setProperty('--mouse-x', `${clientX - rect.left}px`)
-      el.style.setProperty('--mouse-y', `${clientY - rect.top}px`)
-    })
-  }, [])
+  const glowHandlers = useGlow(rowRef)
 
   return (
     <div className="link-group" style={{ animationDelay: `${index * 60}ms` }}>
@@ -147,9 +96,9 @@ export default function LinkGroup({ group, index }: LinkGroupProps) {
         tabIndex={0}
         onClick={() => setOpen(!open)}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpen(!open) } }}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onMouseMove={handleMouseMove}
+        onMouseEnter={glowHandlers.handleMouseEnter}
+        onMouseLeave={glowHandlers.handleMouseLeave}
+        onMouseMove={glowHandlers.handleMouseMove}
       >
         <span className="link-row-glow" />
         <span className="link-row-index">{String(index + 1).padStart(2, '0')}</span>

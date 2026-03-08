@@ -1,7 +1,8 @@
-import { useCallback, useRef, useEffect } from 'react'
+import { useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { LinkItem } from '../config/links'
 import { GitHub, Twitter, LinkedIn, Globe, Quill, Mail, FileText, Monitor, Heart, Wallet, Coffee, Gamepad, ArrowRight } from './Icons'
+import { useGlow } from '../hooks/useGlow'
 
 interface LinkCardProps {
   link: LinkItem
@@ -27,35 +28,9 @@ export default function LinkCard({ link, index }: LinkCardProps) {
   const IconComponent = link.icon ? IconMap[link.icon] : ArrowRight
   const iconSrc = link.iconSrc
   const rowRef = useRef<HTMLAnchorElement>(null)
-  const rectRef = useRef<DOMRect | null>(null)
-  const rafRef = useRef<number>(0)
   const navigate = useNavigate()
 
-  useEffect(() => {
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
-  }, [])
-
-  const handleMouseEnter = useCallback(() => {
-    rectRef.current = rowRef.current?.getBoundingClientRect() ?? null
-  }, [])
-
-  const handleMouseLeave = useCallback(() => {
-    rectRef.current = null
-  }, [])
-
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
-    const el = rowRef.current
-    if (!el) return
-    const clientX = e.clientX
-    const clientY = e.clientY
-    if (rafRef.current) cancelAnimationFrame(rafRef.current)
-    rafRef.current = requestAnimationFrame(() => {
-      const rect = rectRef.current ?? el.getBoundingClientRect()
-      if (!rectRef.current) rectRef.current = rect
-      el.style.setProperty('--mouse-x', `${clientX - rect.left}px`)
-      el.style.setProperty('--mouse-y', `${clientY - rect.top}px`)
-    })
-  }, [])
+  const glowHandlers = useGlow(rowRef)
 
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     const el = rowRef.current
@@ -84,9 +59,9 @@ export default function LinkCard({ link, index }: LinkCardProps) {
       rel={link.internal ? undefined : 'noopener noreferrer'}
       className="link-row"
       style={{ animationDelay: `${index * 60}ms` }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onMouseMove={handleMouseMove}
+      onMouseEnter={glowHandlers.handleMouseEnter}
+      onMouseLeave={glowHandlers.handleMouseLeave}
+      onMouseMove={glowHandlers.handleMouseMove}
       onMouseDown={handleMouseDown}
       onClick={handleClick}
     >

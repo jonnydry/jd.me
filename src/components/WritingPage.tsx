@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { writingSamples } from '../config/writing'
 import type { ContentBlock, WritingSample } from '../config/writing'
 import ThemeToggle from './ThemeToggle'
+import { useGlow } from '../hooks/useGlow'
 
 function slugify(text: string) {
   return text
@@ -102,6 +103,36 @@ function ContentRenderer({ block }: { block: ContentBlock }) {
   }
 }
 
+function WritingListItem({ sample, index }: { sample: WritingSample; index: number }) {
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const navigate = useNavigate()
+  const glowHandlers = useGlow(buttonRef)
+
+  return (
+    <button
+      ref={buttonRef}
+      className="writing-list-item"
+      style={{ animationDelay: `${(index + 2) * 80}ms` }}
+      onClick={() => navigate(`/writing/${sample.slug}`)}
+      onMouseEnter={glowHandlers.handleMouseEnter}
+      onMouseLeave={glowHandlers.handleMouseLeave}
+      onMouseMove={glowHandlers.handleMouseMove}
+    >
+      <span className="writing-list-item-glow" />
+      <div className="writing-list-item-top">
+        <h2 className="writing-list-item-title">{sample.title}</h2>
+        <time className="writing-list-item-date">{sample.date}</time>
+      </div>
+      <p className="writing-list-item-excerpt">{sample.excerpt}</p>
+      <div className="writing-list-item-tags">
+        {sample.tags.map((tag) => (
+          <span key={tag} className="writing-tag">{tag}</span>
+        ))}
+      </div>
+    </button>
+  )
+}
+
 export default function WritingPage() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -113,7 +144,7 @@ export default function WritingPage() {
     const page = bar.closest('.page') as HTMLElement | null
     if (!page) return
     const update = () => {
-      const el = progressRef.current // fresh ref — handles list↔detail re-renders
+      const el = progressRef.current
       if (!el) return
       const max = page.scrollHeight - page.clientHeight
       el.style.transform = `scaleX(${max > 0 ? page.scrollTop / max : 0})`
@@ -136,7 +167,6 @@ export default function WritingPage() {
     }
   }
 
-  // Detail view
   if (sample) {
     const toc = buildToc(sample)
 
@@ -189,7 +219,6 @@ export default function WritingPage() {
     )
   }
 
-  // List view
   return (
     <main className="app">
       <div className="scroll-progress" ref={progressRef} />
@@ -206,23 +235,7 @@ export default function WritingPage() {
 
         <div className="writing-list">
           {writingSamples.map((s, i) => (
-            <button
-              key={s.slug}
-              className="writing-list-item"
-              style={{ animationDelay: `${(i + 2) * 80}ms` }}
-              onClick={() => navigate(`/writing/${s.slug}`)}
-            >
-              <div className="writing-list-item-top">
-                <h2 className="writing-list-item-title">{s.title}</h2>
-                <time className="writing-list-item-date">{s.date}</time>
-              </div>
-              <p className="writing-list-item-excerpt">{s.excerpt}</p>
-              <div className="writing-list-item-tags">
-                {s.tags.map((tag) => (
-                  <span key={tag} className="writing-tag">{tag}</span>
-                ))}
-              </div>
-            </button>
+            <WritingListItem key={s.slug} sample={s} index={i} />
           ))}
         </div>
       </div>
