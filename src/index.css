@@ -145,7 +145,7 @@
   --accent: hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit));
   --accent-glow: hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.07);
   --accent-hover: hsl(var(--accent-hue) var(--accent-sat) min(calc(var(--accent-lit) + 7%), 100%));
-  animation: colorDrift 18s ease-in-out infinite;
+  animation: colorDrift 36s ease-in-out infinite;
 }
 
 /* ========== Theme: Rose ========== */
@@ -156,7 +156,7 @@
   --accent-hue: 335;
   --accent-sat: 85%;
   --accent-lit: 65%;
-  animation: colorDriftRose 18s ease-in-out infinite;
+  animation: colorDriftRose 36s ease-in-out infinite;
 }
 
 /* ========== Theme: Paper ========== */
@@ -170,7 +170,77 @@
   --accent-sat: 75%;
   --accent-lit: 40%;
   --theme-line-boost: 1.75;
-  animation: colorDriftPaper 30s ease-in-out infinite;
+  animation: colorDriftPaper 55s ease-in-out infinite;
+}
+
+/* ========== Theme: Ember ========== */
+:root[data-theme="ember"] {
+  --bg: #080502;
+  --surface: #110a04;
+  --border: #1e1008;
+  --text: #f7e9ce;
+  --text-muted: #9a7250;
+  --accent-hue: 28;
+  --accent-sat: 96%;
+  --accent-lit: 62%;
+  --theme-line-boost: 1.65;
+  animation: colorDriftEmber 42s ease-in-out infinite;
+}
+
+/* ========== Theme: Dusk ========== */
+:root[data-theme="dusk"] {
+  --bg: #09080f;
+  --surface: #110f1c;
+  --border: #1e1a2e;
+  --text: #ede8f5;
+  --text-muted: #7a6e98;
+  --accent-hue: 272;
+  --accent-sat: 78%;
+  --accent-lit: 62%;
+  --theme-line-boost: 1.35;
+  animation: colorDriftDusk 46s ease-in-out infinite;
+}
+
+/* ========== Theme: Harbor ========== */
+:root[data-theme="harbor"] {
+  --bg: #eaf0f6;
+  --surface: #dde7f0;
+  --border: #b8ccda;
+  --text: #1a2d3e;
+  --text-muted: #5a7a8f;
+  --accent-hue: 205;
+  --accent-sat: 68%;
+  --accent-lit: 36%;
+  --theme-line-boost: 1.75;
+  animation: colorDriftHarbor 52s ease-in-out infinite;
+}
+
+/* ========== Theme: Pine ========== */
+:root[data-theme="pine"] {
+  --bg: #030704;
+  --surface: #080e09;
+  --border: #0f1810;
+  --text: #e8f0e9;
+  --text-muted: #4d6e51;
+  --accent-hue: 148;
+  --accent-sat: 42%;
+  --accent-lit: 46%;
+  --theme-line-boost: 1.55;
+  animation: colorDriftPine 44s ease-in-out infinite;
+}
+
+/* ========== Theme: Stone ========== */
+:root[data-theme="stone"] {
+  --bg: #111111;
+  --surface: #1c1c1c;
+  --border: #2e2e2e;
+  --text: #f0ede8;
+  --text-muted: #6a6a6a;
+  --accent-hue: 28;
+  --accent-sat: 7%;
+  --accent-lit: 74%;
+  --theme-line-boost: 1.5;
+  animation: colorDriftStone 44s ease-in-out infinite;
 }
 
 * {
@@ -908,11 +978,15 @@ html::after {
 
 /*
   Paper lines: each group cycles the same 6 colors but staggered.
-  Accent:  navy→teal→burgundy→plum→green→amber
   Line A:  +2 offset (burgundy→plum→green→amber→navy→teal)
   Line B:  +4 offset (green→amber→navy→teal→burgundy→plum)
   Line C:  reverse   (amber→green→plum→burgundy→teal→navy)
   Line D:  reverse+2 (plum→burgundy→teal→navy→amber→green)
+
+  Accent hue is restricted to the high side of the wheel (175–340°) to avoid CSS numeric
+  interpolation crossing the green zone (80–160°). Amber (30°) and sage (145°) are kept in
+  the line hues for visual richness but removed from --accent-hue to keep text/UI colors clean.
+  Transitions verified: each adjacent pair interpolates at most 165° and stays above 175°.
 */
 @keyframes colorDriftPaper {
   0%, 100% {
@@ -932,13 +1006,114 @@ html::after {
     --line-hue-a: 30;  --line-hue-b: 175; --line-hue-c: 340; --line-hue-d: 215;
   }
   67% {
-    --accent-hue: 145; --accent-sat: 65%; --accent-lit: 35%;
+    --accent-hue: 340; --accent-sat: 65%; --accent-lit: 35%;
     --line-hue-a: 215; --line-hue-b: 340; --line-hue-c: 175; --line-hue-d: 30;
   }
   83% {
-    --accent-hue: 30;  --accent-sat: 70%; --accent-lit: 40%;
+    --accent-hue: 175; --accent-sat: 70%; --accent-lit: 40%;
     --line-hue-a: 175; --line-hue-b: 275; --line-hue-c: 215; --line-hue-d: 145;
   }
+}
+
+@keyframes colorDriftEmber {
+  /*
+    Line groups span the full fire spectrum: deep red (4°) → orange (22°) → amber (38°) → gold (54°)
+    Each group rotates through the others so the lines feel like layered flame colors shifting.
+  */
+  0%, 100% {
+    --accent-hue: 28;  --accent-sat: 96%; --accent-lit: 62%;
+    --line-hue-a: 4;   --line-hue-b: 22;  --line-hue-c: 38;  --line-hue-d: 54;
+  }
+  25% {
+    --accent-hue: 42;  --accent-sat: 92%; --accent-lit: 66%;
+    --line-hue-a: 22;  --line-hue-b: 38;  --line-hue-c: 54;  --line-hue-d: 4;
+  }
+  50% {
+    --accent-hue: 14;  --accent-sat: 98%; --accent-lit: 57%;
+    --line-hue-a: 38;  --line-hue-b: 54;  --line-hue-c: 4;   --line-hue-d: 22;
+  }
+  75% {
+    --accent-hue: 54;  --accent-sat: 90%; --accent-lit: 64%;
+    --line-hue-a: 54;  --line-hue-b: 4;   --line-hue-c: 22;  --line-hue-d: 38;
+  }
+}
+
+@keyframes colorDriftDusk {
+  /*
+    Accent stays within the violet/indigo family (258–285°) so text/UI colors never leave the palette.
+    Orange (28°, 38°) lives only in the line hues — it appears in the laser lines crossing the background
+    but never bleeds into the accent color used for text. CSS numeric interpolation between 272° and 33°
+    would pass through green (120–160°), so orange is intentionally excluded from --accent-hue.
+  */
+  0%, 100% {
+    --accent-hue: 272; --accent-sat: 78%; --accent-lit: 62%;
+    --line-hue-a: 278; --line-hue-b: 28;  --line-hue-c: 262; --line-hue-d: 38;
+  }
+  25% {
+    --accent-hue: 258; --accent-sat: 82%; --accent-lit: 58%;
+    --line-hue-a: 28;  --line-hue-b: 262; --line-hue-c: 38;  --line-hue-d: 278;
+  }
+  50% {
+    --accent-hue: 285; --accent-sat: 75%; --accent-lit: 64%;
+    --line-hue-a: 262; --line-hue-b: 38;  --line-hue-c: 278; --line-hue-d: 28;
+  }
+  75% {
+    --accent-hue: 265; --accent-sat: 80%; --accent-lit: 60%;
+    --line-hue-a: 38;  --line-hue-b: 278; --line-hue-c: 28;  --line-hue-d: 262;
+  }
+}
+
+@keyframes colorDriftHarbor {
+  /*
+    Line groups cycle through the nautical palette: navy (220°) → sky blue (205°) → seafoam (175°) → steel (215°)
+    Each group rotates through the others — like light on water shifting between deep blue, pale sky, and sea green.
+  */
+  0%, 100% {
+    --accent-hue: 205; --accent-sat: 68%; --accent-lit: 36%;
+    --line-hue-a: 220; --line-hue-b: 175; --line-hue-c: 205; --line-hue-d: 215;
+  }
+  25% {
+    --accent-hue: 188; --accent-sat: 65%; --accent-lit: 34%;
+    --line-hue-a: 175; --line-hue-b: 215; --line-hue-c: 220; --line-hue-d: 205;
+  }
+  50% {
+    --accent-hue: 220; --accent-sat: 72%; --accent-lit: 32%;
+    --line-hue-a: 205; --line-hue-b: 220; --line-hue-c: 188; --line-hue-d: 175;
+  }
+  75% {
+    --accent-hue: 175; --accent-sat: 62%; --accent-lit: 36%;
+    --line-hue-a: 215; --line-hue-b: 205; --line-hue-c: 175; --line-hue-d: 220;
+  }
+}
+
+@keyframes colorDriftPine {
+  /*
+    Line groups stay in the cool, muted pine range (130–162°) — no yellow-green.
+    Saturation kept low to evoke pine needles, deep fir, shadowed bark rather than neon.
+  */
+  0%, 100% {
+    --accent-hue: 148; --accent-sat: 42%; --accent-lit: 46%;
+    --line-hue-a: 132; --line-hue-b: 148; --line-hue-c: 158; --line-hue-d: 140;
+  }
+  25% {
+    --accent-hue: 138; --accent-sat: 46%; --accent-lit: 50%;
+    --line-hue-a: 148; --line-hue-b: 158; --line-hue-c: 140; --line-hue-d: 132;
+  }
+  50% {
+    --accent-hue: 158; --accent-sat: 38%; --accent-lit: 42%;
+    --line-hue-a: 158; --line-hue-b: 140; --line-hue-c: 132; --line-hue-d: 148;
+  }
+  75% {
+    --accent-hue: 134; --accent-sat: 44%; --accent-lit: 48%;
+    --line-hue-a: 140; --line-hue-b: 132; --line-hue-c: 148; --line-hue-d: 158;
+  }
+}
+
+@keyframes colorDriftStone {
+  0%, 100% { --accent-hue: 28;  --accent-sat: 7%;  --accent-lit: 74%; --line-hue-a: 28;  --line-hue-b: 28;  --line-hue-c: 28;  --line-hue-d: 28; }
+  25%       { --accent-hue: 210; --accent-sat: 5%;  --accent-lit: 84%; --line-hue-a: 210; --line-hue-b: 210; --line-hue-c: 210; --line-hue-d: 210; }
+  50%       { --accent-hue: 0;   --accent-sat: 0%;  --accent-lit: 92%; --line-hue-a: 0;   --line-hue-b: 0;   --line-hue-c: 0;   --line-hue-d: 0; }
+  75%       { --accent-hue: 32;  --accent-sat: 9%;  --accent-lit: 62%; --line-hue-a: 32;  --line-hue-b: 32;  --line-hue-c: 32;  --line-hue-d: 32; }
 }
 
 /* ========== Time-of-Day Static Overrides ========== */

@@ -1,9 +1,14 @@
 import { useTheme } from '../ThemeContext'
 
-const THEME_LABELS: Record<'default' | 'rose' | 'paper', string> = {
+const THEME_LABELS: Record<'default' | 'rose' | 'paper' | 'stone' | 'ember' | 'pine' | 'harbor' | 'dusk', string> = {
   default: '--dark',
   rose: '--rose',
   paper: '--paper',
+  stone: '--stone',
+  ember: '--ember',
+  pine: '--pine',
+  harbor: '--harbor',
+  dusk: '--dusk',
 }
 
 export default function ThemeToggle() {
@@ -14,7 +19,7 @@ export default function ThemeToggle() {
       <span className="theme-prompt" aria-hidden="true">
         theme
       </span>
-      {(['default', 'rose', 'paper'] as const).map((t) => (
+      {(['default', 'rose', 'paper', 'stone', 'ember', 'pine', 'harbor', 'dusk'] as const).map((t) => (
         <button
           key={t}
           className={`theme-btn theme-btn--${t}${theme === t ? ' theme-btn--active' : ''}`}
