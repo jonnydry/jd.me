@@ -56,7 +56,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
-  useEffect(() => clearThemeTimers, [clearThemeTimers])
+  useEffect(() => {
+    return () => clearThemeTimers()
+  }, [clearThemeTimers])
 
   const setTheme = useCallback((t: Theme) => {
     if (t === theme || wiping) return

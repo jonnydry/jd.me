@@ -139,11 +139,11 @@ export default function WritingPage() {
   const navigate = useNavigate()
   const progressRef = useRef<HTMLDivElement>(null)
 
-  useScrollProgress(progressRef)
-
   const match = location.pathname.match(/^\/writing\/(.+)$/)
   const slug = match?.[1]
   const sample = slug ? writingSamples.find((s) => s.slug === slug) : null
+
+  useScrollProgress(progressRef, slug ?? 'list')
 
   const handleTocClick = (id: string) => {
     const el = document.getElementById(id)

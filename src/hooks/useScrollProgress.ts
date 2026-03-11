@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-export function useScrollProgress(ref: React.RefObject<HTMLDivElement>) {
+export function useScrollProgress(ref: React.RefObject<HTMLDivElement>, key?: string) {
   useEffect(() => {
     const bar = ref.current
     if (!bar) return
@@ -30,5 +30,5 @@ export function useScrollProgress(ref: React.RefObject<HTMLDivElement>) {
       window.removeEventListener('resize', scheduleUpdate)
       if (rafId) window.cancelAnimationFrame(rafId)
     }
-  }, [ref])
+  }, [ref, key])
 }
