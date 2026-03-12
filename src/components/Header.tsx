@@ -185,7 +185,7 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
             height={720}
             loading="eager"
             decoding="async"
-            fetchPriority="high"
+            fetchpriority="high"
           />
         </picture>
       </div>

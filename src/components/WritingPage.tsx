@@ -98,7 +98,7 @@ function ContentRenderer({ block }: { block: ContentBlock }) {
               height={1600}
               loading="lazy"
               decoding="async"
-              fetchPriority="low"
+              fetchpriority="low"
             />
           </picture>
           {block.caption && (

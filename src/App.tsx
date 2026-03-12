@@ -209,7 +209,7 @@ function App() {
         nav.connection?.effectiveType === 'slow-2g' ||
         nav.connection?.effectiveType === '2g' ||
         (nav.hardwareConcurrency ?? 8) <= 4 ||
-        (nav.deviceMemory ?? 8) <= 4
+        (nav.deviceMemory ?? 8) <= 6
 
       root.setAttribute('data-performance', lowPower ? 'reduced' : 'default')
     }

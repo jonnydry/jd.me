@@ -8,7 +8,7 @@ export default function ResumePage() {
   const navigate = useNavigate()
   const progressRef = useRef<HTMLDivElement>(null)
 
-  useScrollProgress(progressRef)
+  useScrollProgress(progressRef, 'resume')
 
   return (
     <main className="app app--top">

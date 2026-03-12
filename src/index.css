@@ -415,8 +415,7 @@ body::after {
 }
 
 :root[data-performance="reduced"] {
-  animation-duration: 180s;
-  animation-timing-function: steps(12, end);
+  animation: none !important;
 }
 
 :root[data-performance="reduced"] body {
