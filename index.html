@@ -17,7 +17,15 @@
     <meta name="twitter:description" content="Links and projects — your corner of the internet" />
     <meta name="twitter:image" content="/avatar.jpg" />
     <title>Jonny D | Links</title>
-    <link rel="preload" as="image" href="/avatar.jpg" fetchpriority="high" />
+    <link
+      rel="preload"
+      as="image"
+      href="/avatar-360.avif"
+      imagesrcset="/avatar-360.avif 360w, /avatar-720.avif 720w"
+      imagesizes="(max-width: 640px) 80px, 88px"
+      type="image/avif"
+      fetchpriority="high"
+    />
   </head>
   <body>
     <script>

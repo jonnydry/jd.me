@@ -28,10 +28,20 @@ function buildToc(sample: WritingSample) {
   return entries
 }
 
-function getResponsiveImageSrcSet(src: string) {
-  if (!src.endsWith('.jpg')) return undefined
+function getResponsiveImageSources(src: string) {
+  if (!src.endsWith('.jpg')) {
+    return {
+      avifSrcSet: undefined,
+      fallbackSrcSet: undefined,
+    }
+  }
+
   const base = src.slice(0, -4)
-  return `${base}-800.jpg 800w, ${src} 1200w`
+
+  return {
+    avifSrcSet: `${base}-480.avif 480w, ${base}-800.avif 800w, ${base}-1200.avif 1200w`,
+    fallbackSrcSet: `${base}-480.jpg 480w, ${base}-800.jpg 800w, ${src} 1200w`,
+  }
 }
 
 function ContentRenderer({ block }: { block: ContentBlock }) {
@@ -67,21 +77,30 @@ function ContentRenderer({ block }: { block: ContentBlock }) {
         </div>
       )
     case 'image': {
-      const srcSet = getResponsiveImageSrcSet(block.src)
+      const { avifSrcSet, fallbackSrcSet } = getResponsiveImageSources(block.src)
       return (
         <figure className="writing-figure">
-          <img
-            className="writing-figure-img"
-            src={block.src}
-            srcSet={srcSet}
-            sizes="(max-width: 640px) 92vw, 690px"
-            alt={block.alt}
-            width={1200}
-            height={1600}
-            loading="lazy"
-            decoding="async"
-            fetchPriority="low"
-          />
+          <picture>
+            {avifSrcSet && (
+              <source
+                srcSet={avifSrcSet}
+                sizes="(max-width: 640px) 92vw, 690px"
+                type="image/avif"
+              />
+            )}
+            <img
+              className="writing-figure-img"
+              src={block.src}
+              srcSet={fallbackSrcSet}
+              sizes="(max-width: 640px) 92vw, 690px"
+              alt={block.alt}
+              width={1200}
+              height={1600}
+              loading="lazy"
+              decoding="async"
+              fetchPriority="low"
+            />
+          </picture>
           {block.caption && (
             <figcaption className="writing-figure-caption">
               {block.caption}

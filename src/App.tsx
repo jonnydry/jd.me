@@ -160,6 +160,22 @@ function App() {
       cancelIdleCallback?: (id: number) => void
     }
 
+    const connection = navigator as Navigator & {
+      connection?: {
+        saveData?: boolean
+        effectiveType?: string
+      }
+    }
+
+    if (
+      connection.connection?.saveData ||
+      connection.connection?.effectiveType === 'slow-2g' ||
+      connection.connection?.effectiveType === '2g' ||
+      window.matchMedia('(hover: none), (pointer: coarse), (max-width: 640px)').matches
+    ) {
+      return
+    }
+
     if (typeof idleWindow.requestIdleCallback === 'function') {
       const idleId = idleWindow.requestIdleCallback(() => warmChunks())
       return () => idleWindow.cancelIdleCallback?.(idleId)
@@ -167,6 +183,70 @@ function App() {
 
     const timeoutId = window.setTimeout(warmChunks, 1500)
     return () => window.clearTimeout(timeoutId)
+  }, [])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const root = document.documentElement
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const nav = navigator as Navigator & {
+      deviceMemory?: number
+      connection?: {
+        saveData?: boolean
+        effectiveType?: string
+        addEventListener?: (type: 'change', listener: () => void) => void
+        removeEventListener?: (type: 'change', listener: () => void) => void
+        addListener?: (listener: () => void) => void
+        removeListener?: (listener: () => void) => void
+      }
+    }
+
+    const applyPerformanceTier = () => {
+      const lowPower =
+        reducedMotion.matches ||
+        Boolean(nav.connection?.saveData) ||
+        nav.connection?.effectiveType === 'slow-2g' ||
+        nav.connection?.effectiveType === '2g' ||
+        (nav.hardwareConcurrency ?? 8) <= 4 ||
+        (nav.deviceMemory ?? 8) <= 4
+
+      root.setAttribute('data-performance', lowPower ? 'reduced' : 'default')
+    }
+
+    applyPerformanceTier()
+
+    if (typeof reducedMotion.addEventListener === 'function') {
+      reducedMotion.addEventListener('change', applyPerformanceTier)
+    } else {
+      reducedMotion.addListener(applyPerformanceTier)
+    }
+
+    if (nav.connection) {
+      if (typeof nav.connection.addEventListener === 'function') {
+        nav.connection.addEventListener('change', applyPerformanceTier)
+      } else {
+        nav.connection.addListener?.(applyPerformanceTier)
+      }
+    }
+
+    return () => {
+      root.removeAttribute('data-performance')
+
+      if (typeof reducedMotion.removeEventListener === 'function') {
+        reducedMotion.removeEventListener('change', applyPerformanceTier)
+      } else {
+        reducedMotion.removeListener(applyPerformanceTier)
+      }
+
+      if (nav.connection) {
+        if (typeof nav.connection.removeEventListener === 'function') {
+          nav.connection.removeEventListener('change', applyPerformanceTier)
+        } else {
+          nav.connection.removeListener?.(applyPerformanceTier)
+        }
+      }
+    }
   }, [])
 
   return (

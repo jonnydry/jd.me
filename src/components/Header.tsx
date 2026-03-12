@@ -7,19 +7,59 @@ interface HeaderProps {
   avatar: string
 }
 
+const INTERACTIVE_HOVER_MEDIA_QUERY =
+  '(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)'
+const AVATAR_AVIF_SRC_SET = '/avatar-360.avif 360w, /avatar-720.avif 720w'
+const AVATAR_FALLBACK_SRC_SET = '/avatar-360.jpg 360w, /avatar.jpg 720w'
+const AVATAR_SIZES = '(max-width: 640px) 80px, 88px'
+const AVATAR_MODAL_SIZES = '(max-width: 640px) 70vw, 360px'
+
 function useAvatarTilt<T extends HTMLElement>(ref: React.RefObject<T>, scale: number, disabled: boolean) {
   const rectRef = useRef<DOMRect | null>(null)
   const pointerRef = useRef({ x: 0, y: 0 })
   const rafRef = useRef<number>(0)
+  const interactiveRef = useRef(
+    typeof window === 'undefined' ? true : window.matchMedia(INTERACTIVE_HOVER_MEDIA_QUERY).matches
+  )
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const media = window.matchMedia(INTERACTIVE_HOVER_MEDIA_QUERY)
+    const updateInteractive = () => {
+      interactiveRef.current = media.matches
+
+      if (!media.matches) {
+        const el = ref.current
+        if (el) {
+          el.style.transition = ''
+          el.style.transform = ''
+        }
+        rectRef.current = null
+      }
+    }
+
+    updateInteractive()
+
+    if (typeof media.addEventListener === 'function') {
+      media.addEventListener('change', updateInteractive)
+    } else {
+      media.addListener(updateInteractive)
+    }
+
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
+
+      if (typeof media.removeEventListener === 'function') {
+        media.removeEventListener('change', updateInteractive)
+      } else {
+        media.removeListener(updateInteractive)
+      }
     }
-  }, [])
+  }, [ref])
 
   const handleMouseEnter = useCallback(() => {
-    if (disabled) return
+    if (disabled || !interactiveRef.current) return
     const el = ref.current
     if (!el) return
     rectRef.current = el.getBoundingClientRect()
@@ -27,7 +67,7 @@ function useAvatarTilt<T extends HTMLElement>(ref: React.RefObject<T>, scale: nu
   }, [disabled, ref])
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (disabled) return
+    if (disabled || !interactiveRef.current) return
     const el = ref.current
     if (!el) return
 
@@ -46,7 +86,7 @@ function useAvatarTilt<T extends HTMLElement>(ref: React.RefObject<T>, scale: nu
   }, [disabled, ref, scale])
 
   const handleMouseLeave = useCallback(() => {
-    if (disabled) return
+    if (disabled || !interactiveRef.current) return
     const el = ref.current
     if (!el) return
     if (rafRef.current) {
@@ -129,16 +169,25 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
         onMouseMove={avatarTilt.handleMouseMove}
         onMouseLeave={avatarTilt.handleMouseLeave}
       >
-        <img
-          src={avatar}
-          alt=""
-          className="avatar"
-          width={720}
-          height={720}
-          loading="eager"
-          decoding="async"
-          fetchPriority="high"
-        />
+        <picture>
+          <source
+            srcSet={AVATAR_AVIF_SRC_SET}
+            sizes={AVATAR_SIZES}
+            type="image/avif"
+          />
+          <img
+            src="/avatar-360.jpg"
+            srcSet={AVATAR_FALLBACK_SRC_SET}
+            sizes={AVATAR_SIZES}
+            alt=""
+            className="avatar"
+            width={720}
+            height={720}
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+          />
+        </picture>
       </div>
       <h1 className="name">{name}</h1>
       <p className="tagline">
@@ -156,15 +205,24 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
               onMouseMove={modalAvatarTilt.handleMouseMove}
               onMouseLeave={modalAvatarTilt.handleMouseLeave}
             >
-              <img
-                src={avatar}
-                alt={name}
-                className="avatar-modal-img"
-                width={720}
-                height={720}
-                loading="lazy"
-                decoding="async"
-              />
+              <picture>
+                <source
+                  srcSet={AVATAR_AVIF_SRC_SET}
+                  sizes={AVATAR_MODAL_SIZES}
+                  type="image/avif"
+                />
+                <img
+                  src={avatar}
+                  srcSet={AVATAR_FALLBACK_SRC_SET}
+                  sizes={AVATAR_MODAL_SIZES}
+                  alt={name}
+                  className="avatar-modal-img"
+                  width={720}
+                  height={720}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
             </div>
             <button className="avatar-modal-close" onClick={closeModal} aria-label="Close">x</button>
           </div>

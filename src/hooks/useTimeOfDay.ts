@@ -47,17 +47,35 @@ export function useTimeOfDay() {
       applyTimeFlowVariables(now)
     }
 
-    apply()
+    let timeout = 0
 
-    let timeout: ReturnType<typeof setTimeout>
     const schedule = () => {
-      timeout = setTimeout(() => {
+      timeout = window.setTimeout(() => {
         apply()
         schedule()
       }, msUntilNextTimeFlowTick())
     }
-    schedule()
 
-    return () => clearTimeout(timeout)
+    const handleVisibilityChange = () => {
+      window.clearTimeout(timeout)
+
+      if (!document.hidden) {
+        apply()
+        schedule()
+      }
+    }
+
+    apply()
+
+    if (!document.hidden) {
+      schedule()
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    return () => {
+      window.clearTimeout(timeout)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
   }, [])
 }
