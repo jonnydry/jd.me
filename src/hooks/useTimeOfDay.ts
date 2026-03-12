@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 
 type TimePeriod = 'morning' | 'afternoon' | 'dusk' | 'night'
-const TIME_FLOW_STEP_MS = 30_000
 
 function getTimePeriod(hour: number): TimePeriod {
   if (hour >= 6 && hour < 12) return 'morning'
@@ -15,10 +14,10 @@ function getDayProgress(now: Date): number {
   return minutes / 1440
 }
 
-function msUntilNextTimeFlowTick(): number {
-  const now = Date.now()
-  const remainder = now % TIME_FLOW_STEP_MS
-  return remainder === 0 ? TIME_FLOW_STEP_MS : TIME_FLOW_STEP_MS - remainder
+function msUntilNextHour(now: Date): number {
+  const next = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() + 1, 0, 0, 0)
+  const ms = next.getTime() - now.getTime()
+  return ms > 0 ? ms : 36e5
 }
 
 function applyTimeFlowVariables(now: Date): void {
@@ -50,10 +49,11 @@ export function useTimeOfDay() {
     let timeout = 0
 
     const schedule = () => {
+      const now = new Date()
       timeout = window.setTimeout(() => {
         apply()
         schedule()
-      }, msUntilNextTimeFlowTick())
+      }, msUntilNextHour(now))
     }
 
     const handleVisibilityChange = () => {

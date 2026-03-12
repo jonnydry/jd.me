@@ -145,7 +145,7 @@
   --accent: hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit));
   --accent-glow: hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.07);
   --accent-hover: hsl(var(--accent-hue) var(--accent-sat) min(calc(var(--accent-lit) + 7%), 100%));
-  animation: colorDrift 36s ease-in-out infinite;
+  animation: colorDrift 54s ease-in-out infinite;
 }
 
 /* ========== Theme: Rose ========== */
@@ -156,7 +156,7 @@
   --accent-hue: 335;
   --accent-sat: 85%;
   --accent-lit: 65%;
-  animation: colorDriftRose 36s ease-in-out infinite;
+  animation: colorDriftRose 54s ease-in-out infinite;
 }
 
 /* ========== Theme: Paper ========== */
@@ -170,7 +170,7 @@
   --accent-sat: 75%;
   --accent-lit: 40%;
   --theme-line-boost: 1.75;
-  animation: colorDriftPaper 55s ease-in-out infinite;
+  animation: colorDriftPaper 82s ease-in-out infinite;
 }
 
 /* ========== Theme: Ember ========== */
@@ -184,7 +184,7 @@
   --accent-sat: 96%;
   --accent-lit: 62%;
   --theme-line-boost: 1.65;
-  animation: colorDriftEmber 42s ease-in-out infinite;
+  animation: colorDriftEmber 63s ease-in-out infinite;
 }
 
 /* ========== Theme: Dusk ========== */
@@ -198,7 +198,7 @@
   --accent-sat: 78%;
   --accent-lit: 62%;
   --theme-line-boost: 1.35;
-  animation: colorDriftDusk 46s ease-in-out infinite;
+  animation: colorDriftDusk 69s ease-in-out infinite;
 }
 
 /* ========== Theme: Harbor ========== */
@@ -212,21 +212,21 @@
   --accent-sat: 68%;
   --accent-lit: 36%;
   --theme-line-boost: 1.75;
-  animation: colorDriftHarbor 52s ease-in-out infinite;
+  animation: colorDriftHarbor 78s ease-in-out infinite;
 }
 
-/* ========== Theme: Pine ========== */
+/* ========== Theme: Pine (light) ========== */
 :root[data-theme="pine"] {
-  --bg: #030704;
-  --surface: #080e09;
-  --border: #0f1810;
-  --text: #e8f0e9;
-  --text-muted: #5a7a5e;
+  --bg: #f5f4f0;
+  --surface: #ebe9e3;
+  --border: #c9d4c5;
+  --text: #2a3328;
+  --text-muted: #6b7a66;
   --accent-hue: 148;
-  --accent-sat: 22%;
-  --accent-lit: 58%;
-  --theme-line-boost: 1.55;
-  animation: colorDriftPine 44s ease-in-out infinite;
+  --accent-sat: 32%;
+  --accent-lit: 40%;
+  --theme-line-boost: 1.75;
+  animation: colorDriftPine 66s ease-in-out infinite;
 }
 
 /* ========== Theme: Stone ========== */
@@ -240,7 +240,7 @@
   --accent-sat: 7%;
   --accent-lit: 74%;
   --theme-line-boost: 1.5;
-  animation: colorDriftStone 44s ease-in-out infinite;
+  animation: colorDriftStone 66s ease-in-out infinite;
 }
 
 * {
@@ -287,7 +287,7 @@ body::before {
   z-index: 0;
 }
 
-/* Laser-etch accent lines */
+/* Laser-etch accent lines — 8 gradients (down from 16) for lower GPU cost */
 body::after {
   content: '';
   position: fixed;
@@ -295,7 +295,6 @@ body::after {
   pointer-events: none;
   z-index: 0;
   background:
-    /* Group A — Top diagonal matrix */
     linear-gradient(
       var(--line-angle-a),
       transparent 42%,
@@ -311,21 +310,6 @@ body::after {
       transparent 43.88%
     ),
     linear-gradient(
-      calc(var(--line-angle-a) + 6deg),
-      transparent 45.15%,
-      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.045 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 45.15%,
-      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.045 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 45.21%,
-      transparent 45.21%
-    ),
-    linear-gradient(
-      calc(var(--line-angle-a) - 4deg),
-      transparent 40.2%,
-      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.028 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 40.2%,
-      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.028 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 40.25%,
-      transparent 40.25%
-    ),
-    /* Group B — Top cross + horizontal matrix */
-    linear-gradient(
       var(--line-angle-b1),
       transparent 68%,
       hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.10 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 68%,
@@ -339,22 +323,6 @@ body::after {
       hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.06 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 24.03%,
       transparent 24.03%
     ),
-    linear-gradient(
-      calc(var(--line-angle-b1) + 8deg),
-      transparent 69.8%,
-      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.048 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 69.8%,
-      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.048 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 69.86%,
-      transparent 69.86%
-    ),
-    linear-gradient(
-      calc(var(--line-angle-b2) - 4deg),
-      transparent 22.7%,
-      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.028 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 22.7%,
-      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.028 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 22.75%,
-      transparent 22.75%
-    ),
-
-    /* Group C — Bottom diagonal matrix */
     linear-gradient(
       var(--line-angle-c),
       transparent 18%,
@@ -370,21 +338,6 @@ body::after {
       transparent 16.28%
     ),
     linear-gradient(
-      calc(var(--line-angle-c) - 7deg),
-      transparent 20.45%,
-      hsl(calc(var(--line-hue-c) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.046 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 20.45%,
-      hsl(calc(var(--line-hue-c) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.046 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 20.51%,
-      transparent 20.51%
-    ),
-    linear-gradient(
-      calc(var(--line-angle-c) + 5deg),
-      transparent 14.5%,
-      hsl(calc(var(--line-hue-c) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.026 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 14.5%,
-      hsl(calc(var(--line-hue-c) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.026 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 14.56%,
-      transparent 14.56%
-    ),
-    /* Group D — Bottom cross + horizontal matrix */
-    linear-gradient(
       var(--line-angle-d1),
       transparent 76%,
       hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.08 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 76%,
@@ -397,21 +350,13 @@ body::after {
       hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.05 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 79%,
       hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.05 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 79.03%,
       transparent 79.03%
-    ),
-    linear-gradient(
-      calc(var(--line-angle-d1) + 10deg),
-      transparent 73.9%,
-      hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.04 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 73.9%,
-      hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.04 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 73.96%,
-      transparent 73.96%
-    ),
-    linear-gradient(
-      calc(var(--line-angle-d2) - 3deg),
-      transparent 81.3%,
-      hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.026 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 81.3%,
-      hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--accent-sat) var(--accent-lit) / calc(0.026 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 81.36%,
-      transparent 81.36%
     );
+}
+
+/* Pause all animations when tab is hidden — saves CPU/GPU */
+html.page-hidden,
+html.page-hidden * {
+  animation-play-state: paused !important;
 }
 
 :root[data-performance="reduced"] {
@@ -484,9 +429,15 @@ body::after {
 
 :root[data-performance="reduced"] html::after {
   opacity: 0.025;
+  background-image: none;
 }
 
-/* Film grain overlay */
+:root[data-performance="reduced"] .avatar-modal {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Film grain overlay - disabled in reduced mode (feTurbulence is memory-heavy) */
 html::after {
   content: '';
   position: fixed;
@@ -494,7 +445,7 @@ html::after {
   z-index: 9999;
   pointer-events: none;
   opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 300px 300px;
   transform: translateZ(0);
 }
@@ -611,7 +562,7 @@ html::after {
   height: 88px;
   border-radius: 50%;
   overflow: hidden;
-  animation: avatarPulse 18s ease-in-out infinite;
+  animation: avatarPulse 27s ease-in-out infinite;
   cursor: pointer;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   contain: paint;
@@ -652,7 +603,7 @@ html::after {
   color: var(--text);
   margin-bottom: 0.25rem;
   letter-spacing: -0.02em;
-  animation: namePulse 18s ease-in-out infinite;
+  animation: namePulse 27s ease-in-out infinite;
 }
 
 .handle {
@@ -712,7 +663,7 @@ html::after {
   height: min(70vw, 70vh, 360px);
   border-radius: 50%;
   overflow: hidden;
-  animation: avatarPulse 18s ease-in-out infinite;
+  animation: avatarPulse 27s ease-in-out infinite;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   contain: paint;
 }
@@ -1159,22 +1110,22 @@ html::after {
 @keyframes colorDriftPine {
   /*
     Line groups stay in the cool, muted pine range (130–162°) — no yellow-green.
-    Low saturation and higher lightness for a pale, soft sage/moss feel.
+    Accent tuned for light cream background — slightly richer saturation, darker for contrast.
   */
   0%, 100% {
-    --accent-hue: 148; --accent-sat: 22%; --accent-lit: 58%;
+    --accent-hue: 148; --accent-sat: 32%; --accent-lit: 40%;
     --line-hue-a: 132; --line-hue-b: 148; --line-hue-c: 158; --line-hue-d: 140;
   }
   25% {
-    --accent-hue: 138; --accent-sat: 24%; --accent-lit: 62%;
+    --accent-hue: 138; --accent-sat: 34%; --accent-lit: 42%;
     --line-hue-a: 148; --line-hue-b: 158; --line-hue-c: 140; --line-hue-d: 132;
   }
   50% {
-    --accent-hue: 158; --accent-sat: 20%; --accent-lit: 55%;
+    --accent-hue: 158; --accent-sat: 30%; --accent-lit: 38%;
     --line-hue-a: 158; --line-hue-b: 140; --line-hue-c: 132; --line-hue-d: 148;
   }
   75% {
-    --accent-hue: 134; --accent-sat: 23%; --accent-lit: 60%;
+    --accent-hue: 134; --accent-sat: 33%; --accent-lit: 41%;
     --line-hue-a: 140; --line-hue-b: 132; --line-hue-c: 148; --line-hue-d: 158;
   }
 }
@@ -1324,11 +1275,11 @@ html::after {
 
 @media (prefers-reduced-motion: no-preference) {
   /* Default / afternoon — gentle drift */
-  body { animation: lineGeometryAfternoon 90s ease-in-out infinite; }
+  body { animation: lineGeometryAfternoon 120s ease-in-out infinite; }
 
-  [data-time="morning"] body { animation: lineGeometryMorning 75s ease-in-out infinite; }
-  [data-time="dusk"] body    { animation: lineGeometryDusk 90s ease-in-out infinite; }
-  [data-time="night"] body   { animation: lineGeometryNight 120s ease-in-out infinite; }
+  [data-time="morning"] body { animation: lineGeometryMorning 100s ease-in-out infinite; }
+  [data-time="dusk"] body    { animation: lineGeometryDusk 120s ease-in-out infinite; }
+  [data-time="night"] body   { animation: lineGeometryNight 160s ease-in-out infinite; }
 }
 
 @keyframes hintFade {

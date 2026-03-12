@@ -1,6 +1,5 @@
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { writingSamples } from '../config/writing'
 import type { ContentBlock, WritingSample } from '../config/writing'
 import { useScrollProgress } from '../hooks/useScrollProgress'
 import ThemeToggle from './ThemeToggle'
@@ -157,10 +156,15 @@ export default function WritingPage() {
   const location = useLocation()
   const navigate = useNavigate()
   const progressRef = useRef<HTMLDivElement>(null)
+  const [writingSamples, setWritingSamples] = useState<WritingSample[] | null>(null)
+
+  useEffect(() => {
+    import('../config/writing').then((m) => setWritingSamples(m.writingSamples))
+  }, [])
 
   const match = location.pathname.match(/^\/writing\/(.+)$/)
   const slug = match?.[1]
-  const sample = slug ? writingSamples.find((s) => s.slug === slug) : null
+  const sample = slug && writingSamples ? writingSamples.find((s) => s.slug === slug) : null
 
   useScrollProgress(progressRef, slug ?? 'list')
 
@@ -172,6 +176,22 @@ export default function WritingPage() {
         window.matchMedia('(prefers-reduced-motion: reduce)').matches
       el.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' })
     }
+  }
+
+  if (!writingSamples) {
+    return (
+      <main className="app app--top">
+        <div className="writing">
+          <button className="resume-back" onClick={() => navigate('/')}>
+            <span className="resume-back-arrow">←</span> links
+          </button>
+          <ThemeToggle />
+          <p className="writing-page-desc" style={{ marginTop: '2rem', opacity: 0.7 }}>
+            Loading…
+          </p>
+        </div>
+      </main>
+    )
   }
 
   if (sample) {

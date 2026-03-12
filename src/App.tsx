@@ -122,6 +122,7 @@ function App() {
     }
 
     const handleVisibilityChange = () => {
+      document.documentElement.classList.toggle('page-hidden', document.hidden)
       if (document.hidden) {
         startCycling()
       } else {
@@ -132,6 +133,7 @@ function App() {
     const handleFocus = () => stopCycling()
     const handleBlur = () => startCycling()
 
+    document.documentElement.classList.toggle('page-hidden', document.hidden)
     if (document.hidden) startCycling()
 
     document.addEventListener('visibilitychange', handleVisibilityChange)
@@ -139,6 +141,7 @@ function App() {
     window.addEventListener('focus', handleFocus)
 
     return () => {
+      document.documentElement.classList.remove('page-hidden')
       stopCycling()
       document.removeEventListener('visibilitychange', handleVisibilityChange)
       window.removeEventListener('blur', handleBlur)
