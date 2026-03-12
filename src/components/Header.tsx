@@ -153,14 +153,35 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
 
   const avatarWrapRef = useRef<HTMLDivElement>(null)
   const avatarModalWrapRef = useRef<HTMLDivElement>(null)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+  const lastFocusedRef = useRef<HTMLElement | null>(null)
   const avatarTilt = useAvatarTilt(avatarWrapRef, 1.08, reducedMotion.current)
   const modalAvatarTilt = useAvatarTilt(avatarModalWrapRef, 1.02, reducedMotion.current)
+
+  useEffect(() => {
+    if (!modalOpen) return
+
+    lastFocusedRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    const rafId = window.requestAnimationFrame(() => {
+      closeButtonRef.current?.focus()
+    })
+
+    return () => {
+      window.cancelAnimationFrame(rafId)
+      document.body.style.overflow = previousOverflow
+      lastFocusedRef.current?.focus()
+    }
+  }, [modalOpen])
 
   return (
     <header className="header">
       <div
         ref={avatarWrapRef}
         className="avatar-wrap"
+        aria-label={`Open photo of ${name}`}
         onClick={() => setModalOpen(true)}
         role="button"
         tabIndex={0}
@@ -176,7 +197,7 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
             type="image/avif"
           />
           <img
-            src="/avatar-360.jpg"
+            src={avatar}
             srcSet={AVATAR_FALLBACK_SRC_SET}
             sizes={AVATAR_SIZES}
             alt=""
@@ -185,7 +206,7 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
             height={720}
             loading="eager"
             decoding="async"
-            fetchpriority="high"
+            fetchPriority="high"
           />
         </picture>
       </div>
@@ -196,7 +217,13 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
       </p>
 
       {modalOpen && createPortal(
-        <div className="avatar-modal" onClick={closeModal}>
+        <div
+          className="avatar-modal"
+          onClick={closeModal}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${name} photo`}
+        >
           <div className="avatar-modal-inner" onClick={(e) => e.stopPropagation()}>
             <div
               ref={avatarModalWrapRef}
@@ -224,7 +251,14 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
                 />
               </picture>
             </div>
-            <button className="avatar-modal-close" onClick={closeModal} aria-label="Close">x</button>
+            <button
+              ref={closeButtonRef}
+              className="avatar-modal-close"
+              onClick={closeModal}
+              aria-label="Close"
+            >
+              x
+            </button>
           </div>
         </div>,
         document.body

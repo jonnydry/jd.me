@@ -54,6 +54,8 @@ export default function LinkCard({ link, index }: LinkCardProps) {
   return (
     <a
       ref={rowRef}
+      data-shortcut={index + 1}
+      aria-keyshortcuts={String(index + 1)}
       href={link.url}
       target={link.internal ? undefined : '_blank'}
       rel={link.internal ? undefined : 'noopener noreferrer'}

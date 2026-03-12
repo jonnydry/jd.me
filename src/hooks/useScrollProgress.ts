@@ -44,6 +44,8 @@ export function useScrollProgress(ref: React.RefObject<HTMLDivElement>, key?: st
       }
     }
 
-    return () => cleanup()
+    return () => {
+      cleanup?.()
+    }
   }, [ref, key])
 }

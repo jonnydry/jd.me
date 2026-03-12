@@ -1,9 +1,14 @@
-import { useRef, useState, useEffect } from 'react'
+import { Fragment, useRef, useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import type { ContentBlock, WritingSample } from '../config/writing'
 import { useScrollProgress } from '../hooks/useScrollProgress'
 import ThemeToggle from './ThemeToggle'
 import { useGlow } from '../hooks/useGlow'
+
+function normalizePathname(pathname: string) {
+  if (pathname === '/') return pathname
+  return pathname.endsWith('/') ? pathname.slice(0, -1) : pathname
+}
 
 function slugify(text: string) {
   return text
@@ -43,10 +48,24 @@ function getResponsiveImageSources(src: string) {
   }
 }
 
+function renderInlineText(text: string) {
+  const parts = text.split(/(\*[^*]+\*)/g)
+
+  if (parts.length === 1) return text
+
+  return parts.map((part, index) => {
+    if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
+      return <em key={index}>{part.slice(1, -1)}</em>
+    }
+
+    return <Fragment key={index}>{part}</Fragment>
+  })
+}
+
 function ContentRenderer({ block }: { block: ContentBlock }) {
   switch (block.type) {
     case 'paragraph':
-      return <p className="writing-body-p">{block.text}</p>
+      return <p className="writing-body-p">{renderInlineText(block.text)}</p>
     case 'heading':
       return (
         <h2 id={slugify(block.text)} className="writing-body-heading">
@@ -56,9 +75,9 @@ function ContentRenderer({ block }: { block: ContentBlock }) {
     case 'quote':
       return (
         <blockquote className="writing-blockquote">
-          <p>{block.text}</p>
+          <p>{renderInlineText(block.text)}</p>
           {block.attribution && (
-            <cite className="writing-blockquote-cite">{block.attribution}</cite>
+            <cite className="writing-blockquote-cite">{renderInlineText(block.attribution)}</cite>
           )}
         </blockquote>
       )
@@ -67,11 +86,11 @@ function ContentRenderer({ block }: { block: ContentBlock }) {
         <div className="writing-verse">
           {block.lines.map((line, i) => (
             <span key={i} className="writing-verse-line">
-              {line || '\u00A0'}
+              {line ? renderInlineText(line) : '\u00A0'}
             </span>
           ))}
           {block.attribution && (
-            <cite className="writing-verse-cite">{block.attribution}</cite>
+            <cite className="writing-verse-cite">{renderInlineText(block.attribution)}</cite>
           )}
         </div>
       )
@@ -97,12 +116,12 @@ function ContentRenderer({ block }: { block: ContentBlock }) {
               height={1600}
               loading="lazy"
               decoding="async"
-              fetchpriority="low"
+              fetchPriority="low"
             />
           </picture>
           {block.caption && (
             <figcaption className="writing-figure-caption">
-              {block.caption}
+              {renderInlineText(block.caption)}
             </figcaption>
           )}
         </figure>
@@ -114,7 +133,7 @@ function ContentRenderer({ block }: { block: ContentBlock }) {
           <h2 className="writing-body-heading">Works Cited</h2>
           <ul className="writing-citations-list">
             {block.entries.map((entry, i) => (
-              <li key={i}>{entry}</li>
+              <li key={i}>{renderInlineText(entry)}</li>
             ))}
           </ul>
         </section>
@@ -140,9 +159,9 @@ function WritingListItem({ sample, index }: { sample: WritingSample; index: numb
       <span className="writing-list-item-glow" />
       <div className="writing-list-item-top">
         <h2 className="writing-list-item-title">{sample.title}</h2>
-        <time className="writing-list-item-date">{sample.date}</time>
+        <time className="writing-list-item-date" dateTime={sample.date}>{sample.date}</time>
       </div>
-      <p className="writing-list-item-excerpt">{sample.excerpt}</p>
+      <p className="writing-list-item-excerpt">{renderInlineText(sample.excerpt)}</p>
       <div className="writing-list-item-tags">
         {sample.tags.map((tag) => (
           <span key={tag} className="writing-tag">{tag}</span>
@@ -162,8 +181,10 @@ export default function WritingPage() {
     import('../config/writing').then((m) => setWritingSamples(m.writingSamples))
   }, [])
 
-  const match = location.pathname.match(/^\/writing\/(.+)$/)
+  const normalizedPathname = normalizePathname(location.pathname)
+  const match = normalizedPathname.match(/^\/writing\/(.+)$/)
   const slug = match?.[1]
+  const isDetailRoute = Boolean(slug)
   const sample = slug && writingSamples ? writingSamples.find((s) => s.slug === slug) : null
 
   useScrollProgress(progressRef, slug ?? 'list')
@@ -210,10 +231,10 @@ export default function WritingPage() {
             <header id="introduction" className="writing-detail-header">
               <h1 className="writing-detail-title">{sample.title}</h1>
               {sample.subtitle && (
-                <p className="writing-detail-subtitle">{sample.subtitle}</p>
+                <p className="writing-detail-subtitle">{renderInlineText(sample.subtitle)}</p>
               )}
               <div className="writing-detail-meta">
-                <time className="writing-detail-date">{sample.date}</time>
+                <time className="writing-detail-date" dateTime={sample.date}>{sample.date}</time>
                 <div className="writing-detail-tags">
                   {sample.tags.map((tag) => (
                     <span key={tag} className="writing-tag">{tag}</span>
@@ -241,6 +262,25 @@ export default function WritingPage() {
               ))}
             </div>
           </article>
+        </div>
+      </main>
+    )
+  }
+
+  if (isDetailRoute) {
+    return (
+      <main className="app app--top">
+        <div className="scroll-progress" ref={progressRef} />
+        <div className="writing">
+          <button className="resume-back" onClick={() => navigate('/writing')}>
+            <span className="resume-back-arrow">←</span> writing
+          </button>
+          <ThemeToggle />
+
+          <header className="writing-header" style={{ animationDelay: '80ms' }}>
+            <h1 className="writing-page-title">Sample not found</h1>
+            <p className="writing-page-desc">That writing sample does not exist.</p>
+          </header>
         </div>
       </main>
     )

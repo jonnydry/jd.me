@@ -2,7 +2,6 @@ import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { profile } from './config/profile'
 import { links, isGroup } from './config/links'
-import type { LinkItem } from './config/links'
 import { ThemeProvider } from './ThemeContext'
 import { useTimeOfDay } from './hooks/useTimeOfDay'
 import Header from './components/Header'
@@ -15,13 +14,34 @@ const WritingPage = lazy(() => import('./components/WritingPage'))
 
 const TAB_TITLES = ['Jonny D | Links', 'Jonny D | vibecoder', 'Jonny D | 🎸', 'Jonny D | writer']
 
-// Flatten links for keyboard shortcuts (groups expand to children)
-const flatLinks: LinkItem[] = links.flatMap((entry) =>
-  isGroup(entry) ? entry.children : [entry]
-)
+function normalizePathname(pathname: string) {
+  if (pathname === '/') return pathname
+  return pathname.endsWith('/') ? pathname.slice(0, -1) : pathname
+}
+
+function NotFoundPage() {
+  const navigate = useNavigate()
+
+  return (
+    <main className="app app--top">
+      <div className="resume">
+        <button className="resume-back" onClick={() => navigate('/')}>
+          <span className="resume-back-arrow">←</span> links
+        </button>
+        <ThemeToggle />
+
+        <header className="resume-header">
+          <h1 className="resume-name">Page not found</h1>
+          <p className="resume-contact">That route does not exist.</p>
+        </header>
+      </div>
+    </main>
+  )
+}
 
 function LinksPage() {
   let rowIndex = 0
+  const shortcutCount = Math.min(links.length, 9)
 
   return (
     <main className="app">
@@ -43,7 +63,9 @@ function LinksPage() {
             })}
           </div>
         </section>
-        <p className="keyboard-hint" aria-hidden="true">press 1–9 to navigate</p>
+        <p className="keyboard-hint" aria-hidden="true">
+          {shortcutCount === 1 ? 'press 1 to navigate' : `press 1-${shortcutCount} to navigate`}
+        </p>
       </div>
     </main>
   )
@@ -52,8 +74,11 @@ function LinksPage() {
 function App() {
   useTimeOfDay()
   const location = useLocation()
-  const navigate = useNavigate()
-  const pageIndex = location.pathname.startsWith('/writing') ? 2 : location.pathname === '/resume' ? 1 : 0
+  const normalizedPathname = normalizePathname(location.pathname)
+  const isHomeRoute = normalizedPathname === '/'
+  const isResumeRoute = normalizedPathname === '/resume'
+  const isWritingRoute = /^\/writing(?:\/[^/]+)?$/.test(normalizedPathname)
+  const pageIndex = isWritingRoute ? 2 : isResumeRoute ? 1 : isHomeRoute ? 0 : -1
   const [animated, setAnimated] = useState(false)
   const resumePageRef = useRef<HTMLDivElement>(null)
   const writingPageRef = useRef<HTMLDivElement>(null)
@@ -74,8 +99,10 @@ function App() {
     }
   }, [pageIndex, location.pathname])
 
-  // Keyboard shortcuts: 1-N open flat links
+  // Keyboard shortcuts: 1-N activate visible home-page rows
   useEffect(() => {
+    if (pageIndex !== 0) return
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (
         e.target instanceof HTMLInputElement ||
@@ -86,18 +113,15 @@ function App() {
       if (e.ctrlKey || e.metaKey || e.altKey) return
 
       const num = parseInt(e.key, 10)
-      if (num >= 1 && num <= flatLinks.length) {
-        const link = flatLinks[num - 1]
-        if (link && link.internal) {
-          navigate(link.url)
-        } else if (link && link.url !== '#') {
-          window.open(link.url, '_blank', 'noopener,noreferrer')
-        }
+      if (num >= 1 && num <= Math.min(links.length, 9)) {
+        const shortcutTarget = document.querySelector<HTMLElement>(`[data-shortcut="${num}"]`)
+        shortcutTarget?.click()
+        shortcutTarget?.focus()
       }
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [navigate])
+  }, [pageIndex])
 
   // Custom tab title when tab is not focused
   useEffect(() => {
@@ -251,6 +275,14 @@ function App() {
       }
     }
   }, [])
+
+  if (pageIndex === -1) {
+    return (
+      <ThemeProvider>
+        <NotFoundPage />
+      </ThemeProvider>
+    )
+  }
 
   return (
     <ThemeProvider>

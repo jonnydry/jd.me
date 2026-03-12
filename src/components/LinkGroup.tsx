@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useId, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { LinkGroup as LinkGroupType, LinkItem } from '../config/links'
 import { GitHub, Twitter, LinkedIn, Globe, Quill, Mail, FileText, Monitor, Heart, Wallet, Coffee, Gamepad, ArrowRight } from './Icons'
@@ -84,6 +84,7 @@ export default function LinkGroup({ group, index }: LinkGroupProps) {
   const [open, setOpen] = useState(false)
   const rowRef = useRef<HTMLDivElement>(null)
   const IconComponent = group.icon ? IconMap[group.icon] : ArrowRight
+  const childrenId = useId()
 
   const glowHandlers = useGlow(rowRef)
 
@@ -91,6 +92,10 @@ export default function LinkGroup({ group, index }: LinkGroupProps) {
     <div className="link-group" style={{ animationDelay: `${index * 60}ms` }}>
       <div
         ref={rowRef}
+        data-shortcut={index + 1}
+        aria-keyshortcuts={String(index + 1)}
+        aria-expanded={open}
+        aria-controls={childrenId}
         className={`link-row link-row--group ${open ? 'link-row--open' : ''}`}
         role="button"
         tabIndex={0}
@@ -109,7 +114,10 @@ export default function LinkGroup({ group, index }: LinkGroupProps) {
         <span className="link-row-desc">{group.children.length} links</span>
         <span className={`link-row-chevron ${open ? 'link-row-chevron--open' : ''}`}>▾</span>
       </div>
-      <div className={`link-group-children ${open ? 'link-group-children--open' : ''}`}>
+      <div
+        id={childrenId}
+        className={`link-group-children ${open ? 'link-group-children--open' : ''}`}
+      >
         <div className="link-group-children-inner">
           {group.children.map((child) => (
             <ChildRow key={child.url} link={child} />
