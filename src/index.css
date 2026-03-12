@@ -221,10 +221,10 @@
   --surface: #080e09;
   --border: #0f1810;
   --text: #e8f0e9;
-  --text-muted: #4d6e51;
+  --text-muted: #5a7a5e;
   --accent-hue: 148;
-  --accent-sat: 42%;
-  --accent-lit: 46%;
+  --accent-sat: 22%;
+  --accent-lit: 58%;
   --theme-line-boost: 1.55;
   animation: colorDriftPine 44s ease-in-out infinite;
 }
@@ -1160,22 +1160,22 @@ html::after {
 @keyframes colorDriftPine {
   /*
     Line groups stay in the cool, muted pine range (130–162°) — no yellow-green.
-    Saturation kept low to evoke pine needles, deep fir, shadowed bark rather than neon.
+    Low saturation and higher lightness for a pale, soft sage/moss feel.
   */
   0%, 100% {
-    --accent-hue: 148; --accent-sat: 42%; --accent-lit: 46%;
+    --accent-hue: 148; --accent-sat: 22%; --accent-lit: 58%;
     --line-hue-a: 132; --line-hue-b: 148; --line-hue-c: 158; --line-hue-d: 140;
   }
   25% {
-    --accent-hue: 138; --accent-sat: 46%; --accent-lit: 50%;
+    --accent-hue: 138; --accent-sat: 24%; --accent-lit: 62%;
     --line-hue-a: 148; --line-hue-b: 158; --line-hue-c: 140; --line-hue-d: 132;
   }
   50% {
-    --accent-hue: 158; --accent-sat: 38%; --accent-lit: 42%;
+    --accent-hue: 158; --accent-sat: 20%; --accent-lit: 55%;
     --line-hue-a: 158; --line-hue-b: 140; --line-hue-c: 132; --line-hue-d: 148;
   }
   75% {
-    --accent-hue: 134; --accent-sat: 44%; --accent-lit: 48%;
+    --accent-hue: 134; --accent-sat: 23%; --accent-lit: 60%;
     --line-hue-a: 140; --line-hue-b: 132; --line-hue-c: 148; --line-hue-d: 158;
   }
 }
