@@ -137,6 +137,10 @@
   --accent-hue: 212;
   --accent-sat: 100%;
   --accent-lit: 67%;
+  --line-hue-a: 212;
+  --line-hue-b: 212;
+  --line-hue-c: 212;
+  --line-hue-d: 212;
   --line-sat: var(--accent-sat);
   --line-lit: var(--accent-lit);
   --time-hue-flow: 0;
@@ -163,6 +167,10 @@
   --accent-hue: 335;
   --accent-sat: 85%;
   --accent-lit: 65%;
+  --line-hue-a: 335;
+  --line-hue-b: 335;
+  --line-hue-c: 335;
+  --line-hue-d: 335;
   --theme-line-boost: 1.7;
   animation: colorDriftRose 54s ease-in-out infinite;
 }
@@ -177,6 +185,10 @@
   --accent-hue: 215;
   --accent-sat: 75%;
   --accent-lit: 40%;
+  --line-hue-a: 340;
+  --line-hue-b: 145;
+  --line-hue-c: 30;
+  --line-hue-d: 275;
   --theme-line-boost: 1.75;
   animation: colorDriftPaper 82s ease-in-out infinite;
 }
@@ -191,6 +203,10 @@
   --accent-hue: 28;
   --accent-sat: 96%;
   --accent-lit: 48%;
+  --line-hue-a: 4;
+  --line-hue-b: 22;
+  --line-hue-c: 38;
+  --line-hue-d: 54;
   --theme-line-boost: 1.65;
   animation: colorDriftEmber 63s ease-in-out infinite;
 }
@@ -205,6 +221,10 @@
   --accent-hue: 272;
   --accent-sat: 78%;
   --accent-lit: 62%;
+  --line-hue-a: 278;
+  --line-hue-b: 28;
+  --line-hue-c: 262;
+  --line-hue-d: 38;
   --theme-line-boost: 1.75;
   --line-sat: 88%;
   --line-lit: 68%;
@@ -226,6 +246,10 @@
   --accent-hue: 205;
   --accent-sat: 68%;
   --accent-lit: 36%;
+  --line-hue-a: 220;
+  --line-hue-b: 175;
+  --line-hue-c: 205;
+  --line-hue-d: 215;
   --theme-line-boost: 1.75;
   animation: colorDriftHarbor 78s ease-in-out infinite;
 }
@@ -240,6 +264,10 @@
   --accent-hue: 148;
   --accent-sat: 32%;
   --accent-lit: 40%;
+  --line-hue-a: 132;
+  --line-hue-b: 148;
+  --line-hue-c: 158;
+  --line-hue-d: 140;
   --theme-line-boost: 1.75;
   animation: colorDriftPine 66s ease-in-out infinite;
 }
@@ -254,6 +282,10 @@
   --accent-hue: 28;
   --accent-sat: 7%;
   --accent-lit: 74%;
+  --line-hue-a: 28;
+  --line-hue-b: 28;
+  --line-hue-c: 28;
+  --line-hue-d: 28;
   --theme-line-boost: 1.5;
   animation: colorDriftStone 66s ease-in-out infinite;
 }
@@ -948,7 +980,7 @@ html::after {
 
 .link-row--child {
   padding-left: 3.75rem;
-  border-bottom: 1px solid rgba(33, 38, 45, 0.6);
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
 }
 
 .link-row--child .link-row-title {
