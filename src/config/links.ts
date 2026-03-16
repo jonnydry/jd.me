@@ -2,14 +2,14 @@ export interface LinkItem {
   title: string
   url: string
   desc?: string
-  icon?: 'github' | 'twitter' | 'linkedin' | 'globe' | 'quill' | 'mail' | 'file' | 'monitor' | 'heart' | 'wallet' | 'coffee' | 'gamepad'
+  icon?: 'github' | 'twitter' | 'linkedin' | 'globe' | 'quill' | 'mail' | 'file' | 'monitor' | 'heart' | 'wallet' | 'coffee' | 'gamepad' | 'lighthouse'
   iconSrc?: string
   internal?: boolean
 }
 
 export interface LinkGroup {
   label: string
-  icon?: 'github' | 'twitter' | 'linkedin' | 'globe' | 'quill' | 'mail' | 'file' | 'monitor' | 'heart' | 'wallet' | 'coffee' | 'gamepad'
+  icon?: 'github' | 'twitter' | 'linkedin' | 'globe' | 'quill' | 'mail' | 'file' | 'monitor' | 'heart' | 'wallet' | 'coffee' | 'gamepad' | 'lighthouse'
   children: LinkItem[]
 }
 
@@ -24,8 +24,8 @@ export const links: LinkEntry[] = [
     label: 'Live Projects',
     icon: 'monitor',
     children: [
-      { title: 'Sancho Poetry', url: 'https://sanchopoetry.com/', desc: 'Poetic reference and writing tool', icon: 'quill' },
-      { title: 'The Harbor', url: 'https://harborpoetry.com', desc: 'Personal poetry', icon: 'quill' },
+      { title: 'Sancho Poetry', url: 'https://sanchopoetry.com/', desc: 'Poetic reference and writing tool', iconSrc: '/sancho-logo.png' },
+      { title: 'The Harbor', url: 'https://harborpoetry.com', desc: 'Personal poetry', icon: 'lighthouse' },
       { title: 'EmuPhoria', url: 'https://emuphoria.com', desc: 'Vintage Game Emulator', icon: 'gamepad' },
     ],
   },

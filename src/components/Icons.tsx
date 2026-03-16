@@ -117,6 +117,30 @@ export function Gamepad(props: SVGProps<SVGSVGElement>) {
   )
 }
 
+export function Lighthouse(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      {/* Dome / cap */}
+      <path d="M10 5l1-2h2l1 2" />
+      {/* Lamp room */}
+      <path d="M10 5h4v3h-4z" />
+      {/* Light beams */}
+      <path d="M5.5 5.5l-2.5-1" />
+      <path d="M18.5 5.5l2.5-1" />
+      {/* Gallery / platform below lamp */}
+      <line x1="9" y1="8" x2="15" y2="8" />
+      {/* Tapered tower body */}
+      <path d="M10 8l-1.5 12h7l-1.5-12" />
+      {/* Stripe band */}
+      <line x1="9.5" y1="13" x2="14.5" y2="13" />
+      {/* Door */}
+      <path d="M11 20v-3a1 1 0 0 1 2 0v3" />
+      {/* Base */}
+      <line x1="7" y1="20" x2="17" y2="20" />
+    </svg>
+  )
+}
+
 export function ArrowRight(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
