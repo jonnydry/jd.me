@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { LinkItem } from '../config/links'
-import { GitHub, Twitter, LinkedIn, Globe, Quill, Mail, FileText, Monitor, Heart, Wallet, Coffee, Gamepad, Lighthouse, ArrowRight } from './Icons'
+import { GitHub, Twitter, LinkedIn, Globe, Quill, Mail, FileText, Monitor, Heart, Wallet, Coffee, Gamepad, Lighthouse, ArrowRight, Sancho } from './Icons'
 import { useGlow } from '../hooks/useGlow'
 
 interface LinkCardProps {
@@ -23,6 +23,7 @@ const IconMap = {
   coffee: Coffee,
   gamepad: Gamepad,
   lighthouse: Lighthouse,
+  sancho: Sancho,
 }
 
 export default function LinkCard({ link, index }: LinkCardProps) {
@@ -73,6 +74,8 @@ export default function LinkCard({ link, index }: LinkCardProps) {
       <span className="link-row-icon">
         {iconSrc ? (
           <img src={iconSrc} alt="" className="link-icon link-icon--img" width={24} height={24} />
+        ) : link.icon === 'sancho' ? (
+          <IconComponent className="link-icon" style={{ color: 'var(--accent)' }} />
         ) : (
           <IconComponent className="link-icon" />
         )}
