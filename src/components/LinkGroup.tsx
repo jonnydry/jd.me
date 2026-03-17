@@ -1,7 +1,7 @@
 import { useState, useCallback, useId, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { LinkGroup as LinkGroupType, LinkItem } from '../config/links'
-import { GitHub, Twitter, LinkedIn, Globe, Quill, Mail, FileText, Monitor, Heart, Wallet, Coffee, Gamepad, Lighthouse, ArrowRight, Sancho } from './Icons'
+import { GitHub, Twitter, LinkedIn, Globe, Quill, Mail, FileText, Monitor, Heart, Wallet, Coffee, Gamepad, Lighthouse, ArrowRight } from './Icons'
 import { useGlow } from '../hooks/useGlow'
 
 const IconMap = {
@@ -18,7 +18,6 @@ const IconMap = {
   coffee: Coffee,
   gamepad: Gamepad,
   lighthouse: Lighthouse,
-  sancho: Sancho,
 }
 
 interface LinkGroupProps {
@@ -29,7 +28,7 @@ interface LinkGroupProps {
 function ChildRow({ link }: { link: LinkItem }) {
   const rowRef = useRef<HTMLAnchorElement>(null)
   const navigate = useNavigate()
-  const IconComponent = link.icon ? IconMap[link.icon] : ArrowRight
+  const IconComponent = link.icon && link.icon !== 'sancho' ? IconMap[link.icon] : ArrowRight
   const iconSrc = link.iconSrc
 
   const glowHandlers = useGlow(rowRef)
@@ -71,6 +70,8 @@ function ChildRow({ link }: { link: LinkItem }) {
       <span className="link-row-icon">
         {iconSrc ? (
           <img src={iconSrc} alt="" className="link-icon link-icon--img" width={24} height={24} />
+        ) : link.icon === 'sancho' ? (
+          <span className="link-icon link-icon--sancho" aria-hidden="true" />
         ) : (
           <IconComponent className="link-icon" />
         )}
@@ -85,7 +86,7 @@ function ChildRow({ link }: { link: LinkItem }) {
 export default function LinkGroup({ group, index }: LinkGroupProps) {
   const [open, setOpen] = useState(false)
   const rowRef = useRef<HTMLDivElement>(null)
-  const IconComponent = group.icon ? IconMap[group.icon] : ArrowRight
+  const IconComponent = group.icon && group.icon !== 'sancho' ? IconMap[group.icon] : ArrowRight
   const childrenId = useId()
 
   const glowHandlers = useGlow(rowRef)
