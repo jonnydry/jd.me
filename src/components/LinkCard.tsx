@@ -26,8 +26,9 @@ const IconMap = {
 }
 
 export default function LinkCard({ link, index }: LinkCardProps) {
-  const IconComponent = link.icon && link.icon !== 'sancho' ? IconMap[link.icon] : ArrowRight
+  const IconComponent = link.icon ? IconMap[link.icon] : ArrowRight
   const iconSrc = link.iconSrc
+  const isSanchoIcon = iconSrc === '/sanchodarktransVector.svg'
   const rowRef = useRef<HTMLAnchorElement>(null)
   const navigate = useNavigate()
 
@@ -71,10 +72,10 @@ export default function LinkCard({ link, index }: LinkCardProps) {
       <span className="link-row-glow" />
       <span className="link-row-index">{String(index + 1).padStart(2, '0')}</span>
       <span className="link-row-icon">
-        {iconSrc ? (
+        {isSanchoIcon ? (
+          <span className="link-icon link-icon--sancho-mask" aria-hidden="true" />
+        ) : iconSrc ? (
           <img src={iconSrc} alt="" className="link-icon link-icon--img" width={24} height={24} />
-        ) : link.icon === 'sancho' ? (
-          <span className="link-icon link-icon--sancho" aria-hidden="true" />
         ) : (
           <IconComponent className="link-icon" />
         )}

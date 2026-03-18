@@ -28,8 +28,9 @@ interface LinkGroupProps {
 function ChildRow({ link }: { link: LinkItem }) {
   const rowRef = useRef<HTMLAnchorElement>(null)
   const navigate = useNavigate()
-  const IconComponent = link.icon && link.icon !== 'sancho' ? IconMap[link.icon] : ArrowRight
+  const IconComponent = link.icon ? IconMap[link.icon] : ArrowRight
   const iconSrc = link.iconSrc
+  const isSanchoIcon = iconSrc === '/sanchodarktransVector.svg'
 
   const glowHandlers = useGlow(rowRef)
 
@@ -68,10 +69,10 @@ function ChildRow({ link }: { link: LinkItem }) {
       <span className="link-row-glow" />
       <span className="link-row-index" />
       <span className="link-row-icon">
-        {iconSrc ? (
+        {isSanchoIcon ? (
+          <span className="link-icon link-icon--sancho-mask" aria-hidden="true" />
+        ) : iconSrc ? (
           <img src={iconSrc} alt="" className="link-icon link-icon--img" width={24} height={24} />
-        ) : link.icon === 'sancho' ? (
-          <span className="link-icon link-icon--sancho" aria-hidden="true" />
         ) : (
           <IconComponent className="link-icon" />
         )}
@@ -86,7 +87,7 @@ function ChildRow({ link }: { link: LinkItem }) {
 export default function LinkGroup({ group, index }: LinkGroupProps) {
   const [open, setOpen] = useState(false)
   const rowRef = useRef<HTMLDivElement>(null)
-  const IconComponent = group.icon && group.icon !== 'sancho' ? IconMap[group.icon] : ArrowRight
+  const IconComponent = group.icon ? IconMap[group.icon] : ArrowRight
   const childrenId = useId()
 
   const glowHandlers = useGlow(rowRef)

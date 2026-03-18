@@ -794,7 +794,7 @@ html::after {
 .link-row {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.625rem;
   padding: 0.875rem 0.75rem;
   text-decoration: none;
   color: inherit;
@@ -838,7 +838,7 @@ html::after {
 
 /* Index number */
 .link-row-index {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: var(--border);
   font-weight: 400;
   flex-shrink: 0;
@@ -858,35 +858,48 @@ html::after {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  width: 2.6rem;
 }
 
 .link-icon {
-  width: 20px;
-  height: 20px;
+  width: 28px;
+  height: 28px;
   color: var(--text-muted);
   transition: color 0.15s;
 }
 
-.link-icon--sancho {
-  display: block;
-  background-color: currentColor;
-  -webkit-mask-image: url('/sancho-logo.png');
-  mask-image: url('/sancho-logo.png');
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: contain;
-  mask-size: contain;
-}
-
 .link-icon--img {
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   object-fit: contain;
   border-radius: 0;
   filter: var(--img-icon-filter, none);
   transition: filter 0.15s;
+}
+
+.link-icon--sancho-mask {
+  display: block;
+  width: 40px;
+  height: 40px;
+  background-color: var(--text-muted);
+  -webkit-mask-image: url('/sanchodarktransVector.svg');
+  mask-image: url('/sanchodarktransVector.svg');
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  transition: background-color 0.15s;
+}
+
+.link-row:hover .link-icon--sancho-mask {
+  background-color: var(--accent);
+}
+
+.link-row--child .link-icon--sancho-mask {
+  width: 44px;
+  height: 44px;
 }
 
 .link-row:hover .link-icon {
@@ -899,7 +912,7 @@ html::after {
 
 /* Title */
 .link-row-title {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 500;
   color: var(--text);
   transition: color 0.15s;
@@ -915,7 +928,7 @@ html::after {
 
 /* Description */
 .link-row-desc {
-  font-size: 0.75rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
   margin-left: auto;
   white-space: nowrap;
@@ -1013,16 +1026,26 @@ html::after {
 }
 
 .link-row--child .link-row-title {
-  font-size: 0.82rem;
+  font-size: 0.95rem;
 }
 
 .link-row--child .link-row-desc {
-  font-size: 0.7rem;
+  font-size: 0.78rem;
 }
 
 .link-row--child .link-icon {
-  width: 20px;
-  height: 20px;
+  width: 32px;
+  height: 32px;
+}
+
+.link-row--child .link-icon--img {
+  width: 40px;
+  height: 40px;
+}
+
+.link-row--child .link-icon--sancho-img {
+  width: 44px;
+  height: 44px;
 }
 
 .link-row--child .link-row-index {
