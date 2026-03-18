@@ -37,7 +37,7 @@ export interface ResumeData {
 
 export const resume: ResumeData = {
   name: 'Jonathan Drybanski',
-  location: 'Medford, MA 02155',
+  location: 'Boston, MA 02108',
   email: 'jonny.edry@pm.me',
 
   education: [

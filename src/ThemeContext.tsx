@@ -54,9 +54,10 @@ function getStoredTheme(): Theme {
 function getStoredCrt(): boolean {
   try {
     const raw = localStorage.getItem('crt')
+    if (raw === null) return true
     return raw === 'true'
   } catch {
-    return false
+    return true
   }
 }
 
