@@ -6,6 +6,8 @@ export type Theme = (typeof THEMES)[number]
 type ThemeContextValue = {
   theme: Theme
   setTheme: (t: Theme) => void
+  crtEnabled: boolean
+  setCrtEnabled: (enabled: boolean) => void
 }
 
 const ThemeContext = createContext<ThemeContextValue | null>(null)
@@ -27,6 +29,19 @@ function applyTheme(t: Theme) {
   }
 }
 
+function applyCrt(enabled: boolean) {
+  if (enabled) {
+    document.documentElement.setAttribute('data-crt', 'true')
+  } else {
+    document.documentElement.removeAttribute('data-crt')
+  }
+  try {
+    localStorage.setItem('crt', enabled ? 'true' : 'false')
+  } catch {
+    // Ignore storage failures
+  }
+}
+
 function getStoredTheme(): Theme {
   try {
     const raw = localStorage.getItem('theme')
@@ -36,14 +51,27 @@ function getStoredTheme(): Theme {
   }
 }
 
+function getStoredCrt(): boolean {
+  try {
+    const raw = localStorage.getItem('crt')
+    return raw === 'true'
+  } catch {
+    return false
+  }
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeRaw] = useState<Theme>(getStoredTheme)
+  const [crtEnabled, setCrtRaw] = useState<boolean>(getStoredCrt)
   const [wiping, setWiping] = useState(false)
   const midpointTimeoutRef = useRef<number | null>(null)
   const wipeTimeoutRef = useRef<number | null>(null)
 
   // Keep DOM/localStorage in sync with current theme.
   useEffect(() => { applyTheme(theme) }, [theme])
+
+  // Keep DOM/localStorage in sync with CRT state.
+  useEffect(() => { applyCrt(crtEnabled) }, [crtEnabled])
 
   const clearThemeTimers = useCallback(() => {
     if (midpointTimeoutRef.current !== null) {
@@ -77,10 +105,20 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }, 600)
   }, [clearThemeTimers, theme, wiping])
 
+  const setCrtEnabled = useCallback((enabled: boolean) => {
+    setCrtRaw(enabled)
+  }, [])
+
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme, crtEnabled, setCrtEnabled }}>
       {children}
       {wiping && <div className="theme-wipe" />}
+      {crtEnabled && (
+        <>
+          <div className="crt-overlay" aria-hidden="true" />
+          <div className="crt-scanlines" aria-hidden="true" />
+        </>
+      )}
     </ThemeContext.Provider>
   )
 }

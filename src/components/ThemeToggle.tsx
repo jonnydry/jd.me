@@ -12,7 +12,7 @@ const THEME_LABELS: Record<'default' | 'rose' | 'paper' | 'stone' | 'ember' | 'p
 }
 
 export default function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme, crtEnabled, setCrtEnabled } = useTheme()
 
   return (
     <div className="theme-toggle" role="radiogroup" aria-label="Theme">
@@ -31,6 +31,14 @@ export default function ThemeToggle() {
           {THEME_LABELS[t]}
         </button>
       ))}
+      <button
+        className={`crt-toggle${crtEnabled ? ' crt-toggle--active' : ''}`}
+        onClick={() => setCrtEnabled(!crtEnabled)}
+        aria-label="Toggle CRT effect"
+        aria-pressed={crtEnabled}
+      >
+        CRT
+      </button>
     </div>
   )
 }

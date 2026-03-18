@@ -1579,7 +1579,7 @@ html::after {
   padding-left: 1.1rem;
   position: relative;
   margin-bottom: 0.3rem;
-  line-height: 1.55;
+  line-height: 1.65;
 }
 
 .resume-bullets li::before {
@@ -1602,7 +1602,7 @@ html::after {
   padding: 0.3rem 0;
   padding-left: 1.1rem;
   position: relative;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .resume-simple-list li::before {
@@ -1836,7 +1836,7 @@ html::after {
 }
 
 .writing-detail-body {
-  line-height: 1.75;
+  line-height: 1.85;
 }
 
 /* Body paragraphs */
@@ -1844,6 +1844,7 @@ html::after {
   font-size: 0.95rem;
   color: var(--text);
   margin-bottom: 1.25rem;
+  line-height: 1.8;
 }
 
 /* Section headings within body */
@@ -1972,7 +1973,7 @@ html::after {
   gap: 0;
   margin-bottom: 1.5rem;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
 }
 
 .theme-prompt {
@@ -1989,7 +1990,7 @@ html::after {
   font-family: inherit;
   font-size: inherit;
   cursor: pointer;
-  padding: 0.3rem 0.5rem;
+  padding: 0.2rem 0.35rem;
   color: var(--text-muted);
   opacity: 0.45;
   transition: color 0.15s, opacity 0.15s;
@@ -2040,6 +2041,395 @@ html::after {
   40%  { transform: translateX(0); }
   60%  { transform: translateX(0); }
   100% { transform: translateX(100%); }
+}
+
+/* ========== CRT Scanline Effect ========== */
+
+/* Global CRT effects applied to html element */
+[data-crt="true"] {
+  /* Subtle bloom/glow on all text */
+  --crt-glow: 0 0 2px rgba(128, 255, 200, 0.15);
+}
+
+[data-crt="true"] body {
+  text-shadow: var(--crt-glow);
+}
+
+[data-crt="true"] .link-title,
+[data-crt="true"] .link-group-title,
+[data-crt="true"] h1,
+[data-crt="true"] h2,
+[data-crt="true"] h3 {
+  text-shadow: 0 0 3px rgba(128, 255, 200, 0.25);
+}
+
+/* CRT overlay with vignette for curved screen feel */
+.crt-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9997;
+  pointer-events: none;
+  background: 
+    radial-gradient(
+      ellipse at center,
+      transparent 0%,
+      rgba(128, 255, 200, 0.02) 40%,
+      rgba(0, 0, 0, 0.4) 100%
+    );
+  mix-blend-mode: multiply;
+}
+
+/* Horizontal scanlines - alternating bright/dark lines */
+.crt-scanlines {
+  position: fixed;
+  inset: 0;
+  z-index: 9997;
+  pointer-events: none;
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.05) 0px,
+      rgba(255, 255, 255, 0.05) 0.5px,
+      transparent 0.5px,
+      transparent 1px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.2) 1px,
+      rgba(0, 0, 0, 0.2) 1.5px,
+      transparent 1.5px,
+      transparent 2.5px
+    );
+  mix-blend-mode: hard-light;
+}
+
+/* CRT toggle button styles */
+.crt-toggle {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  padding: 0.2rem 0.35rem;
+  color: var(--text-muted);
+  opacity: 0.45;
+  transition: color 0.15s, opacity 0.15s;
+  margin-left: 0.35rem;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.crt-toggle:hover {
+  opacity: 0.8;
+}
+
+.crt-toggle:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.crt-toggle--active {
+  color: var(--accent);
+  opacity: 1;
+}
+
+.crt-toggle--active::before {
+  content: '[';
+  color: var(--border);
+  margin-right: 1px;
+}
+
+.crt-toggle--active::after {
+  content: ']';
+  color: var(--border);
+  margin-left: 1px;
+}
+
+/* Rose theme CRT - optimized for pure black background */
+[data-theme="rose"][data-crt="true"] body {
+  text-shadow: 0 0 2px rgba(255, 128, 180, 0.25);
+}
+
+[data-theme="rose"][data-crt="true"] .link-title,
+[data-theme="rose"][data-crt="true"] .link-group-title,
+[data-theme="rose"][data-crt="true"] h1,
+[data-theme="rose"][data-crt="true"] h2,
+[data-theme="rose"][data-crt="true"] h3 {
+  text-shadow: 0 0 4px rgba(255, 128, 180, 0.4), 0 0 8px rgba(255, 80, 140, 0.2);
+}
+
+[data-theme="rose"] .crt-overlay {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 30%,
+    rgba(0, 0, 0, 0.98) 90%,
+    rgba(0, 0, 0, 1) 100%
+  );
+}
+
+[data-theme="rose"][data-crt="true"] body {
+  text-shadow: 0 0 4px rgba(255, 128, 180, 0.45);
+}
+
+[data-theme="rose"][data-crt="true"] .link-title,
+[data-theme="rose"][data-crt="true"] .link-group-title,
+[data-theme="rose"][data-crt="true"] h1,
+[data-theme="rose"][data-crt="true"] h2,
+[data-theme="rose"][data-crt="true"] h3 {
+  text-shadow: 0 0 8px rgba(255, 128, 180, 0.6), 0 0 16px rgba(255, 80, 140, 0.4);
+}
+
+[data-theme="rose"] .crt-scanlines {
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 128, 180, 0.15) 0px,
+      rgba(255, 128, 180, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.5) 1px,
+      rgba(0, 0, 0, 0.5) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+  mix-blend-mode: lighten;
+}
+
+[data-theme="rose"] .crt-scanlines {
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 128, 180, 0.08) 0px,
+      rgba(255, 128, 180, 0.08) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.28) 1px,
+      rgba(0, 0, 0, 0.28) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+  mix-blend-mode: lighten;
+}
+
+/* Default dark theme CRT */
+:root:not([data-theme])[data-crt="true"] body,
+[data-theme="default"][data-crt="true"] body {
+  text-shadow: 0 0 2px rgba(88, 166, 255, 0.25);
+}
+
+:root:not([data-theme])[data-crt="true"] .link-title,
+:root:not([data-theme])[data-crt="true"] .link-group-title,
+:root:not([data-theme])[data-crt="true"] h1,
+:root:not([data-theme])[data-crt="true"] h2,
+:root:not([data-theme])[data-crt="true"] h3,
+[data-theme="default"][data-crt="true"] .link-title,
+[data-theme="default"][data-crt="true"] .link-group-title,
+[data-theme="default"][data-crt="true"] h1,
+[data-theme="default"][data-crt="true"] h2,
+[data-theme="default"][data-crt="true"] h3 {
+  text-shadow: 0 0 4px rgba(88, 166, 255, 0.4), 0 0 8px rgba(56, 139, 253, 0.2);
+}
+
+:root:not([data-theme]) .crt-overlay,
+[data-theme="default"] .crt-overlay {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 30%,
+    rgba(0, 0, 0, 0.98) 90%,
+    rgba(0, 0, 0, 1) 100%
+  );
+}
+
+:root:not([data-theme])[data-crt="true"] body,
+[data-theme="default"][data-crt="true"] body {
+  text-shadow: 0 0 3px rgba(88, 166, 255, 0.35);
+}
+
+:root:not([data-theme])[data-crt="true"] .link-title,
+:root:not([data-theme])[data-crt="true"] .link-group-title,
+:root:not([data-theme])[data-crt="true"] h1,
+:root:not([data-theme])[data-crt="true"] h2,
+:root:not([data-theme])[data-crt="true"] h3,
+[data-theme="default"][data-crt="true"] .link-title,
+[data-theme="default"][data-crt="true"] .link-group-title,
+[data-theme="default"][data-crt="true"] h1,
+[data-theme="default"][data-crt="true"] h2,
+[data-theme="default"][data-crt="true"] h3 {
+  text-shadow: 0 0 6px rgba(88, 166, 255, 0.5), 0 0 12px rgba(56, 139, 253, 0.3);
+}
+
+:root:not([data-theme]) .crt-scanlines,
+[data-theme="default"] .crt-scanlines {
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(88, 166, 255, 0.1) 0px,
+      rgba(88, 166, 255, 0.1) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.4) 1px,
+      rgba(0, 0, 0, 0.4) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+  mix-blend-mode: lighten;
+}
+
+:root:not([data-theme]) .crt-scanlines,
+[data-theme="default"] .crt-scanlines {
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(88, 166, 255, 0.08) 0px,
+      rgba(88, 166, 255, 0.08) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.28) 1px,
+      rgba(0, 0, 0, 0.28) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+  mix-blend-mode: lighten;
+}
+
+/* Ember theme CRT - warm amber glow */
+[data-theme="ember"] .crt-overlay {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 25%,
+    rgba(0, 0, 0, 0.92) 80%,
+    rgba(0, 0, 0, 1) 100%
+  );
+}
+
+[data-theme="ember"][data-crt="true"] body {
+  text-shadow: 0 0 4px rgba(255, 153, 51, 0.45);
+}
+
+[data-theme="ember"][data-crt="true"] .link-title,
+[data-theme="ember"][data-crt="true"] .link-group-title,
+[data-theme="ember"][data-crt="true"] h1,
+[data-theme="ember"][data-crt="true"] h2,
+[data-theme="ember"][data-crt="true"] h3 {
+  text-shadow: 0 0 8px rgba(255, 153, 51, 0.6), 0 0 16px rgba(230, 104, 33, 0.4);
+}
+
+[data-theme="ember"] .crt-scanlines {
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 153, 51, 0.15) 0px,
+      rgba(255, 153, 51, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.5) 1px,
+      rgba(0, 0, 0, 0.5) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+  mix-blend-mode: lighten;
+}
+
+/* Dusk theme CRT - purple glow */
+[data-theme="dusk"] .crt-overlay {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 30%,
+    rgba(0, 0, 0, 0.98) 90%,
+    rgba(0, 0, 0, 1) 100%
+  );
+}
+
+[data-theme="dusk"][data-crt="true"] body {
+  text-shadow: 0 0 3px rgba(189, 147, 249, 0.35);
+}
+
+[data-theme="dusk"][data-crt="true"] .link-title,
+[data-theme="dusk"][data-crt="true"] .link-group-title,
+[data-theme="dusk"][data-crt="true"] h1,
+[data-theme="dusk"][data-crt="true"] h2,
+[data-theme="dusk"][data-crt="true"] h3 {
+  text-shadow: 0 0 6px rgba(189, 147, 249, 0.5), 0 0 12px rgba(163, 113, 247, 0.3);
+}
+
+[data-theme="dusk"] .crt-scanlines {
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(189, 147, 249, 0.1) 0px,
+      rgba(189, 147, 249, 0.1) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.4) 1px,
+      rgba(0, 0, 0, 0.4) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+  mix-blend-mode: lighten;
+}
+
+/* Stone theme CRT - warm neutral glow */
+[data-theme="stone"] .crt-overlay {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 30%,
+    rgba(0, 0, 0, 0.98) 90%,
+    rgba(0, 0, 0, 1) 100%
+  );
+}
+
+[data-theme="stone"][data-crt="true"] body {
+  text-shadow: 0 0 3px rgba(255, 186, 120, 0.3);
+}
+
+[data-theme="stone"][data-crt="true"] .link-title,
+[data-theme="stone"][data-crt="true"] .link-group-title,
+[data-theme="stone"][data-crt="true"] h1,
+[data-theme="stone"][data-crt="true"] h2,
+[data-theme="stone"][data-crt="true"] h3 {
+  text-shadow: 0 0 6px rgba(255, 186, 120, 0.45), 0 0 12px rgba(230, 160, 100, 0.25);
+}
+
+[data-theme="stone"] .crt-scanlines {
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 186, 120, 0.1) 0px,
+      rgba(255, 186, 120, 0.1) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.4) 1px,
+      rgba(0, 0, 0, 0.4) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+  mix-blend-mode: lighten;
 }
 
 /* ========== Media Queries ========== */
