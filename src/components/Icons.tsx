@@ -1,5 +1,23 @@
 import { SVGProps } from 'react'
 
+export const IconMap = {
+  github: GitHub,
+  twitter: Twitter,
+  linkedin: LinkedIn,
+  globe: Globe,
+  quill: Quill,
+  mail: Mail,
+  file: FileText,
+  monitor: Monitor,
+  heart: Heart,
+  wallet: Wallet,
+  coffee: Coffee,
+  gamepad: Gamepad,
+  lighthouse: Lighthouse,
+} as const
+
+export type IconName = keyof typeof IconMap
+
 export function GitHub(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" {...props}>

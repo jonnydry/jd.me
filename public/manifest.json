@@ -1,0 +1,16 @@
+{
+  "name": "Jonny D | Links",
+  "short_name": "Jonny D",
+  "description": "Links and projects — your corner of the internet",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#0d1117",
+  "icons": [
+    {
+      "src": "/avatar.jpg",
+      "sizes": "720x720",
+      "type": "image/jpeg"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-export function useScrollProgress(ref: React.RefObject<HTMLDivElement>, key?: string) {
+export function useScrollProgress(ref: React.RefObject<HTMLDivElement | null>, key?: string) {
   useEffect(() => {
     const attach = (): (() => void) | null => {
       const bar = ref.current

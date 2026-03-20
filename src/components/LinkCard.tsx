@@ -1,28 +1,12 @@
 import { useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { LinkItem } from '../config/links'
-import { GitHub, Twitter, LinkedIn, Globe, Quill, Mail, FileText, Monitor, Heart, Wallet, Coffee, Gamepad, Lighthouse, ArrowRight } from './Icons'
+import { ArrowRight, IconMap } from './Icons'
 import { useGlow } from '../hooks/useGlow'
 
 interface LinkCardProps {
   link: LinkItem
   index: number
-}
-
-const IconMap = {
-  github: GitHub,
-  twitter: Twitter,
-  linkedin: LinkedIn,
-  globe: Globe,
-  quill: Quill,
-  mail: Mail,
-  file: FileText,
-  monitor: Monitor,
-  heart: Heart,
-  wallet: Wallet,
-  coffee: Coffee,
-  gamepad: Gamepad,
-  lighthouse: Lighthouse,
 }
 
 export default function LinkCard({ link, index }: LinkCardProps) {

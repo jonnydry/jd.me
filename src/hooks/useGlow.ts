@@ -4,7 +4,7 @@ const GLOW_SIZE = 640
 const GLOW_HALF = GLOW_SIZE / 2
 const GLOW_MEDIA_QUERY = '(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)'
 
-export function useGlow<T extends HTMLElement>(ref: React.RefObject<T>) {
+export function useGlow<T extends HTMLElement>(ref: React.RefObject<T | null>) {
   const rectRef = useRef<DOMRect | null>(null)
   const rafRef = useRef<number>(0)
   const pointerRef = useRef({ x: 0, y: 0 })

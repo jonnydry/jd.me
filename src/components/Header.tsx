@@ -14,7 +14,7 @@ const AVATAR_FALLBACK_SRC_SET = '/avatar-360.jpg 360w, /avatar.jpg 720w'
 const AVATAR_SIZES = '(max-width: 640px) 80px, 88px'
 const AVATAR_MODAL_SIZES = '(max-width: 640px) 70vw, 360px'
 
-function useAvatarTilt<T extends HTMLElement>(ref: React.RefObject<T>, scale: number, disabled: boolean) {
+function useAvatarTilt<T extends HTMLElement>(ref: React.RefObject<T | null>, scale: number, disabled: boolean) {
   const rectRef = useRef<DOMRect | null>(null)
   const pointerRef = useRef({ x: 0, y: 0 })
   const rafRef = useRef<number>(0)

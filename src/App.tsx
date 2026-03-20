@@ -4,6 +4,7 @@ import { profile } from './config/profile'
 import { links, isGroup } from './config/links'
 import { ThemeProvider } from './ThemeContext'
 import { useTimeOfDay } from './hooks/useTimeOfDay'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import Header from './components/Header'
 import LinkCard from './components/LinkCard'
 import LinkGroupComponent from './components/LinkGroup'
@@ -45,6 +46,9 @@ function LinksPage() {
 
   return (
     <main className="app">
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
       <div className="terminal">
         <Header {...profile} />
         <ThemeToggle />
@@ -286,28 +290,31 @@ function App() {
 
   return (
     <ThemeProvider>
-      <div
-        className={`page-slider${animated ? ' page-slider--animated' : ''}`}
-        style={{ transform: `translateX(-${pageIndex * 100}vw)` }}
-      >
-        <div className="page">
-          <LinksPage />
+      <ErrorBoundary>
+        <div
+          id="main-content"
+          className={`page-slider${animated ? ' page-slider--animated' : ''}`}
+          style={{ transform: `translateX(-${pageIndex * 100}vw)` }}
+        >
+          <div className="page">
+            <LinksPage />
+          </div>
+          <div className="page" ref={resumePageRef}>
+            {pageIndex === 1 ? (
+              <Suspense fallback={null}>
+                <ResumePage />
+              </Suspense>
+            ) : null}
+          </div>
+          <div className="page" ref={writingPageRef}>
+            {pageIndex === 2 ? (
+              <Suspense fallback={null}>
+                <WritingPage />
+              </Suspense>
+            ) : null}
+          </div>
         </div>
-        <div className="page" ref={resumePageRef}>
-          {pageIndex === 1 ? (
-            <Suspense fallback={null}>
-              <ResumePage />
-            </Suspense>
-          ) : null}
-        </div>
-        <div className="page" ref={writingPageRef}>
-          {pageIndex === 2 ? (
-            <Suspense fallback={null}>
-              <WritingPage />
-            </Suspense>
-          ) : null}
-        </div>
-      </div>
+      </ErrorBoundary>
     </ThemeProvider>
   )
 }

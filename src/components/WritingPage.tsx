@@ -158,7 +158,7 @@ function WritingListItem({ sample, index }: { sample: WritingSample; index: numb
     >
       <span className="writing-list-item-glow" />
       <div className="writing-list-item-top">
-        <h2 className="writing-list-item-title">{sample.title}</h2>
+        <h3 className="writing-list-item-title">{sample.title}</h3>
         <time className="writing-list-item-date" dateTime={sample.date}>{sample.date}</time>
       </div>
       <p className="writing-list-item-excerpt">{renderInlineText(sample.excerpt)}</p>
