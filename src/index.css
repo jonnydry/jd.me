@@ -697,6 +697,7 @@ html::after {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: 'JetBrains Mono', Consolas, Monaco, 'Courier New', monospace;
   background: transparent;
   backdrop-filter: blur(12px) saturate(0.7);
   -webkit-backdrop-filter: blur(12px) saturate(0.7);
@@ -708,7 +709,32 @@ html::after {
   position: relative;
   cursor: default;
   animation: modalScaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  background: transparent;
+  padding: 1rem;
+  border: 1px solid hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.45);
+  background:
+    linear-gradient(180deg, hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.06), transparent 28%),
+    linear-gradient(0deg, hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.03), transparent 42%),
+    color-mix(in srgb, var(--bg) 88%, black 12%);
+  box-shadow:
+    0 0 0 1px hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.08) inset,
+    0 0 30px hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.12);
+  overflow: hidden;
+}
+
+.avatar-modal-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.04) 0,
+      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.04) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  opacity: 0.55;
 }
 
 .avatar-modal-wrap {
@@ -735,31 +761,42 @@ html::after {
 
 .avatar-modal-close {
   position: absolute;
-  top: -12px;
-  right: -12px;
+  top: 0.65rem;
+  right: 0.65rem;
   width: 28px;
   height: 28px;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text-muted);
+  border-radius: 0;
+  border: 1px solid hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.45);
+  background: color-mix(in srgb, var(--bg) 90%, black 10%);
+  color: var(--accent);
   font-family: inherit;
   font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.3);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.15s, border-color 0.15s;
+  transition: color 0.15s, border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  z-index: 1;
 }
 
 .avatar-modal-close:hover {
-  color: var(--accent);
+  color: var(--bg);
   border-color: var(--accent);
+  background: var(--accent);
+  box-shadow: 0 0 18px hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.28);
 }
 
 .avatar-modal-close:focus-visible {
   outline: 1px solid var(--accent);
   outline-offset: 2px;
+}
+
+[data-crt="true"] .avatar-modal-inner,
+[data-crt="true"] .avatar-modal-close {
+  text-shadow: 0 0 3px hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.24);
 }
 
 @keyframes modalFadeIn {
@@ -1326,6 +1363,43 @@ html::after {
     ellipse 90% 50% at calc(50% + (var(--time-glow-x) * 8%)) calc(0% + (var(--time-glow-y) * 3%)),
     hsl(calc(var(--accent-hue) - 20 + (var(--time-hue-flow) * 0.4)) 70% 40% / calc(0.024 + (var(--time-line-flow) * 0.006))) 0%,
     transparent 45%
+  );
+}
+
+/* Rose: #000 bg swallows the default ~4% accent wash — match other dark themes’ center bloom */
+[data-theme="rose"][data-time="afternoon"] body::before {
+  background: radial-gradient(
+    ellipse 88% 54% at calc(50% + (var(--time-glow-x) * 10%)) calc(2% + (var(--time-glow-y) * 5%)),
+    hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / calc(0.062 + (var(--time-progress) * 0.015))) 0%,
+    hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / calc(0.026 + (var(--time-progress) * 0.006))) 40%,
+    transparent 58%
+  );
+}
+
+[data-theme="rose"][data-time="morning"] body::before {
+  background: radial-gradient(
+    ellipse 72% 62% at calc(14% + (var(--time-glow-x) * 4%)) calc(90% - (var(--time-progress) * 6%)),
+    hsl(calc(var(--accent-hue) + 30 + (var(--time-hue-flow) * 0.6)) 80% 60% / calc(0.052 + (var(--time-progress) * 0.016))) 0%,
+    hsl(calc(var(--accent-hue) + 30 + (var(--time-hue-flow) * 0.6)) 80% 60% / calc(0.018 + (var(--time-progress) * 0.005))) 45%,
+    transparent 62%
+  );
+}
+
+[data-theme="rose"][data-time="dusk"] body::before {
+  background: radial-gradient(
+    ellipse 64% 72% at calc(90% - (var(--time-glow-x) * 4%)) calc(30% + (var(--time-glow-y) * 4%)),
+    hsl(calc(var(--accent-hue) + 40 + (var(--time-hue-flow) * 0.55)) 85% 55% / calc(0.056 + (var(--time-line-flow) * 0.011))) 0%,
+    hsl(calc(var(--accent-hue) + 40 + (var(--time-hue-flow) * 0.55)) 85% 55% / calc(0.022 + (var(--time-line-flow) * 0.004))) 38%,
+    transparent 58%
+  );
+}
+
+[data-theme="rose"][data-time="night"] body::before {
+  background: radial-gradient(
+    ellipse 92% 52% at calc(50% + (var(--time-glow-x) * 8%)) calc(0% + (var(--time-glow-y) * 3%)),
+    hsl(calc(var(--accent-hue) - 20 + (var(--time-hue-flow) * 0.4)) 70% 44% / calc(0.042 + (var(--time-line-flow) * 0.012))) 0%,
+    hsl(calc(var(--accent-hue) - 20 + (var(--time-hue-flow) * 0.4)) 70% 44% / calc(0.016 + (var(--time-line-flow) * 0.004))) 36%,
+    transparent 52%
   );
 }
 
