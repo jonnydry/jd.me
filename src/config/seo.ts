@@ -1,5 +1,5 @@
 export const SITE_NAME = 'Jonny D'
-export const SITE_URL = 'https://jd.me'
+export const SITE_URL = 'https://jdry.me'
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/avatar.jpg`
 export const DEFAULT_OG_IMAGE_ALT = 'Portrait of Jonny D'
 
@@ -72,7 +72,7 @@ export function getRouteMetadata(pathname: string): RouteMetadata {
 
   return {
     title: 'Page Not Found | Jonny D',
-    description: 'That page does not exist on jd.me.',
+    description: 'That page does not exist on jdry.me.',
     path: pathname,
     type: 'website',
     robots: 'noindex,follow',

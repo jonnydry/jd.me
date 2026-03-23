@@ -1,5 +1,9 @@
 {
   "rewrites": [
+    { "source": "/resume", "destination": "/resume/index.html" },
+    { "source": "/writing", "destination": "/writing/index.html" },
+    { "source": "/writing/lyrical-conceptions-of-self-and-nation", "destination": "/writing/lyrical-conceptions-of-self-and-nation/index.html" },
+    { "source": "/writing/diving-into-the-void", "destination": "/writing/diving-into-the-void/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
