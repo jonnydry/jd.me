@@ -29,17 +29,23 @@ export const links: LinkEntry[] = [
       { title: 'EmuPhoria', url: 'https://emuphoria.com', desc: 'Vintage Game Emulator', icon: 'gamepad' },
     ],
   },
-  { 
-    title: '@JonnyD', 
-    url: 'https://x.com/JonnyD', 
-    desc: 'Personal: hot takes, interests, news', 
-    icon: 'twitter' 
-  },
-  { 
-    title: '@imag3nigma', 
-    url: 'https://x.com/imag3nigma', 
-    desc: 'AI art with literary quotes', 
-    icon: 'twitter' 
+  {
+    label: 'Social',
+    icon: 'twitter',
+    children: [
+      {
+        title: '@JonnyD',
+        url: 'https://x.com/JonnyD',
+        desc: 'Personal: hot takes, interests, news',
+        icon: 'twitter',
+      },
+      {
+        title: '@imag3nigma',
+        url: 'https://x.com/imag3nigma',
+        desc: 'AI art with literary quotes',
+        icon: 'twitter',
+      },
+    ],
   },
   { 
     title: 'GitHub', 
