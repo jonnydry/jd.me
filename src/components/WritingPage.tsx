@@ -147,9 +147,10 @@ function WritingListItem({ sample, index }: { sample: WritingSample; index: numb
   const glowHandlers = useGlow(buttonRef)
 
   return (
-    <button
-      ref={buttonRef}
-      className="writing-list-item"
+      <button
+        type="button"
+        ref={buttonRef}
+        className="writing-list-item"
       style={{ animationDelay: `${(index + 2) * 80}ms` }}
       onClick={() => navigate(`/writing/${sample.slug}`)}
       onMouseEnter={glowHandlers.handleMouseEnter}
@@ -203,7 +204,7 @@ export default function WritingPage() {
     return (
       <main className="app app--top">
         <div className="writing">
-          <button className="resume-back" onClick={() => navigate('/')}>
+          <button type="button" className="resume-back" onClick={() => navigate('/')}>
             <span className="resume-back-arrow">←</span> links
           </button>
           <ThemeToggle />
@@ -222,7 +223,7 @@ export default function WritingPage() {
       <main className="app app--top">
         <div className="scroll-progress" ref={progressRef} />
         <div className="writing">
-          <button className="resume-back" onClick={() => navigate('/writing')}>
+          <button type="button" className="resume-back" onClick={() => navigate('/writing')}>
             <span className="resume-back-arrow">←</span> writing
           </button>
           <ThemeToggle />
@@ -242,11 +243,12 @@ export default function WritingPage() {
                 </div>
               </div>
             </header>
-            <nav className="writing-toc">
+            <nav className="writing-toc" aria-label="Table of contents">
               <span className="writing-toc-label">Contents</span>
               <div className="writing-toc-items">
                 {toc.map((entry) => (
                   <button
+                    type="button"
                     key={entry.id}
                     className="writing-toc-link"
                     onClick={() => handleTocClick(entry.id)}
@@ -272,7 +274,7 @@ export default function WritingPage() {
       <main className="app app--top">
         <div className="scroll-progress" ref={progressRef} />
         <div className="writing">
-          <button className="resume-back" onClick={() => navigate('/writing')}>
+          <button type="button" className="resume-back" onClick={() => navigate('/writing')}>
             <span className="resume-back-arrow">←</span> writing
           </button>
           <ThemeToggle />
@@ -290,7 +292,7 @@ export default function WritingPage() {
     <main className="app app--top">
       <div className="scroll-progress" ref={progressRef} />
       <div className="writing">
-        <button className="resume-back" onClick={() => navigate('/')}>
+        <button type="button" className="resume-back" onClick={() => navigate('/')}>
           <span className="resume-back-arrow">←</span> links
         </button>
         <ThemeToggle />

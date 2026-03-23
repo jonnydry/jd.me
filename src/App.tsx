@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { profile } from './config/profile'
 import { links, isGroup } from './config/links'
+import { DEFAULT_OG_IMAGE, DEFAULT_OG_IMAGE_ALT, SITE_NAME, SITE_URL, getRouteMetadata } from './config/seo'
 import { ThemeProvider } from './ThemeContext'
 import { useTimeOfDay } from './hooks/useTimeOfDay'
 import { ErrorBoundary } from './components/ErrorBoundary'
@@ -13,7 +14,7 @@ import ThemeToggle from './components/ThemeToggle'
 const ResumePage = lazy(() => import('./components/ResumePage'))
 const WritingPage = lazy(() => import('./components/WritingPage'))
 
-const TAB_TITLES = ['Jonny D | Links', 'Jonny D | vibecoder', 'Jonny D | 🎸', 'Jonny D | writer']
+const HOME_TAB_TITLES = ['Jonny D | Links, Writing, and Projects', 'Jonny D | vibecoder', 'Jonny D | writer', 'Jonny D | guitar player']
 
 function normalizePathname(pathname: string) {
   if (pathname === '/') return pathname
@@ -26,7 +27,7 @@ function NotFoundPage() {
   return (
     <main className="app app--top">
       <div className="resume">
-        <button className="resume-back" onClick={() => navigate('/')}>
+        <button type="button" className="resume-back" onClick={() => navigate('/')}>
           <span className="resume-back-arrow">←</span> links
         </button>
         <ThemeToggle />
@@ -46,13 +47,13 @@ function LinksPage() {
 
   return (
     <main className="app">
-      <a href="#main-content" className="skip-link">
+      <a href="#links-content" className="skip-link">
         Skip to main content
       </a>
       <div className="terminal">
         <Header {...profile} />
         <ThemeToggle />
-        <section className="links-section">
+        <section id="links-content" className="links-section" tabIndex={-1}>
           <div className="links-list">
             {links.map((entry, i) => {
               if (isGroup(entry)) {
@@ -82,10 +83,65 @@ function App() {
   const isHomeRoute = normalizedPathname === '/'
   const isResumeRoute = normalizedPathname === '/resume'
   const isWritingRoute = /^\/writing(?:\/[^/]+)?$/.test(normalizedPathname)
+  const metadata = getRouteMetadata(normalizedPathname)
   const pageIndex = isWritingRoute ? 2 : isResumeRoute ? 1 : isHomeRoute ? 0 : -1
   const [animated, setAnimated] = useState(false)
+  const linksPageRef = useRef<HTMLDivElement>(null)
   const resumePageRef = useRef<HTMLDivElement>(null)
   const writingPageRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const upsertMeta = (selector: string, attributes: Record<string, string>) => {
+      let element = document.head.querySelector<HTMLMetaElement>(selector)
+
+      if (!element) {
+        element = document.createElement('meta')
+        document.head.appendChild(element)
+      }
+
+      Object.entries(attributes).forEach(([key, value]) => {
+        element?.setAttribute(key, value)
+      })
+    }
+
+    const upsertLink = (selector: string, attributes: Record<string, string>) => {
+      let element = document.head.querySelector<HTMLLinkElement>(selector)
+
+      if (!element) {
+        element = document.createElement('link')
+        document.head.appendChild(element)
+      }
+
+      Object.entries(attributes).forEach(([key, value]) => {
+        element?.setAttribute(key, value)
+      })
+    }
+
+    const canonicalUrl = `${SITE_URL}${metadata.path}`
+
+    document.title = metadata.title
+    upsertMeta('meta[name="description"]', { name: 'description', content: metadata.description })
+    upsertMeta('meta[name="robots"]', { name: 'robots', content: metadata.robots ?? 'index,follow' })
+    upsertMeta('meta[name="author"]', { name: 'author', content: SITE_NAME })
+    upsertMeta('meta[property="og:type"]', { property: 'og:type', content: metadata.type ?? 'website' })
+    upsertMeta('meta[property="og:site_name"]', { property: 'og:site_name', content: SITE_NAME })
+    upsertMeta('meta[property="og:title"]', { property: 'og:title', content: metadata.title })
+    upsertMeta('meta[property="og:description"]', { property: 'og:description', content: metadata.description })
+    upsertMeta('meta[property="og:url"]', { property: 'og:url', content: canonicalUrl })
+    upsertMeta('meta[property="og:image"]', { property: 'og:image', content: DEFAULT_OG_IMAGE })
+    upsertMeta('meta[property="og:image:alt"]', {
+      property: 'og:image:alt',
+      content: DEFAULT_OG_IMAGE_ALT,
+    })
+    upsertMeta('meta[name="twitter:card"]', { name: 'twitter:card', content: 'summary_large_image' })
+    upsertMeta('meta[name="twitter:title"]', { name: 'twitter:title', content: metadata.title })
+    upsertMeta('meta[name="twitter:description"]', {
+      name: 'twitter:description',
+      content: metadata.description,
+    })
+    upsertMeta('meta[name="twitter:image"]', { name: 'twitter:image', content: DEFAULT_OG_IMAGE })
+    upsertLink('link[rel="canonical"]', { rel: 'canonical', href: canonicalUrl })
+  }, [metadata])
 
   // Enable CSS transitions after initial render (prevents animation on direct load)
   useEffect(() => {
@@ -102,6 +158,22 @@ function App() {
       writingPageRef.current.scrollTop = 0
     }
   }, [pageIndex, location.pathname])
+
+  useEffect(() => {
+    const pages = [linksPageRef.current, resumePageRef.current, writingPageRef.current]
+
+    pages.forEach((page, index) => {
+      if (!page) return
+
+      if (index === pageIndex) {
+        page.removeAttribute('aria-hidden')
+        page.removeAttribute('inert')
+      } else {
+        page.setAttribute('aria-hidden', 'true')
+        page.setAttribute('inert', '')
+      }
+    })
+  }, [pageIndex])
 
   // Keyboard shortcuts: 1-N activate visible home-page rows
   useEffect(() => {
@@ -129,14 +201,19 @@ function App() {
 
   // Custom tab title when tab is not focused
   useEffect(() => {
+    if (!isHomeRoute) {
+      document.title = metadata.title
+      return
+    }
+
     let index = 0
     let interval: ReturnType<typeof setInterval> | null = null
 
     const startCycling = () => {
       if (interval) return
       interval = setInterval(() => {
-        index = (index + 1) % TAB_TITLES.length
-        document.title = TAB_TITLES[index]
+        index = (index + 1) % HOME_TAB_TITLES.length
+        document.title = HOME_TAB_TITLES[index]
       }, 2000)
     }
 
@@ -146,7 +223,7 @@ function App() {
         interval = null
       }
       index = 0
-      document.title = 'Jonny D | Links'
+      document.title = metadata.title
     }
 
     const handleVisibilityChange = () => {
@@ -175,7 +252,7 @@ function App() {
       window.removeEventListener('blur', handleBlur)
       window.removeEventListener('focus', handleFocus)
     }
-  }, [])
+  }, [isHomeRoute, metadata.title])
 
   // Warm route chunks after first paint so navigation feels instant.
   useEffect(() => {
@@ -296,7 +373,7 @@ function App() {
           className={`page-slider${animated ? ' page-slider--animated' : ''}`}
           style={{ transform: `translateX(-${pageIndex * 100}vw)` }}
         >
-          <div className="page">
+          <div className="page" ref={linksPageRef}>
             <LinksPage />
           </div>
           <div className="page" ref={resumePageRef}>

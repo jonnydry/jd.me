@@ -60,4 +60,19 @@ describe('ThemeToggle', () => {
     renderWithProvider(<ThemeToggle />)
     expect(screen.getByRole('radiogroup', { name: 'Theme' })).toBeInTheDocument()
   })
+
+  it('supports arrow-key navigation between theme radios', async () => {
+    renderWithProvider(<ThemeToggle />)
+
+    const defaultButton = screen.getByRole('radio', { name: 'default theme' })
+    defaultButton.focus()
+    fireEvent.keyDown(defaultButton, { key: 'ArrowRight' })
+
+    const roseButton = screen.getByRole('radio', { name: 'rose theme' })
+
+    await vi.waitFor(() => {
+      expect(roseButton).toHaveAttribute('aria-checked', 'true')
+      expect(roseButton).toHaveFocus()
+    })
+  })
 })

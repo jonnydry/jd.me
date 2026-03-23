@@ -139,20 +139,11 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
     }
   }, [tagline])
 
-  // Close modal on Escape
-  useEffect(() => {
-    if (!modalOpen) return
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setModalOpen(false)
-    }
-    window.addEventListener('keydown', handleKey)
-    return () => window.removeEventListener('keydown', handleKey)
-  }, [modalOpen])
-
   const closeModal = useCallback(() => setModalOpen(false), [])
 
   const avatarWrapRef = useRef<HTMLDivElement>(null)
   const avatarModalWrapRef = useRef<HTMLDivElement>(null)
+  const modalRef = useRef<HTMLDivElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const lastFocusedRef = useRef<HTMLElement | null>(null)
   const avatarTilt = useAvatarTilt(avatarWrapRef, 1.08, reducedMotion.current)
@@ -163,15 +154,58 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
 
     lastFocusedRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
     const previousOverflow = document.body.style.overflow
+    const appRoot = document.getElementById('root')
     document.body.style.overflow = 'hidden'
+    appRoot?.setAttribute('aria-hidden', 'true')
+    appRoot?.setAttribute('inert', '')
 
     const rafId = window.requestAnimationFrame(() => {
       closeButtonRef.current?.focus()
     })
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setModalOpen(false)
+        return
+      }
+
+      if (e.key !== 'Tab') return
+
+      const modal = modalRef.current
+      if (!modal) return
+
+      const focusable = Array.from(
+        modal.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((element) => !element.hasAttribute('disabled'))
+
+      if (focusable.length === 0) {
+        e.preventDefault()
+        return
+      }
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      const active = document.activeElement
+
+      if (e.shiftKey && active === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
     return () => {
       window.cancelAnimationFrame(rafId)
       document.body.style.overflow = previousOverflow
+      appRoot?.removeAttribute('aria-hidden')
+      appRoot?.removeAttribute('inert')
+      window.removeEventListener('keydown', handleKeyDown)
       lastFocusedRef.current?.focus()
     }
   }, [modalOpen])
@@ -224,7 +258,7 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
           aria-modal="true"
           aria-label={`${name} photo`}
         >
-          <div className="avatar-modal-inner" onClick={(e) => e.stopPropagation()}>
+          <div ref={modalRef} className="avatar-modal-inner" onClick={(e) => e.stopPropagation()}>
             <div
               ref={avatarModalWrapRef}
               className="avatar-modal-wrap"
@@ -252,6 +286,7 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
               </picture>
             </div>
             <button
+              type="button"
               ref={closeButtonRef}
               className="avatar-modal-close"
               onClick={closeModal}

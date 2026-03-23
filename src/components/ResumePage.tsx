@@ -14,7 +14,7 @@ export default function ResumePage() {
     <main className="app app--top">
       <div className="scroll-progress" ref={progressRef} />
       <div className="resume">
-        <button className="resume-back" onClick={() => navigate('/')}>
+        <button type="button" className="resume-back" onClick={() => navigate('/')}>
           <span className="resume-back-arrow">←</span> links
         </button>
         <ThemeToggle />

@@ -50,7 +50,7 @@ export const links: LinkEntry[] = [
   { 
     title: 'GitHub', 
     url: 'https://github.com/jonnydry', 
-    desc: 'Code, Projects, Expiriments', 
+    desc: 'Code, Projects, Experiments', 
     icon: 'github' 
   },
   {
