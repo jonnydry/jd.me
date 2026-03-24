@@ -188,7 +188,7 @@
   --accent-sat: 75%;
   --accent-lit: 40%;
   --line-hue-a: 340;
-  --line-hue-b: 145;
+  --line-hue-b: 50;
   --line-hue-c: 30;
   --line-hue-d: 275;
   --img-icon-filter: opacity(0.5);
@@ -1160,41 +1160,41 @@ html::after {
 }
 
 /*
-  Paper lines: each group cycles the same 6 colors but staggered.
-  Line A:  +2 offset (burgundy→plum→green→amber→navy→teal)
-  Line B:  +4 offset (green→amber→navy→teal→burgundy→plum)
-  Line C:  reverse   (amber→green→plum→burgundy→teal→navy)
-  Line D:  reverse+2 (plum→burgundy→teal→navy→amber→green)
+  Paper lines: each group cycles the same 5 colors but staggered.
+  Line A:  +2 offset (burgundy→plum→orange→navy→teal)
+  Line B:  +4 offset (orange→navy→teal→burgundy→plum)
+  Line C:  reverse   (navy→teal→burgundy→plum→orange)
+  Line D:  reverse+2 (teal→burgundy→plum→orange→navy)
 
   Accent hue is restricted to the high side of the wheel (175–340°) to avoid CSS numeric
-  interpolation crossing the green zone (80–160°). Amber (30°) and sage (145°) are kept in
+  interpolation crossing the green zone (80–160°). Amber (30°) and orange (50°) are kept in
   the line hues for visual richness but removed from --accent-hue to keep text/UI colors clean.
   Transitions verified: each adjacent pair interpolates at most 165° and stays above 175°.
 */
 @keyframes colorDriftPaper {
   0%, 100% {
     --accent-hue: 215; --accent-sat: 75%; --accent-lit: 40%;
-    --line-hue-a: 340; --line-hue-b: 145; --line-hue-c: 30;  --line-hue-d: 275;
+    --line-hue-a: 340; --line-hue-b: 50;  --line-hue-c: 30;  --line-hue-d: 275;
   }
   17% {
     --accent-hue: 175; --accent-sat: 70%; --accent-lit: 35%;
-    --line-hue-a: 275; --line-hue-b: 30;  --line-hue-c: 145; --line-hue-d: 340;
+    --line-hue-a: 275; --line-hue-b: 30;  --line-hue-c: 50;  --line-hue-d: 340;
   }
   33% {
     --accent-hue: 340; --accent-sat: 75%; --accent-lit: 42%;
-    --line-hue-a: 145; --line-hue-b: 215; --line-hue-c: 275; --line-hue-d: 175;
+    --line-hue-a: 50;  --line-hue-b: 215; --line-hue-c: 275; --line-hue-d: 262;
   }
   50% {
     --accent-hue: 275; --accent-sat: 65%; --accent-lit: 42%;
-    --line-hue-a: 30;  --line-hue-b: 175; --line-hue-c: 340; --line-hue-d: 215;
+    --line-hue-a: 30;  --line-hue-b: 262; --line-hue-c: 340; --line-hue-d: 215;
   }
   67% {
     --accent-hue: 340; --accent-sat: 65%; --accent-lit: 35%;
-    --line-hue-a: 215; --line-hue-b: 340; --line-hue-c: 175; --line-hue-d: 30;
+    --line-hue-a: 215; --line-hue-b: 340; --line-hue-c: 262; --line-hue-d: 30;
   }
   83% {
     --accent-hue: 175; --accent-sat: 70%; --accent-lit: 40%;
-    --line-hue-a: 175; --line-hue-b: 275; --line-hue-c: 215; --line-hue-d: 145;
+    --line-hue-a: 262; --line-hue-b: 275; --line-hue-c: 215; --line-hue-d: 50;
   }
 }
 
@@ -1294,7 +1294,7 @@ html::after {
 
 @keyframes colorDriftStone {
   0%, 100% { --accent-hue: 28;  --accent-sat: 7%;  --accent-lit: 74%; --line-hue-a: 28;  --line-hue-b: 28;  --line-hue-c: 28;  --line-hue-d: 28; }
-  25%       { --accent-hue: 210; --accent-sat: 5%;  --accent-lit: 84%; --line-hue-a: 210; --line-hue-b: 210; --line-hue-c: 210; --line-hue-d: 210; }
+  25%       { --accent-hue: 220; --accent-sat: 6%;  --accent-lit: 48%; --line-hue-a: 220; --line-hue-b: 220; --line-hue-c: 220; --line-hue-d: 220; }
   50%       { --accent-hue: 0;   --accent-sat: 0%;  --accent-lit: 92%; --line-hue-a: 0;   --line-hue-b: 0;   --line-hue-c: 0;   --line-hue-d: 0; }
   75%       { --accent-hue: 32;  --accent-sat: 9%;  --accent-lit: 62%; --line-hue-a: 32;  --line-hue-b: 32;  --line-hue-c: 32;  --line-hue-d: 32; }
 }
