@@ -1,9 +1,9 @@
 import { useRef } from 'react'
 import { useTheme } from '../ThemeContext'
 
-const THEMES = ['default', 'rose', 'paper', 'stone', 'ember', 'pine', 'harbor', 'dusk'] as const
+const THEMES = ['default', 'rose', 'paper', 'stone', 'ember', 'pine', 'harbor', 'dusk', 'mint'] as const
 
-const THEME_LABELS: Record<'default' | 'rose' | 'paper' | 'stone' | 'ember' | 'pine' | 'harbor' | 'dusk', string> = {
+const THEME_LABELS: Record<'default' | 'rose' | 'paper' | 'stone' | 'ember' | 'pine' | 'harbor' | 'dusk' | 'mint', string> = {
   default: '--dark',
   rose: '--rose',
   paper: '--paper',
@@ -12,6 +12,7 @@ const THEME_LABELS: Record<'default' | 'rose' | 'paper' | 'stone' | 'ember' | 'p
   pine: '--pine',
   harbor: '--harbor',
   dusk: '--dusk',
+  mint: '--mint',
 }
 
 export default function ThemeToggle() {

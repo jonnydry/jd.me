@@ -298,6 +298,26 @@
   animation: colorDriftStone 66s ease-in-out infinite;
 }
 
+/* ========== Theme: Mint (Mint Chocolate Chip) ========== */
+:root[data-theme="mint"] {
+  --bg: #f5f9f6;
+  --surface: #e8f2ec;
+  --border: #c2cfc5;
+  --text: #3d3028;
+  --text-muted: #7a6b5f;
+  --accent-hue: 160;
+  --accent-sat: 45%;
+  --accent-lit: 42%;
+  --line-hue-a: 150;
+  --line-hue-b: 160;
+  --line-hue-c: 170;
+  --line-hue-d: 145;
+  --img-icon-filter: opacity(0.5);
+  --img-icon-filter-hover: opacity(1);
+  --theme-line-boost: 1.7;
+  animation: colorDriftMint 72s ease-in-out infinite;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -1299,6 +1319,25 @@ html::after {
   75%       { --accent-hue: 32;  --accent-sat: 9%;  --accent-lit: 62%; --line-hue-a: 32;  --line-hue-b: 32;  --line-hue-c: 32;  --line-hue-d: 32; }
 }
 
+@keyframes colorDriftMint {
+  0%, 100% {
+    --accent-hue: 160; --accent-sat: 45%; --accent-lit: 42%;
+    --line-hue-a: 150; --line-hue-b: 160; --line-hue-c: 170; --line-hue-d: 145;
+  }
+  25% {
+    --accent-hue: 155; --accent-sat: 48%; --accent-lit: 44%;
+    --line-hue-a: 160; --line-hue-b: 170; --line-hue-c: 145; --line-hue-d: 150;
+  }
+  50% {
+    --accent-hue: 165; --accent-sat: 42%; --accent-lit: 40%;
+    --line-hue-a: 170; --line-hue-b: 145; --line-hue-c: 150; --line-hue-d: 160;
+  }
+  75% {
+    --accent-hue: 152; --accent-sat: 46%; --accent-lit: 43%;
+    --line-hue-a: 145; --line-hue-b: 150; --line-hue-c: 160; --line-hue-d: 170;
+  }
+}
+
 /* ========== Time-of-Day Static Overrides ========== */
 /* These apply as reduced-motion fallback (no geometry animation needed) */
 
@@ -2228,13 +2267,13 @@ html::after {
 .crt-toggle--active::before {
   content: '[';
   color: var(--border);
-  margin-right: 1px;
+  margin-right: 2px;
 }
 
 .crt-toggle--active::after {
-  content: ']';
+  content: '✓]';
   color: var(--border);
-  margin-left: 1px;
+  margin-left: 0;
 }
 
 /* Rose theme CRT - optimized for pure black background */
@@ -2523,6 +2562,48 @@ html::after {
   mix-blend-mode: lighten;
 }
 
+/* Mint theme CRT - soft mint-white glow for light theme */
+:root[data-theme="mint"] .crt-overlay {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 30%,
+    rgba(220, 235, 225, 0.92) 80%,
+    rgba(200, 220, 205, 1) 100%
+  );
+}
+
+:root[data-theme="mint"][data-crt="true"] body {
+  text-shadow: 0 0 3px rgba(100, 180, 130, 0.25);
+}
+
+:root[data-theme="mint"][data-crt="true"] .link-title,
+:root[data-theme="mint"][data-crt="true"] .link-group-title,
+:root[data-theme="mint"][data-crt="true"] h1,
+:root[data-theme="mint"][data-crt="true"] h2,
+:root[data-theme="mint"][data-crt="true"] h3 {
+  text-shadow: 0 0 5px rgba(80, 160, 110, 0.4), 0 0 10px rgba(70, 140, 100, 0.2);
+}
+
+:root[data-theme="mint"] .crt-scanlines {
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(100, 180, 130, 0.08) 0px,
+      rgba(100, 180, 130, 0.08) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(180, 210, 190, 0.3) 1px,
+      rgba(180, 210, 190, 0.3) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+  mix-blend-mode: multiply;
+}
+
 /* ========== Media Queries ========== */
 
 /* Reduced motion */
@@ -2680,5 +2761,11 @@ html::after {
   .resume-company-header {
     flex-direction: column;
     gap: 0.15rem;
+  }
+  .theme-toggle {
+    justify-content: center;
+    max-width: 340px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
