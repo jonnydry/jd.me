@@ -262,18 +262,18 @@
 
 /* ========== Theme: Pine (light) ========== */
 :root[data-theme="pine"] {
-  --bg: #f0ece4;
-  --surface: #e7e2d9;
-  --border: #c5d0c0;
-  --text: #2a3328;
-  --text-muted: #6b7a66;
-  --accent-hue: 148;
-  --accent-sat: 32%;
-  --accent-lit: 40%;
-  --line-hue-a: 132;
-  --line-hue-b: 148;
-  --line-hue-c: 158;
-  --line-hue-d: 140;
+  --bg: #f4f6f2;
+  --surface: #e6ebe3;
+  --border: #b8c4b0;
+  --text: #283328;
+  --text-muted: #5f6e5c;
+  --accent-hue: 138;
+  --accent-sat: 28%;
+  --accent-lit: 38%;
+  --line-hue-a: 125;
+  --line-hue-b: 142;
+  --line-hue-c: 155;
+  --line-hue-d: 132;
   --img-icon-filter: opacity(0.5);
   --img-icon-filter-hover: opacity(1);
   --theme-line-boost: 1.75;
@@ -300,18 +300,18 @@
 
 /* ========== Theme: Mint (Mint Chocolate Chip) ========== */
 :root[data-theme="mint"] {
-  --bg: #f5f9f6;
-  --surface: #e8f2ec;
-  --border: #c2cfc5;
-  --text: #3d3028;
-  --text-muted: #7a6b5f;
-  --accent-hue: 160;
-  --accent-sat: 45%;
-  --accent-lit: 42%;
-  --line-hue-a: 150;
-  --line-hue-b: 160;
-  --line-hue-c: 170;
-  --line-hue-d: 145;
+  --bg: #f6faf8;
+  --surface: #e9f2ed;
+  --border: #bdd6c8;
+  --text: #2d3a35;
+  --text-muted: #6b7d75;
+  --accent-hue: 165;
+  --accent-sat: 40%;
+  --accent-lit: 40%;
+  --line-hue-a: 160;
+  --line-hue-b: 172;
+  --line-hue-c: 182;
+  --line-hue-d: 155;
   --img-icon-filter: opacity(0.5);
   --img-icon-filter-hover: opacity(1);
   --theme-line-boost: 1.7;
@@ -719,8 +719,8 @@ html::after {
   justify-content: center;
   font-family: 'JetBrains Mono', Consolas, Monaco, 'Courier New', monospace;
   background: transparent;
-  backdrop-filter: blur(12px) saturate(0.7);
-  -webkit-backdrop-filter: blur(12px) saturate(0.7);
+  backdrop-filter: blur(16px) saturate(0.8);
+  -webkit-backdrop-filter: blur(16px) saturate(0.8);
   animation: modalFadeIn 0.25s ease-out;
   cursor: pointer;
 }
@@ -729,33 +729,10 @@ html::after {
   position: relative;
   cursor: default;
   animation: modalScaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  padding: 1rem;
-  border: 1px solid hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.45);
-  background:
-    linear-gradient(180deg, hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.06), transparent 28%),
-    linear-gradient(0deg, hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.03), transparent 42%),
-    color-mix(in srgb, var(--bg) 88%, black 12%);
-  box-shadow:
-    0 0 0 1px hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.08) inset,
-    0 0 30px hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.12);
-  overflow: hidden;
+  overflow: visible;
 }
 
-.avatar-modal-inner::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.04) 0,
-      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.04) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-  opacity: 0.55;
-}
+
 
 .avatar-modal-wrap {
   position: relative;
@@ -776,7 +753,6 @@ html::after {
   object-fit: cover;
   object-position: center 45%;
   transform: scale(1.5);
-  border: 2px solid var(--bg);
 }
 
 .avatar-modal-close {
@@ -814,7 +790,6 @@ html::after {
   outline-offset: 2px;
 }
 
-[data-crt="true"] .avatar-modal-inner,
 [data-crt="true"] .avatar-modal-close {
   text-shadow: 0 0 3px hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.24);
 }
@@ -1291,24 +1266,24 @@ html::after {
 
 @keyframes colorDriftPine {
   /*
-    Line groups stay in the cool, muted pine range (130–162°) — no yellow-green.
-    Accent tuned for light cream background — slightly richer saturation, darker for contrast.
+    Line groups stay in the cool, muted pine/forest range (125–158°) — no yellow-green.
+    Accent tuned for light forest background — muted greens with cool undertones.
   */
   0%, 100% {
-    --accent-hue: 148; --accent-sat: 32%; --accent-lit: 40%;
-    --line-hue-a: 132; --line-hue-b: 148; --line-hue-c: 158; --line-hue-d: 140;
+    --accent-hue: 138; --accent-sat: 28%; --accent-lit: 38%;
+    --line-hue-a: 125; --line-hue-b: 142; --line-hue-c: 155; --line-hue-d: 132;
   }
   25% {
-    --accent-hue: 138; --accent-sat: 34%; --accent-lit: 42%;
-    --line-hue-a: 148; --line-hue-b: 158; --line-hue-c: 140; --line-hue-d: 132;
+    --accent-hue: 128; --accent-sat: 30%; --accent-lit: 40%;
+    --line-hue-a: 140; --line-hue-b: 152; --line-hue-c: 130; --line-hue-d: 125;
   }
   50% {
-    --accent-hue: 158; --accent-sat: 30%; --accent-lit: 38%;
-    --line-hue-a: 158; --line-hue-b: 140; --line-hue-c: 132; --line-hue-d: 148;
+    --accent-hue: 148; --accent-sat: 26%; --accent-lit: 36%;
+    --line-hue-a: 152; --line-hue-b: 130; --line-hue-c: 125; --line-hue-d: 142;
   }
   75% {
-    --accent-hue: 134; --accent-sat: 33%; --accent-lit: 41%;
-    --line-hue-a: 140; --line-hue-b: 132; --line-hue-c: 148; --line-hue-d: 158;
+    --accent-hue: 132; --accent-sat: 29%; --accent-lit: 39%;
+    --line-hue-a: 130; --line-hue-b: 125; --line-hue-c: 142; --line-hue-d: 155;
   }
 }
 
@@ -1320,21 +1295,25 @@ html::after {
 }
 
 @keyframes colorDriftMint {
+  /*
+    Cool teal-mint range (155–185°) — refreshing mint chocolate chip vibe.
+    Distinct from Pine's forest greens (125–158°).
+  */
   0%, 100% {
-    --accent-hue: 160; --accent-sat: 45%; --accent-lit: 42%;
-    --line-hue-a: 150; --line-hue-b: 160; --line-hue-c: 170; --line-hue-d: 145;
+    --accent-hue: 165; --accent-sat: 40%; --accent-lit: 40%;
+    --line-hue-a: 160; --line-hue-b: 172; --line-hue-c: 182; --line-hue-d: 155;
   }
   25% {
-    --accent-hue: 155; --accent-sat: 48%; --accent-lit: 44%;
-    --line-hue-a: 160; --line-hue-b: 170; --line-hue-c: 145; --line-hue-d: 150;
+    --accent-hue: 158; --accent-sat: 42%; --accent-lit: 42%;
+    --line-hue-a: 170; --line-hue-b: 180; --line-hue-c: 152; --line-hue-d: 162;
   }
   50% {
-    --accent-hue: 165; --accent-sat: 42%; --accent-lit: 40%;
-    --line-hue-a: 170; --line-hue-b: 145; --line-hue-c: 150; --line-hue-d: 160;
+    --accent-hue: 175; --accent-sat: 38%; --accent-lit: 38%;
+    --line-hue-a: 180; --line-hue-b: 152; --line-hue-c: 162; --line-hue-d: 172;
   }
   75% {
-    --accent-hue: 152; --accent-sat: 46%; --accent-lit: 43%;
-    --line-hue-a: 145; --line-hue-b: 150; --line-hue-c: 160; --line-hue-d: 170;
+    --accent-hue: 160; --accent-sat: 44%; --accent-lit: 41%;
+    --line-hue-a: 152; --line-hue-b: 162; --line-hue-c: 172; --line-hue-d: 182;
   }
 }
 
@@ -2562,19 +2541,19 @@ html::after {
   mix-blend-mode: lighten;
 }
 
-/* Mint theme CRT - soft mint-white glow for light theme */
+/* Mint theme CRT - cool teal glow for light mint-chocolate theme */
 :root[data-theme="mint"] .crt-overlay {
   background: radial-gradient(
     ellipse at center,
     transparent 0%,
     transparent 30%,
-    rgba(220, 235, 225, 0.92) 80%,
-    rgba(200, 220, 205, 1) 100%
+    rgba(225, 240, 235, 0.92) 80%,
+    rgba(210, 232, 225, 1) 100%
   );
 }
 
 :root[data-theme="mint"][data-crt="true"] body {
-  text-shadow: 0 0 3px rgba(100, 180, 130, 0.25);
+  text-shadow: 0 0 3px rgba(80, 165, 140, 0.25);
 }
 
 :root[data-theme="mint"][data-crt="true"] .link-title,
@@ -2582,22 +2561,148 @@ html::after {
 :root[data-theme="mint"][data-crt="true"] h1,
 :root[data-theme="mint"][data-crt="true"] h2,
 :root[data-theme="mint"][data-crt="true"] h3 {
-  text-shadow: 0 0 5px rgba(80, 160, 110, 0.4), 0 0 10px rgba(70, 140, 100, 0.2);
+  text-shadow: 0 0 5px rgba(65, 145, 120, 0.4), 0 0 10px rgba(55, 130, 105, 0.2);
 }
 
 :root[data-theme="mint"] .crt-scanlines {
   background: 
     repeating-linear-gradient(
       0deg,
-      rgba(100, 180, 130, 0.08) 0px,
-      rgba(100, 180, 130, 0.08) 1px,
+      rgba(80, 165, 140, 0.08) 0px,
+      rgba(80, 165, 140, 0.08) 1px,
       transparent 1px,
       transparent 2px
     ),
     repeating-linear-gradient(
       0deg,
-      rgba(180, 210, 190, 0.3) 1px,
-      rgba(180, 210, 190, 0.3) 2px,
+      rgba(190, 220, 210, 0.3) 1px,
+      rgba(190, 220, 210, 0.3) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+  mix-blend-mode: multiply;
+}
+
+/* Pine theme CRT - soft forest green glow for light theme */
+:root[data-theme="pine"] .crt-overlay {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 30%,
+    rgba(225, 235, 220, 0.92) 80%,
+    rgba(210, 228, 205, 1) 100%
+  );
+}
+
+:root[data-theme="pine"][data-crt="true"] body {
+  text-shadow: 0 0 3px rgba(90, 140, 100, 0.25);
+}
+
+:root[data-theme="pine"][data-crt="true"] .link-title,
+:root[data-theme="pine"][data-crt="true"] .link-group-title,
+:root[data-theme="pine"][data-crt="true"] h1,
+:root[data-theme="pine"][data-crt="true"] h2,
+:root[data-theme="pine"][data-crt="true"] h3 {
+  text-shadow: 0 0 5px rgba(70, 120, 85, 0.4), 0 0 10px rgba(60, 105, 75, 0.2);
+}
+
+:root[data-theme="pine"] .crt-scanlines {
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(90, 140, 100, 0.08) 0px,
+      rgba(90, 140, 100, 0.08) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(180, 200, 175, 0.3) 1px,
+      rgba(180, 200, 175, 0.3) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+  mix-blend-mode: multiply;
+}
+
+/* Paper theme CRT - warm cream/parchment glow for light theme */
+:root[data-theme="paper"] .crt-overlay {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 30%,
+    rgba(235, 230, 220, 0.92) 80%,
+    rgba(220, 215, 205, 1) 100%
+  );
+}
+
+:root[data-theme="paper"][data-crt="true"] body {
+  text-shadow: 0 0 3px rgba(100, 100, 140, 0.2);
+}
+
+:root[data-theme="paper"][data-crt="true"] .link-title,
+:root[data-theme="paper"][data-crt="true"] .link-group-title,
+:root[data-theme="paper"][data-crt="true"] h1,
+:root[data-theme="paper"][data-crt="true"] h2,
+:root[data-theme="paper"][data-crt="true"] h3 {
+  text-shadow: 0 0 5px rgba(80, 80, 120, 0.35), 0 0 10px rgba(70, 70, 110, 0.18);
+}
+
+:root[data-theme="paper"] .crt-scanlines {
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(100, 100, 140, 0.07) 0px,
+      rgba(100, 100, 140, 0.07) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(200, 195, 185, 0.3) 1px,
+      rgba(200, 195, 185, 0.3) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+  mix-blend-mode: multiply;
+}
+
+/* Harbor theme CRT - cool blue-sky glow for light theme */
+:root[data-theme="harbor"] .crt-overlay {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 30%,
+    rgba(220, 232, 245, 0.92) 80%,
+    rgba(205, 220, 238, 1) 100%
+  );
+}
+
+:root[data-theme="harbor"][data-crt="true"] body {
+  text-shadow: 0 0 3px rgba(80, 130, 170, 0.25);
+}
+
+:root[data-theme="harbor"][data-crt="true"] .link-title,
+:root[data-theme="harbor"][data-crt="true"] .link-group-title,
+:root[data-theme="harbor"][data-crt="true"] h1,
+:root[data-theme="harbor"][data-crt="true"] h2,
+:root[data-theme="harbor"][data-crt="true"] h3 {
+  text-shadow: 0 0 5px rgba(60, 110, 150, 0.4), 0 0 10px rgba(50, 95, 135, 0.2);
+}
+
+:root[data-theme="harbor"] .crt-scanlines {
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(80, 130, 170, 0.08) 0px,
+      rgba(80, 130, 170, 0.08) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(190, 210, 230, 0.3) 1px,
+      rgba(190, 210, 230, 0.3) 2px,
       transparent 2px,
       transparent 4px
     );
