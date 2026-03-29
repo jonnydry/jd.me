@@ -309,11 +309,11 @@
   --accent-sat: 65%;
   --accent-lit: 55%;
   --line-hue-a: 25;
-  --line-hue-b: 35;
+  --line-hue-b: 168;
   --line-hue-c: 15;
-  --line-hue-d: 45;
-  --line-sat: 45%;
-  --line-lit: 45%;
+  --line-hue-d: 172;
+  --line-sat: 55%;
+  --line-lit: 55%;
   --theme-line-boost: 1.65;
   animation: colorDriftMint 68s ease-in-out infinite;
 }
@@ -1302,18 +1302,22 @@ html::after {
   0%, 100% {
     --accent-hue: 168; --accent-sat: 65%; --accent-lit: 55%;
     --line-hue-a: 25; --line-hue-b: 168; --line-hue-c: 15; --line-hue-d: 172;
+    --line-sat: 55%; --line-lit: 55%;
   }
   25% {
     --accent-hue: 160; --accent-sat: 70%; --accent-lit: 58%;
     --line-hue-a: 35; --line-hue-b: 175; --line-hue-c: 40; --line-hue-d: 15;
+    --line-sat: 50%; --line-lit: 50%;
   }
   50% {
     --accent-hue: 175; --accent-sat: 60%; --accent-lit: 52%;
-    --line-hue-a: 18; --line-hue-b: 45; --line-hue-c: 165; --line-hue-d: 38;
+    --line-hue-a: 18; --line-hue-b: 165; --line-hue-c: 45; --line-hue-d: 38;
+    --line-sat: 60%; --line-lit: 60%;
   }
   75% {
     --accent-hue: 162; --accent-sat: 68%; --accent-lit: 56%;
-    --line-hue-a: 42; --line-hue-b: 12; --line-hue-c: 170; --line-hue-d: 22;
+    --line-hue-a: 42; --line-hue-b: 170; --line-hue-c: 12; --line-hue-d: 22;
+    --line-sat: 52%; --line-lit: 52%;
   }
 }
 
@@ -2869,7 +2873,7 @@ html::after {
   }
   .theme-toggle {
     justify-content: center;
-    max-width: 520px;
+    max-width: none;
     margin-left: auto;
     margin-right: auto;
   }
