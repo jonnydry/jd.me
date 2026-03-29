@@ -2229,12 +2229,6 @@ html::after {
   appearance: none;
 }
 
-@media (min-width: 641px) {
-  .crt-toggle {
-    margin-left: auto;
-  }
-}
-
 .crt-toggle:hover {
   opacity: 0.8;
 }
