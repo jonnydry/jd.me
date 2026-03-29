@@ -298,24 +298,24 @@
   animation: colorDriftStone 66s ease-in-out infinite;
 }
 
-/* ========== Theme: Mint (Mint Chocolate Chip) ========== */
+/* ========== Theme: Mint Chocolate Chip (rich dark chocolate with teal mint) ========== */
 :root[data-theme="mint"] {
-  --bg: #f6faf8;
-  --surface: #e9f2ed;
-  --border: #bdd6c8;
-  --text: #2d3a35;
-  --text-muted: #6b7d75;
-  --accent-hue: 165;
-  --accent-sat: 40%;
-  --accent-lit: 40%;
-  --line-hue-a: 160;
-  --line-hue-b: 172;
-  --line-hue-c: 182;
-  --line-hue-d: 155;
-  --img-icon-filter: opacity(0.5);
-  --img-icon-filter-hover: opacity(1);
-  --theme-line-boost: 1.7;
-  animation: colorDriftMint 72s ease-in-out infinite;
+  --bg: #1a1210;
+  --surface: #2a1a16;
+  --border: #3d2a22;
+  --text: #f5efe8;
+  --text-muted: #8a7060;
+  --accent-hue: 168;
+  --accent-sat: 65%;
+  --accent-lit: 55%;
+  --line-hue-a: 25;
+  --line-hue-b: 35;
+  --line-hue-c: 15;
+  --line-hue-d: 45;
+  --line-sat: 45%;
+  --line-lit: 45%;
+  --theme-line-boost: 1.65;
+  animation: colorDriftMint 68s ease-in-out infinite;
 }
 
 * {
@@ -1296,24 +1296,24 @@ html::after {
 
 @keyframes colorDriftMint {
   /*
-    Cool teal-mint range (155–185°) — refreshing mint chocolate chip vibe.
-    Distinct from Pine's forest greens (125–158°).
+    Mint Chocolate Chip: rich dark chocolate base with teal mint accents.
+    Warm amber/brown lines against dark chocolate, mint accent for pops of color.
   */
   0%, 100% {
-    --accent-hue: 165; --accent-sat: 40%; --accent-lit: 40%;
-    --line-hue-a: 160; --line-hue-b: 172; --line-hue-c: 182; --line-hue-d: 155;
+    --accent-hue: 168; --accent-sat: 65%; --accent-lit: 55%;
+    --line-hue-a: 25; --line-hue-b: 35; --line-hue-c: 15; --line-hue-d: 45;
   }
   25% {
-    --accent-hue: 158; --accent-sat: 42%; --accent-lit: 42%;
-    --line-hue-a: 170; --line-hue-b: 180; --line-hue-c: 152; --line-hue-d: 162;
+    --accent-hue: 160; --accent-sat: 70%; --accent-lit: 58%;
+    --line-hue-a: 35; --line-hue-b: 20; --line-hue-c: 40; --line-hue-d: 15;
   }
   50% {
-    --accent-hue: 175; --accent-sat: 38%; --accent-lit: 38%;
-    --line-hue-a: 180; --line-hue-b: 152; --line-hue-c: 162; --line-hue-d: 172;
+    --accent-hue: 175; --accent-sat: 60%; --accent-lit: 52%;
+    --line-hue-a: 18; --line-hue-b: 45; --line-hue-c: 28; --line-hue-d: 38;
   }
   75% {
-    --accent-hue: 160; --accent-sat: 44%; --accent-lit: 41%;
-    --line-hue-a: 152; --line-hue-b: 162; --line-hue-c: 172; --line-hue-d: 182;
+    --accent-hue: 162; --accent-sat: 68%; --accent-lit: 56%;
+    --line-hue-a: 42; --line-hue-b: 12; --line-hue-c: 32; --line-hue-d: 22;
   }
 }
 
@@ -2541,19 +2541,19 @@ html::after {
   mix-blend-mode: lighten;
 }
 
-/* Mint theme CRT - cool teal glow for light mint-chocolate theme */
+/* Mint Chocolate Chip theme CRT - teal mint glow on dark chocolate */
 :root[data-theme="mint"] .crt-overlay {
   background: radial-gradient(
     ellipse at center,
     transparent 0%,
-    transparent 30%,
-    rgba(225, 240, 235, 0.92) 80%,
-    rgba(210, 232, 225, 1) 100%
+    transparent 25%,
+    rgba(0, 0, 0, 0.92) 80%,
+    rgba(0, 0, 0, 1) 100%
   );
 }
 
 :root[data-theme="mint"][data-crt="true"] body {
-  text-shadow: 0 0 3px rgba(80, 165, 140, 0.25);
+  text-shadow: 0 0 4px rgba(80, 200, 160, 0.35);
 }
 
 :root[data-theme="mint"][data-crt="true"] .link-title,
@@ -2561,26 +2561,26 @@ html::after {
 :root[data-theme="mint"][data-crt="true"] h1,
 :root[data-theme="mint"][data-crt="true"] h2,
 :root[data-theme="mint"][data-crt="true"] h3 {
-  text-shadow: 0 0 5px rgba(65, 145, 120, 0.4), 0 0 10px rgba(55, 130, 105, 0.2);
+  text-shadow: 0 0 8px rgba(80, 200, 160, 0.5), 0 0 16px rgba(60, 180, 140, 0.3);
 }
 
 :root[data-theme="mint"] .crt-scanlines {
   background: 
     repeating-linear-gradient(
       0deg,
-      rgba(80, 165, 140, 0.08) 0px,
-      rgba(80, 165, 140, 0.08) 1px,
+      rgba(80, 200, 160, 0.12) 0px,
+      rgba(80, 200, 160, 0.12) 1px,
       transparent 1px,
       transparent 2px
     ),
     repeating-linear-gradient(
       0deg,
-      rgba(190, 220, 210, 0.3) 1px,
-      rgba(190, 220, 210, 0.3) 2px,
+      rgba(0, 0, 0, 0.5) 1px,
+      rgba(0, 0, 0, 0.5) 2px,
       transparent 2px,
       transparent 4px
     );
-  mix-blend-mode: multiply;
+  mix-blend-mode: lighten;
 }
 
 /* Pine theme CRT - soft forest green glow for light theme */
