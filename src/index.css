@@ -300,9 +300,9 @@
 
 /* ========== Theme: Mint Chocolate Chip (rich dark chocolate with teal mint) ========== */
 :root[data-theme="mint"] {
-  --bg: #1a1210;
-  --surface: #2a1a16;
-  --border: #3d2a22;
+  --bg: #201210;
+  --surface: #2c1c18;
+  --border: #453028;
   --text: #f5efe8;
   --text-muted: #8a7060;
   --accent-hue: 168;
@@ -2547,8 +2547,8 @@ html::after {
     ellipse at center,
     transparent 0%,
     transparent 25%,
-    rgba(0, 0, 0, 0.92) 80%,
-    rgba(0, 0, 0, 1) 100%
+    rgba(20, 8, 5, 0.92) 80%,
+    rgba(15, 5, 3, 1) 100%
   );
 }
 
