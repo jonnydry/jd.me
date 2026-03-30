@@ -300,21 +300,21 @@
 
 /* ========== Theme: Mint Chocolate Chip (rich dark chocolate with teal mint) ========== */
 :root[data-theme="mint"] {
-  --bg: #201210;
-  --surface: #2c1c18;
-  --border: #453028;
+  --bg: #170d0b;
+  --surface: #241512;
+  --border: #38241d;
   --text: #f5efe8;
-  --text-muted: #8a7060;
+  --text-muted: #7d6456;
   --accent-hue: 168;
-  --accent-sat: 65%;
-  --accent-lit: 55%;
-  --line-hue-a: 24;
+  --accent-sat: 58%;
+  --accent-lit: 52%;
+  --line-hue-a: 20;
   --line-hue-b: 168;
-  --line-hue-c: 162;
-  --line-hue-d: 172;
-  --line-sat: 60%;
-  --line-lit: 58%;
-  --theme-line-boost: 1.65;
+  --line-hue-c: 26;
+  --line-hue-d: 170;
+  --line-sat: 54%;
+  --line-lit: 46%;
+  --theme-line-boost: 1.5;
   animation: colorDriftMint 68s ease-in-out infinite;
 }
 
@@ -1308,28 +1308,28 @@ html::after {
 
 @keyframes colorDriftMint {
   /*
-    Mint Chocolate Chip: rich dark chocolate base with teal mint accents.
-    Mix of warm amber/brown lines and mint chip teal tones for that ice cream vibe.
+    Mint Chocolate Chip: espresso-chocolate base with restrained teal mint accents.
+    Keep most of the field warm and dark; reserve mint for the chip highlights.
   */
   0%, 100% {
-    --accent-hue: 168; --accent-sat: 65%; --accent-lit: 55%;
-    --line-hue-a: 24; --line-hue-b: 168; --line-hue-c: 162; --line-hue-d: 172;
-    --line-sat: 60%; --line-lit: 58%;
+    --accent-hue: 168; --accent-sat: 58%; --accent-lit: 52%;
+    --line-hue-a: 20; --line-hue-b: 168; --line-hue-c: 26; --line-hue-d: 170;
+    --line-sat: 54%; --line-lit: 46%;
   }
   25% {
-    --accent-hue: 160; --accent-sat: 70%; --accent-lit: 58%;
-    --line-hue-a: 35; --line-hue-b: 170; --line-hue-c: 166; --line-hue-d: 24;
-    --line-sat: 58%; --line-lit: 56%;
+    --accent-hue: 166; --accent-sat: 60%; --accent-lit: 54%;
+    --line-hue-a: 28; --line-hue-b: 170; --line-hue-c: 22; --line-hue-d: 168;
+    --line-sat: 52%; --line-lit: 44%;
   }
   50% {
-    --accent-hue: 175; --accent-sat: 60%; --accent-lit: 52%;
-    --line-hue-a: 18; --line-hue-b: 166; --line-hue-c: 170; --line-hue-d: 35;
-    --line-sat: 62%; --line-lit: 60%;
+    --accent-hue: 172; --accent-sat: 56%; --accent-lit: 50%;
+    --line-hue-a: 18; --line-hue-b: 168; --line-hue-c: 30; --line-hue-d: 172;
+    --line-sat: 56%; --line-lit: 48%;
   }
   75% {
-    --accent-hue: 162; --accent-sat: 68%; --accent-lit: 56%;
-    --line-hue-a: 28; --line-hue-b: 172; --line-hue-c: 162; --line-hue-d: 168;
-    --line-sat: 60%; --line-lit: 58%;
+    --accent-hue: 164; --accent-sat: 58%; --accent-lit: 53%;
+    --line-hue-a: 24; --line-hue-b: 166; --line-hue-c: 20; --line-hue-d: 168;
+    --line-sat: 53%; --line-lit: 45%;
   }
 }
 
@@ -2563,13 +2563,13 @@ html::after {
     ellipse at center,
     transparent 0%,
     transparent 10%,
-    rgba(30, 12, 8, 0.85) 70%,
-    rgba(25, 10, 5, 1) 100%
+    rgba(24, 12, 9, 0.9) 70%,
+    rgba(20, 9, 6, 1) 100%
   );
 }
 
 :root[data-theme="mint"][data-crt="true"] body {
-  text-shadow: 0 0 4px rgba(80, 200, 160, 0.35);
+  text-shadow: 0 0 3px rgba(76, 180, 150, 0.22);
 }
 
 :root[data-theme="mint"][data-crt="true"] .link-title,
@@ -2577,22 +2577,22 @@ html::after {
 :root[data-theme="mint"][data-crt="true"] h1,
 :root[data-theme="mint"][data-crt="true"] h2,
 :root[data-theme="mint"][data-crt="true"] h3 {
-  text-shadow: 0 0 8px rgba(80, 200, 160, 0.5), 0 0 16px rgba(60, 180, 140, 0.3);
+  text-shadow: 0 0 6px rgba(76, 180, 150, 0.35), 0 0 12px rgba(60, 150, 125, 0.2);
 }
 
 :root[data-theme="mint"] .crt-scanlines {
   background: 
     repeating-linear-gradient(
       0deg,
-      rgba(80, 200, 160, 0.12) 0px,
-      rgba(80, 200, 160, 0.12) 1px,
+      rgba(76, 180, 150, 0.08) 0px,
+      rgba(76, 180, 150, 0.08) 1px,
       transparent 1px,
       transparent 2px
     ),
     repeating-linear-gradient(
       0deg,
-      rgba(0, 0, 0, 0.5) 1px,
-      rgba(0, 0, 0, 0.5) 2px,
+      rgba(0, 0, 0, 0.56) 1px,
+      rgba(0, 0, 0, 0.56) 2px,
       transparent 2px,
       transparent 4px
     );
