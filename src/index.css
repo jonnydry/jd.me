@@ -308,12 +308,12 @@
   --accent-hue: 168;
   --accent-sat: 65%;
   --accent-lit: 55%;
-  --line-hue-a: 25;
+  --line-hue-a: 24;
   --line-hue-b: 168;
-  --line-hue-c: 15;
+  --line-hue-c: 162;
   --line-hue-d: 172;
-  --line-sat: 55%;
-  --line-lit: 55%;
+  --line-sat: 60%;
+  --line-lit: 58%;
   --theme-line-boost: 1.65;
   animation: colorDriftMint 68s ease-in-out infinite;
 }
@@ -620,6 +620,18 @@ html::after {
   .resume,
   .writing {
     max-width: 690px;
+  }
+  .theme-toggle {
+    flex-wrap: nowrap;
+    row-gap: 0;
+    font-size: 0.6rem;
+  }
+  .theme-btn,
+  .crt-toggle {
+    padding: 0.15rem 0.25rem;
+  }
+  .theme-prompt {
+    margin-right: 0.25rem;
   }
 }
 
@@ -1301,23 +1313,23 @@ html::after {
   */
   0%, 100% {
     --accent-hue: 168; --accent-sat: 65%; --accent-lit: 55%;
-    --line-hue-a: 25; --line-hue-b: 168; --line-hue-c: 15; --line-hue-d: 172;
-    --line-sat: 55%; --line-lit: 55%;
+    --line-hue-a: 24; --line-hue-b: 168; --line-hue-c: 162; --line-hue-d: 172;
+    --line-sat: 60%; --line-lit: 58%;
   }
   25% {
     --accent-hue: 160; --accent-sat: 70%; --accent-lit: 58%;
-    --line-hue-a: 35; --line-hue-b: 175; --line-hue-c: 40; --line-hue-d: 15;
-    --line-sat: 50%; --line-lit: 50%;
+    --line-hue-a: 35; --line-hue-b: 170; --line-hue-c: 166; --line-hue-d: 24;
+    --line-sat: 58%; --line-lit: 56%;
   }
   50% {
     --accent-hue: 175; --accent-sat: 60%; --accent-lit: 52%;
-    --line-hue-a: 18; --line-hue-b: 165; --line-hue-c: 45; --line-hue-d: 38;
-    --line-sat: 60%; --line-lit: 60%;
+    --line-hue-a: 18; --line-hue-b: 166; --line-hue-c: 170; --line-hue-d: 35;
+    --line-sat: 62%; --line-lit: 60%;
   }
   75% {
     --accent-hue: 162; --accent-sat: 68%; --accent-lit: 56%;
-    --line-hue-a: 42; --line-hue-b: 170; --line-hue-c: 12; --line-hue-d: 22;
-    --line-sat: 52%; --line-lit: 52%;
+    --line-hue-a: 28; --line-hue-b: 172; --line-hue-c: 162; --line-hue-d: 168;
+    --line-sat: 60%; --line-lit: 58%;
   }
 }
 
