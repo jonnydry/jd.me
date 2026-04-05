@@ -298,22 +298,22 @@
   animation: colorDriftStone 66s ease-in-out infinite;
 }
 
-/* ========== Theme: Mint Chocolate Chip (rich dark chocolate with teal mint) ========== */
+/* ========== Theme: Mint Chocolate Chip (light mint base with rich chocolate accents) ========== */
 :root[data-theme="mint"] {
-  --bg: #170d0b;
-  --surface: #241512;
-  --border: #38241d;
-  --text: #f5efe8;
-  --text-muted: #7d6456;
-  --accent-hue: 168;
-  --accent-sat: 58%;
-  --accent-lit: 52%;
-  --line-hue-a: 20;
-  --line-hue-b: 168;
-  --line-hue-c: 26;
-  --line-hue-d: 170;
-  --line-sat: 54%;
-  --line-lit: 46%;
+  --bg: #e8f2e8;
+  --surface: #d4e6d4;
+  --border: #a8c8a8;
+  --text: #2d1a0e;
+  --text-muted: #5a7a5a;
+  --accent-hue: 25;
+  --accent-sat: 55%;
+  --accent-lit: 38%;
+  --line-hue-a: 25;
+  --line-hue-b: 35;
+  --line-hue-c: 18;
+  --line-hue-d: 30;
+  --line-sat: 48%;
+  --line-lit: 42%;
   --theme-line-boost: 1.5;
   animation: colorDriftMint 68s ease-in-out infinite;
 }
@@ -1308,28 +1308,28 @@ html::after {
 
 @keyframes colorDriftMint {
   /*
-    Mint Chocolate Chip: espresso-chocolate base with restrained teal mint accents.
-    Keep most of the field warm and dark; reserve mint for the chip highlights.
+    Mint Chocolate Chip: light mint base with rich chocolate accents.
+    Drift through warm brown variations for the accent while mint stays in the background.
   */
   0%, 100% {
-    --accent-hue: 168; --accent-sat: 58%; --accent-lit: 52%;
-    --line-hue-a: 20; --line-hue-b: 168; --line-hue-c: 26; --line-hue-d: 170;
-    --line-sat: 54%; --line-lit: 46%;
+    --accent-hue: 25; --accent-sat: 55%; --accent-lit: 38%;
+    --line-hue-a: 25; --line-hue-b: 35; --line-hue-c: 18; --line-hue-d: 30;
+    --line-sat: 48%; --line-lit: 42%;
   }
   25% {
-    --accent-hue: 166; --accent-sat: 60%; --accent-lit: 54%;
-    --line-hue-a: 28; --line-hue-b: 170; --line-hue-c: 22; --line-hue-d: 168;
-    --line-sat: 52%; --line-lit: 44%;
+    --accent-hue: 30; --accent-sat: 52%; --accent-lit: 40%;
+    --line-hue-a: 30; --line-hue-b: 38; --line-hue-c: 20; --line-hue-d: 32;
+    --line-sat: 50%; --line-lit: 40%;
   }
   50% {
-    --accent-hue: 172; --accent-sat: 56%; --accent-lit: 50%;
-    --line-hue-a: 18; --line-hue-b: 168; --line-hue-c: 30; --line-hue-d: 172;
-    --line-sat: 56%; --line-lit: 48%;
+    --accent-hue: 22; --accent-sat: 58%; --accent-lit: 36%;
+    --line-hue-a: 22; --line-hue-b: 32; --line-hue-c: 15; --line-hue-d: 28;
+    --line-sat: 46%; --line-lit: 44%;
   }
   75% {
-    --accent-hue: 164; --accent-sat: 58%; --accent-lit: 53%;
-    --line-hue-a: 24; --line-hue-b: 166; --line-hue-c: 20; --line-hue-d: 168;
-    --line-sat: 53%; --line-lit: 45%;
+    --accent-hue: 35; --accent-sat: 50%; --accent-lit: 42%;
+    --line-hue-a: 35; --line-hue-b: 40; --line-hue-c: 22; --line-hue-d: 35;
+    --line-sat: 44%; --line-lit: 38%;
   }
 }
 
@@ -2557,19 +2557,20 @@ html::after {
   mix-blend-mode: lighten;
 }
 
-/* Mint Chocolate Chip theme CRT - teal mint glow on dark chocolate */
+/* Mint Chocolate Chip theme CRT - adapts to accent color on light mint base */
 :root[data-theme="mint"] .crt-overlay {
   background: radial-gradient(
     ellipse at center,
     transparent 0%,
-    transparent 10%,
-    rgba(24, 12, 9, 0.9) 70%,
-    rgba(20, 9, 6, 1) 100%
+    transparent 20%,
+    hsla(var(--accent-hue), 30%, 80%, 0.15) 60%,
+    hsla(var(--accent-hue), 40%, 60%, 0.50) 85%,
+    hsla(var(--accent-hue), 50%, 35%, 0.85) 100%
   );
 }
 
 :root[data-theme="mint"][data-crt="true"] body {
-  text-shadow: 0 0 3px rgba(76, 180, 150, 0.22);
+  text-shadow: 0 0 3px hsla(var(--accent-hue), var(--accent-sat), var(--accent-lit), 0.25);
 }
 
 :root[data-theme="mint"][data-crt="true"] .link-title,
@@ -2577,26 +2578,26 @@ html::after {
 :root[data-theme="mint"][data-crt="true"] h1,
 :root[data-theme="mint"][data-crt="true"] h2,
 :root[data-theme="mint"][data-crt="true"] h3 {
-  text-shadow: 0 0 6px rgba(76, 180, 150, 0.35), 0 0 12px rgba(60, 150, 125, 0.2);
+  text-shadow: 0 0 6px hsla(var(--accent-hue), var(--accent-sat), var(--accent-lit), 0.40), 0 0 12px hsla(var(--accent-hue), var(--accent-sat), var(--accent-lit), 0.20);
 }
 
 :root[data-theme="mint"] .crt-scanlines {
-  background: 
+  background:
     repeating-linear-gradient(
       0deg,
-      rgba(76, 180, 150, 0.08) 0px,
-      rgba(76, 180, 150, 0.08) 1px,
+      hsla(var(--accent-hue), var(--accent-sat), var(--accent-lit), 0.10) 0px,
+      hsla(var(--accent-hue), var(--accent-sat), var(--accent-lit), 0.10) 1px,
       transparent 1px,
       transparent 2px
     ),
     repeating-linear-gradient(
       0deg,
-      rgba(0, 0, 0, 0.56) 1px,
-      rgba(0, 0, 0, 0.56) 2px,
+      hsla(var(--accent-hue), 40%, 25%, 0.40) 1px,
+      hsla(var(--accent-hue), 40%, 25%, 0.40) 2px,
       transparent 2px,
       transparent 4px
     );
-  mix-blend-mode: lighten;
+  mix-blend-mode: multiply;
 }
 
 /* Pine theme CRT - soft forest green glow for light theme */
