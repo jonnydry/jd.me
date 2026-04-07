@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 
-export const THEMES = ['default', 'rose', 'paper', 'stone', 'ember', 'pine', 'harbor', 'dusk', 'mint'] as const
+export const THEMES = ['default', 'rose', 'paper', 'stone', 'ember', 'pine', 'harbor', 'dusk', 'phosphor'] as const
 export type Theme = (typeof THEMES)[number]
 
 type ThemeContextValue = {
@@ -13,7 +13,7 @@ type ThemeContextValue = {
 const ThemeContext = createContext<ThemeContextValue | null>(null)
 
 function isTheme(value: string | null): value is Theme {
-  return value === 'default' || value === 'rose' || value === 'paper' || value === 'stone' || value === 'ember' || value === 'pine' || value === 'harbor' || value === 'dusk' || value === 'mint'
+  return value === 'default' || value === 'rose' || value === 'paper' || value === 'stone' || value === 'ember' || value === 'pine' || value === 'harbor' || value === 'dusk' || value === 'phosphor'
 }
 
 function applyTheme(t: Theme) {

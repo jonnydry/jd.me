@@ -298,24 +298,24 @@
   animation: colorDriftStone 66s ease-in-out infinite;
 }
 
-/* ========== Theme: Mint Chocolate Chip (light mint base with rich chocolate accents) ========== */
-:root[data-theme="mint"] {
-  --bg: #e8f2e8;
-  --surface: #d4e6d4;
-  --border: #a8c8a8;
-  --text: #2d1a0e;
-  --text-muted: #5a7a5a;
-  --accent-hue: 25;
-  --accent-sat: 55%;
-  --accent-lit: 38%;
-  --line-hue-a: 25;
-  --line-hue-b: 35;
-  --line-hue-c: 18;
-  --line-hue-d: 30;
-  --line-sat: 48%;
-  --line-lit: 42%;
-  --theme-line-boost: 1.5;
-  animation: colorDriftMint 68s ease-in-out infinite;
+/* ========== Theme: Phosphor (classic P1 green phosphor terminal) ========== */
+:root[data-theme="phosphor"] {
+  --bg: #040a05;
+  --surface: #0d160f;
+  --border: #1a2a1e;
+  --text: #e8f5e9;
+  --text-muted: #4a7c59;
+  --accent-hue: 130;
+  --accent-sat: 85%;
+  --accent-lit: 55%;
+  --line-hue-a: 125;
+  --line-hue-b: 135;
+  --line-hue-c: 118;
+  --line-hue-d: 142;
+  --line-sat: 80%;
+  --line-lit: 52%;
+  --theme-line-boost: 1.6;
+  animation: colorDriftPhosphor 72s ease-in-out infinite;
 }
 
 * {
@@ -1306,30 +1306,31 @@ html::after {
   75%       { --accent-hue: 32;  --accent-sat: 9%;  --accent-lit: 62%; --line-hue-a: 32;  --line-hue-b: 32;  --line-hue-c: 32;  --line-hue-d: 32; }
 }
 
-@keyframes colorDriftMint {
+@keyframes colorDriftPhosphor {
   /*
-    Mint Chocolate Chip: light mint base with rich chocolate accents.
-    Drift through warm brown variations for the accent while mint stays in the background.
+    Phosphor: classic P1 green phosphor terminal.
+    Lines drift subtly within the green spectrum (118°-145°) to create
+    a living, breathing terminal effect while maintaining authenticity.
   */
   0%, 100% {
-    --accent-hue: 25; --accent-sat: 55%; --accent-lit: 38%;
-    --line-hue-a: 25; --line-hue-b: 35; --line-hue-c: 18; --line-hue-d: 30;
-    --line-sat: 48%; --line-lit: 42%;
+    --accent-hue: 130; --accent-sat: 85%; --accent-lit: 55%;
+    --line-hue-a: 125; --line-hue-b: 135; --line-hue-c: 118; --line-hue-d: 142;
+    --line-sat: 80%; --line-lit: 52%;
   }
   25% {
-    --accent-hue: 30; --accent-sat: 52%; --accent-lit: 40%;
-    --line-hue-a: 30; --line-hue-b: 38; --line-hue-c: 20; --line-hue-d: 32;
-    --line-sat: 50%; --line-lit: 40%;
+    --accent-hue: 128; --accent-sat: 87%; --accent-lit: 57%;
+    --line-hue-a: 132; --line-hue-b: 142; --line-hue-c: 125; --line-hue-d: 138;
+    --line-sat: 82%; --line-lit: 54%;
   }
   50% {
-    --accent-hue: 22; --accent-sat: 58%; --accent-lit: 36%;
-    --line-hue-a: 22; --line-hue-b: 32; --line-hue-c: 15; --line-hue-d: 28;
-    --line-sat: 46%; --line-lit: 44%;
+    --accent-hue: 133; --accent-sat: 83%; --accent-lit: 53%;
+    --line-hue-a: 118; --line-hue-b: 128; --line-hue-c: 142; --line-hue-d: 132;
+    --line-sat: 78%; --line-lit: 50%;
   }
   75% {
-    --accent-hue: 35; --accent-sat: 50%; --accent-lit: 42%;
-    --line-hue-a: 35; --line-hue-b: 40; --line-hue-c: 22; --line-hue-d: 35;
-    --line-sat: 44%; --line-lit: 38%;
+    --accent-hue: 127; --accent-sat: 86%; --accent-lit: 56%;
+    --line-hue-a: 138; --line-hue-b: 145; --line-hue-c: 122; --line-hue-d: 135;
+    --line-sat: 81%; --line-lit: 53%;
   }
 }
 
@@ -2557,47 +2558,46 @@ html::after {
   mix-blend-mode: lighten;
 }
 
-/* Mint Chocolate Chip theme CRT - adapts to accent color on light mint base */
-:root[data-theme="mint"] .crt-overlay {
+/* Phosphor theme CRT - classic P1 green phosphor glow */
+:root[data-theme="phosphor"] .crt-overlay {
   background: radial-gradient(
     ellipse at center,
     transparent 0%,
-    transparent 20%,
-    hsla(var(--accent-hue), 30%, 80%, 0.15) 60%,
-    hsla(var(--accent-hue), 40%, 60%, 0.50) 85%,
-    hsla(var(--accent-hue), 50%, 35%, 0.85) 100%
+    transparent 10%,
+    rgba(4, 10, 5, 0.92) 70%,
+    rgba(3, 8, 4, 1) 100%
   );
 }
 
-:root[data-theme="mint"][data-crt="true"] body {
-  text-shadow: 0 0 3px hsla(var(--accent-hue), var(--accent-sat), var(--accent-lit), 0.25);
+:root[data-theme="phosphor"][data-crt="true"] body {
+  text-shadow: 0 0 3px rgba(100, 230, 120, 0.28);
 }
 
-:root[data-theme="mint"][data-crt="true"] .link-title,
-:root[data-theme="mint"][data-crt="true"] .link-group-title,
-:root[data-theme="mint"][data-crt="true"] h1,
-:root[data-theme="mint"][data-crt="true"] h2,
-:root[data-theme="mint"][data-crt="true"] h3 {
-  text-shadow: 0 0 6px hsla(var(--accent-hue), var(--accent-sat), var(--accent-lit), 0.40), 0 0 12px hsla(var(--accent-hue), var(--accent-sat), var(--accent-lit), 0.20);
+:root[data-theme="phosphor"][data-crt="true"] .link-title,
+:root[data-theme="phosphor"][data-crt="true"] .link-group-title,
+:root[data-theme="phosphor"][data-crt="true"] h1,
+:root[data-theme="phosphor"][data-crt="true"] h2,
+:root[data-theme="phosphor"][data-crt="true"] h3 {
+  text-shadow: 0 0 6px rgba(100, 230, 120, 0.45), 0 0 12px rgba(80, 210, 100, 0.25);
 }
 
-:root[data-theme="mint"] .crt-scanlines {
-  background:
+:root[data-theme="phosphor"] .crt-scanlines {
+  background: 
     repeating-linear-gradient(
       0deg,
-      hsla(var(--accent-hue), var(--accent-sat), var(--accent-lit), 0.10) 0px,
-      hsla(var(--accent-hue), var(--accent-sat), var(--accent-lit), 0.10) 1px,
+      rgba(100, 230, 120, 0.12) 0px,
+      rgba(100, 230, 120, 0.12) 1px,
       transparent 1px,
       transparent 2px
     ),
     repeating-linear-gradient(
       0deg,
-      hsla(var(--accent-hue), 40%, 25%, 0.40) 1px,
-      hsla(var(--accent-hue), 40%, 25%, 0.40) 2px,
+      rgba(0, 0, 0, 0.5) 1px,
+      rgba(0, 0, 0, 0.5) 2px,
       transparent 2px,
       transparent 4px
     );
-  mix-blend-mode: multiply;
+  mix-blend-mode: lighten;
 }
 
 /* Pine theme CRT - soft forest green glow for light theme */
