@@ -2142,18 +2142,17 @@ html::after {
 .theme-btn--active {
   color: var(--accent);
   opacity: 1;
+  white-space: nowrap;
 }
 
 .theme-btn--active::before {
-  content: '[';
+  content: '[ ';
   color: var(--border);
-  margin-right: 1px;
 }
 
 .theme-btn--active::after {
-  content: ']';
+  content: ' ]';
   color: var(--border);
-  margin-left: 1px;
 }
 
 /* ========== Theme Wipe ========== */
