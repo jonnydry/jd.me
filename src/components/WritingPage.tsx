@@ -4,11 +4,7 @@ import type { ContentBlock, WritingSample } from '../config/writing'
 import { useScrollProgress } from '../hooks/useScrollProgress'
 import ThemeToggle from './ThemeToggle'
 import { useGlow } from '../hooks/useGlow'
-
-function normalizePathname(pathname: string) {
-  if (pathname === '/') return pathname
-  return pathname.endsWith('/') ? pathname.slice(0, -1) : pathname
-}
+import { normalizePathname } from '../utils/path'
 
 function slugify(text: string) {
   return text
@@ -49,11 +45,15 @@ function getResponsiveImageSources(src: string) {
 }
 
 function renderInlineText(text: string) {
-  const parts = text.split(/(\*[^*]+\*)/g)
+  const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g)
 
   if (parts.length === 1) return text
 
   return parts.map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
+      return <strong key={index}>{part.slice(2, -2)}</strong>
+    }
+
     if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
       return <em key={index}>{part.slice(1, -1)}</em>
     }
@@ -177,9 +177,12 @@ export default function WritingPage() {
   const navigate = useNavigate()
   const progressRef = useRef<HTMLDivElement>(null)
   const [writingSamples, setWritingSamples] = useState<WritingSample[] | null>(null)
+  const [loadError, setLoadError] = useState(false)
 
   useEffect(() => {
-    import('../config/writing').then((m) => setWritingSamples(m.writingSamples))
+    import('../config/writing')
+      .then((m) => setWritingSamples(m.writingSamples))
+      .catch(() => setLoadError(true))
   }, [])
 
   const normalizedPathname = normalizePathname(location.pathname)
@@ -198,6 +201,22 @@ export default function WritingPage() {
         window.matchMedia('(prefers-reduced-motion: reduce)').matches
       el.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' })
     }
+  }
+
+  if (loadError) {
+    return (
+      <main className="app app--top">
+        <div className="writing">
+          <button type="button" className="resume-back" onClick={() => navigate('/')}>
+            <span className="resume-back-arrow">←</span> links
+          </button>
+          <ThemeToggle />
+          <p className="writing-page-desc" style={{ marginTop: '2rem', opacity: 0.7 }}>
+            Failed to load writing samples.
+          </p>
+        </div>
+      </main>
+    )
   }
 
   if (!writingSamples) {

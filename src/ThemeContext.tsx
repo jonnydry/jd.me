@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 export const THEMES = ['default', 'rose', 'paper', 'stone', 'ember', 'pine', 'harbor', 'dusk', 'phosphor'] as const
 export type Theme = (typeof THEMES)[number]
@@ -13,7 +13,7 @@ type ThemeContextValue = {
 const ThemeContext = createContext<ThemeContextValue | null>(null)
 
 function isTheme(value: string | null): value is Theme {
-  return value === 'default' || value === 'rose' || value === 'paper' || value === 'stone' || value === 'ember' || value === 'pine' || value === 'harbor' || value === 'dusk' || value === 'phosphor'
+  return (THEMES as readonly string[]).includes(value ?? '')
 }
 
 function applyTheme(t: Theme) {
@@ -54,10 +54,10 @@ function getStoredTheme(): Theme {
 function getStoredCrt(): boolean {
   try {
     const raw = localStorage.getItem('crt')
-    if (raw === null) return true
+    if (raw === null) return false
     return raw === 'true'
   } catch {
-    return true
+    return false
   }
 }
 
@@ -67,11 +67,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [wiping, setWiping] = useState(false)
   const midpointTimeoutRef = useRef<number | null>(null)
   const wipeTimeoutRef = useRef<number | null>(null)
+  const themeRef = useRef(theme)
+  const wipingRef = useRef(wiping)
 
-  // Keep DOM/localStorage in sync with current theme.
+  themeRef.current = theme
+  wipingRef.current = wiping
+
   useEffect(() => { applyTheme(theme) }, [theme])
 
-  // Keep DOM/localStorage in sync with CRT state.
   useEffect(() => { applyCrt(crtEnabled) }, [crtEnabled])
 
   const clearThemeTimers = useCallback(() => {
@@ -90,28 +93,34 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, [clearThemeTimers])
 
   const setTheme = useCallback((t: Theme) => {
-    if (t === theme || wiping) return
+    if (t === themeRef.current || wipingRef.current) return
     setWiping(true)
+
     clearThemeTimers()
 
-    // At midpoint (300ms), swap the theme under the wipe
     midpointTimeoutRef.current = window.setTimeout(() => {
       setThemeRaw(t)
     }, 300)
 
-    // After full animation (600ms), remove the wipe
     wipeTimeoutRef.current = window.setTimeout(() => {
       setWiping(false)
       clearThemeTimers()
     }, 600)
-  }, [clearThemeTimers, theme, wiping])
+  }, [clearThemeTimers])
 
   const setCrtEnabled = useCallback((enabled: boolean) => {
     setCrtRaw(enabled)
   }, [])
 
+  const value = useMemo<ThemeContextValue>(() => ({
+    theme,
+    setTheme,
+    crtEnabled,
+    setCrtEnabled,
+  }), [theme, setTheme, crtEnabled, setCrtEnabled])
+
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, crtEnabled, setCrtEnabled }}>
+    <ThemeContext.Provider value={value}>
       {children}
       {wiping && <div className="theme-wipe" />}
       {crtEnabled && (

@@ -622,8 +622,6 @@ html::after {
     max-width: 690px;
   }
   .theme-toggle {
-    flex-wrap: nowrap;
-    row-gap: 0;
     font-size: 0.6rem;
   }
   .theme-btn,
@@ -653,6 +651,12 @@ html::after {
   cursor: pointer;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   contain: paint;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .avatar-wrap::after {
@@ -2097,8 +2101,7 @@ html::after {
   display: flex;
   align-items: center;
   gap: 0;
-  flex-wrap: wrap;
-  row-gap: 0.35rem;
+  flex-wrap: nowrap;
   margin-bottom: 1.5rem;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.65rem;

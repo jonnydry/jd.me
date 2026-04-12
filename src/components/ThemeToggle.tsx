@@ -1,9 +1,8 @@
 import { useRef } from 'react'
-import { useTheme } from '../ThemeContext'
+import { THEMES, useTheme } from '../ThemeContext'
+import type { Theme } from '../ThemeContext'
 
-const THEMES = ['default', 'rose', 'paper', 'stone', 'ember', 'pine', 'harbor', 'dusk', 'phosphor'] as const
-
-const THEME_LABELS: Record<'default' | 'rose' | 'paper' | 'stone' | 'ember' | 'pine' | 'harbor' | 'dusk' | 'phosphor', string> = {
+const THEME_LABELS: Record<Theme, string> = {
   default: '--dark',
   rose: '--rose',
   paper: '--paper',

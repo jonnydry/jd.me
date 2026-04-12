@@ -15,19 +15,29 @@ function ChildRow({ link }: { link: LinkItem }) {
   const IconComponent = link.icon ? IconMap[link.icon] : ArrowRight
   const iconSrc = link.iconSrc
   const isSanchoIcon = iconSrc === '/sanchodarktransVector.svg'
+  const rippleRef = useRef<HTMLSpanElement | null>(null)
 
   const glowHandlers = useGlow(rowRef)
 
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     const el = rowRef.current
     if (!el) return
+    if (rippleRef.current) rippleRef.current.remove()
     const rect = el.getBoundingClientRect()
     const ripple = document.createElement('span')
     ripple.className = 'link-ripple'
     ripple.style.left = `${e.clientX - rect.left - 3}px`
     ripple.style.top = `${e.clientY - rect.top - 3}px`
     el.appendChild(ripple)
-    ripple.addEventListener('animationend', () => ripple.remove(), { once: true })
+    rippleRef.current = ripple
+    ripple.addEventListener('animationend', () => {
+      ripple.remove()
+      if (rippleRef.current === ripple) rippleRef.current = null
+    }, { once: true })
+  }, [])
+
+  useEffect(() => {
+    return () => { rippleRef.current?.remove() }
   }, [])
 
   const handleClick = (e: React.MouseEvent) => {

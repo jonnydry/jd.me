@@ -47,12 +47,12 @@ describe('ThemeToggle', () => {
     renderWithProvider(<ThemeToggle />)
     
     const crtButton = screen.getByRole('button', { name: 'Toggle CRT effect' })
-    expect(crtButton).toHaveAttribute('aria-pressed', 'true')
+    expect(crtButton).toHaveAttribute('aria-pressed', 'false')
     
     fireEvent.click(crtButton)
     
     await vi.waitFor(() => {
-      expect(crtButton).toHaveAttribute('aria-pressed', 'false')
+      expect(crtButton).toHaveAttribute('aria-pressed', 'true')
     })
   })
 

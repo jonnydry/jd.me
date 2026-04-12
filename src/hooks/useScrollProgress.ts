@@ -24,7 +24,7 @@ export function useScrollProgress(ref: React.RefObject<HTMLDivElement | null>, k
 
       scheduleUpdate()
       page.addEventListener('scroll', scheduleUpdate, { passive: true })
-      window.addEventListener('resize', scheduleUpdate)
+      window.addEventListener('resize', scheduleUpdate, { passive: true })
 
       return () => {
         page.removeEventListener('scroll', scheduleUpdate)

@@ -141,7 +141,7 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
 
   const closeModal = useCallback(() => setModalOpen(false), [])
 
-  const avatarWrapRef = useRef<HTMLDivElement>(null)
+  const avatarWrapRef = useRef<HTMLButtonElement>(null)
   const avatarModalWrapRef = useRef<HTMLDivElement>(null)
   const modalRef = useRef<HTMLDivElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
@@ -212,13 +212,12 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
 
   return (
     <header className="header">
-      <div
+      <button
+        type="button"
         ref={avatarWrapRef}
         className="avatar-wrap"
         aria-label={`Open photo of ${name}`}
         onClick={() => setModalOpen(true)}
-        role="button"
-        tabIndex={0}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setModalOpen(true) } }}
         onMouseEnter={avatarTilt.handleMouseEnter}
         onMouseMove={avatarTilt.handleMouseMove}
@@ -243,7 +242,7 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
             fetchPriority="high"
           />
         </picture>
-      </div>
+      </button>
       <h1 className="name">{name}</h1>
       <p className="tagline">
         {typed}

@@ -5,6 +5,7 @@ import { links, isGroup } from './config/links'
 import { DEFAULT_OG_IMAGE, DEFAULT_OG_IMAGE_ALT, SITE_NAME, SITE_URL, getRouteMetadata } from './config/seo'
 import { ThemeProvider } from './ThemeContext'
 import { useTimeOfDay } from './hooks/useTimeOfDay'
+import { normalizePathname } from './utils/path'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import Header from './components/Header'
 import LinkCard from './components/LinkCard'
@@ -15,11 +16,6 @@ const ResumePage = lazy(() => import('./components/ResumePage'))
 const WritingPage = lazy(() => import('./components/WritingPage'))
 
 const HOME_TAB_TITLES = ['Jonny D | Links, Writing, and Projects', 'Jonny D | vibecoder', 'Jonny D | writer', 'Jonny D | guitar player']
-
-function normalizePathname(pathname: string) {
-  if (pathname === '/') return pathname
-  return pathname.endsWith('/') ? pathname.slice(0, -1) : pathname
-}
 
 function NotFoundPage() {
   const navigate = useNavigate()
@@ -357,6 +353,10 @@ function App() {
     }
   }, [])
 
+  const pageSliderStyle = (pageIndex: number): React.CSSProperties => ({
+    transform: `translateX(-${pageIndex * 100}vw)`,
+  })
+
   if (pageIndex === -1) {
     return (
       <ThemeProvider>
@@ -371,7 +371,7 @@ function App() {
         <div
           id="main-content"
           className={`page-slider${animated ? ' page-slider--animated' : ''}`}
-          style={{ transform: `translateX(-${pageIndex * 100}vw)` }}
+          style={pageSliderStyle(pageIndex)}
         >
           <div className="page" ref={linksPageRef}>
             <LinksPage />
