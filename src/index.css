@@ -2186,18 +2186,15 @@ html::after {
   6. Flicker (subtle brightness variation)
 */
 
-/* Base CRT container */
+/* Base CRT container - full viewport, no border radius */
 .crt {
   position: fixed;
-  inset: -2%;
+  inset: 0;
   z-index: 9997;
   pointer-events: none;
-  overflow: hidden;
-  border-radius: 50% / 3%;
-  transform: scale(0.96);
 }
 
-/* Layer 1: Vignette - edge darkening for curved screen feel */
+/* Layer 1: Vignette - subtle edge darkening */
 .crt::before {
   content: '';
   position: absolute;
@@ -2205,53 +2202,29 @@ html::after {
   background: radial-gradient(
     ellipse at center,
     transparent 0%,
-    transparent 50%,
-    rgba(0, 0, 0, 0.4) 85%,
-    rgba(0, 0, 0, 0.7) 100%
+    transparent 60%,
+    rgba(0, 0, 0, 0.25) 90%,
+    rgba(0, 0, 0, 0.45) 100%
   );
   z-index: 1;
 }
 
-/* Layer 2: Scanlines - authentic horizontal lines */
+/* Layer 2: Scanlines - thicker, more visible lines */
 .crt::after {
   content: '';
   position: absolute;
   inset: 0;
   background: 
-    /* Bright scanlines */
+    /* Visible scanlines */
     repeating-linear-gradient(
       0deg,
-      rgba(255, 255, 255, 0.03) 0px,
-      rgba(255, 255, 255, 0.03) 1px,
-      transparent 1px,
-      transparent 2px
-    ),
-    /* Dark gaps between scanlines */
-    repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.15) 0px,
-      rgba(0, 0, 0, 0.15) 1px,
-      transparent 1px,
-      transparent 3px
+      rgba(255, 255, 255, 0.04) 0px,
+      rgba(255, 255, 255, 0.04) 1.5px,
+      transparent 1.5px,
+      transparent 4px
     );
-  background-size: 100% 4px, 100% 4px;
-  mix-blend-mode: overlay;
+  mix-blend-mode: soft-light;
   z-index: 2;
-  animation: crtFlicker 0.15s infinite;
-}
-
-/* Subtle flicker animation - barely perceptible brightness variation */
-@keyframes crtFlicker {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.98; }
-}
-
-/* Horizontal retrace line - occasional sweep */
-@keyframes crtRetrace {
-  0% { transform: translateY(-100%); opacity: 0; }
-  10% { opacity: 0.03; }
-  90% { opacity: 0.03; }
-  100% { transform: translateY(100vh); opacity: 0; }
 }
 
 /* Global CRT text glow effects */
@@ -2494,9 +2467,7 @@ html::after {
   --crt-glow-strong: rgba(100, 230, 120, 0.55);
 }
 
-[data-theme="phosphor"] .crt {
-  border-radius: 50% / 5%;
-}
+
 
 [data-theme="phosphor"] .crt::before {
   background: radial-gradient(
