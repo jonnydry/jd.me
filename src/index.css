@@ -2173,63 +2173,102 @@ html::after {
   100% { transform: translateX(100%); }
 }
 
-/* ========== CRT Scanline Effect ========== */
+/* ========== CRT Monitor Effect ========== */
 
-/* Global CRT effects applied to html element */
+/* 
+  Authentic CRT simulation using a single container with layered pseudo-elements.
+  Layers (bottom to top):
+  1. Barrel distortion (subtle screen curvature via border-radius)
+  2. Vignette (edge darkening)
+  3. Scanlines (horizontal lines with varying intensity)
+  4. RGB phosphor mask (subpixel pattern)
+  5. Retrace line (occasional horizontal sweep)
+  6. Flicker (subtle brightness variation)
+*/
+
+/* Base CRT container */
+.crt {
+  position: fixed;
+  inset: -2%;
+  z-index: 9997;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 50% / 3%;
+  transform: scale(0.96);
+}
+
+/* Layer 1: Vignette - edge darkening for curved screen feel */
+.crt::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 50%,
+    rgba(0, 0, 0, 0.4) 85%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+  z-index: 1;
+}
+
+/* Layer 2: Scanlines - authentic horizontal lines */
+.crt::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    /* Bright scanlines */
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.03) 0px,
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    /* Dark gaps between scanlines */
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15) 0px,
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  background-size: 100% 4px, 100% 4px;
+  mix-blend-mode: overlay;
+  z-index: 2;
+  animation: crtFlicker 0.15s infinite;
+}
+
+/* Subtle flicker animation - barely perceptible brightness variation */
+@keyframes crtFlicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.98; }
+}
+
+/* Horizontal retrace line - occasional sweep */
+@keyframes crtRetrace {
+  0% { transform: translateY(-100%); opacity: 0; }
+  10% { opacity: 0.03; }
+  90% { opacity: 0.03; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+/* Global CRT text glow effects */
 [data-crt="true"] {
-  /* Subtle bloom/glow on all text */
-  --crt-glow: 0 0 2px rgba(128, 255, 200, 0.15);
+  --crt-glow-color: rgba(128, 255, 200, 0.15);
+  --crt-glow-strong: rgba(128, 255, 200, 0.25);
 }
 
 [data-crt="true"] body {
-  text-shadow: var(--crt-glow);
+  text-shadow: 0 0 2px var(--crt-glow-color);
 }
 
 [data-crt="true"] .link-row-title,
 [data-crt="true"] h1,
 [data-crt="true"] h2,
 [data-crt="true"] h3 {
-  text-shadow: 0 0 3px rgba(128, 255, 200, 0.25);
-}
-
-/* CRT overlay with vignette for curved screen feel */
-.crt-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9997;
-  pointer-events: none;
-  background: 
-    radial-gradient(
-      ellipse at center,
-      transparent 0%,
-      rgba(128, 255, 200, 0.02) 40%,
-      rgba(0, 0, 0, 0.4) 100%
-    );
-  mix-blend-mode: multiply;
-}
-
-/* Horizontal scanlines - alternating bright/dark lines */
-.crt-scanlines {
-  position: fixed;
-  inset: 0;
-  z-index: 9997;
-  pointer-events: none;
-  background: 
-    repeating-linear-gradient(
-      0deg,
-      rgba(255, 255, 255, 0.05) 0px,
-      rgba(255, 255, 255, 0.05) 0.5px,
-      transparent 0.5px,
-      transparent 1px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.2) 1px,
-      rgba(0, 0, 0, 0.2) 1.5px,
-      transparent 1.5px,
-      transparent 2.5px
-    );
-  mix-blend-mode: hard-light;
+  text-shadow: 0 0 3px var(--crt-glow-strong);
 }
 
 /* CRT toggle button styles */
@@ -2274,458 +2313,317 @@ html::after {
   margin-left: 0;
 }
 
-/* Rose theme CRT - optimized for pure black background */
-[data-theme="rose"][data-crt="true"] body {
-  text-shadow: 0 0 2px rgba(255, 128, 180, 0.25);
+/* ========== Theme-Specific CRT Overrides ========== */
+
+/* Rose theme - pink/magenta phosphor */
+[data-theme="rose"] {
+  --crt-glow-color: rgba(255, 128, 180, 0.3);
+  --crt-glow-strong: rgba(255, 128, 180, 0.45);
 }
 
-[data-theme="rose"][data-crt="true"] .link-row-title,
-[data-theme="rose"][data-crt="true"] h1,
-[data-theme="rose"][data-crt="true"] h2,
-[data-theme="rose"][data-crt="true"] h3 {
-  text-shadow: 0 0 4px rgba(255, 128, 180, 0.4), 0 0 8px rgba(255, 80, 140, 0.2);
+[data-theme="rose"] .crt::before {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 40%,
+    rgba(0, 0, 0, 0.5) 85%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
 }
 
-[data-theme="rose"] .crt-overlay {
+[data-theme="rose"] .crt::after {
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 128, 180, 0.04) 0px,
+      rgba(255, 128, 180, 0.04) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.2) 0px,
+      rgba(0, 0, 0, 0.2) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+}
+
+/* Default theme - cyan/blue phosphor */
+[data-theme="default"],
+:root:not([data-theme]) {
+  --crt-glow-color: rgba(88, 166, 255, 0.3);
+  --crt-glow-strong: rgba(88, 166, 255, 0.45);
+}
+
+[data-theme="default"] .crt::before,
+:root:not([data-theme]) .crt::before {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 40%,
+    rgba(0, 0, 0, 0.5) 85%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+}
+
+[data-theme="default"] .crt::after,
+:root:not([data-theme]) .crt::after {
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(88, 166, 255, 0.04) 0px,
+      rgba(88, 166, 255, 0.04) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.2) 0px,
+      rgba(0, 0, 0, 0.2) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+}
+
+/* Ember theme - amber/orange phosphor */
+[data-theme="ember"] {
+  --crt-glow-color: rgba(255, 153, 51, 0.35);
+  --crt-glow-strong: rgba(255, 153, 51, 0.5);
+}
+
+[data-theme="ember"] .crt::before {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 35%,
+    rgba(0, 0, 0, 0.45) 85%,
+    rgba(0, 0, 0, 0.75) 100%
+  );
+}
+
+[data-theme="ember"] .crt::after {
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 153, 51, 0.05) 0px,
+      rgba(255, 153, 51, 0.05) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.22) 0px,
+      rgba(0, 0, 0, 0.22) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+}
+
+/* Dusk theme - purple/violet phosphor */
+[data-theme="dusk"] {
+  --crt-glow-color: rgba(189, 147, 249, 0.3);
+  --crt-glow-strong: rgba(189, 147, 249, 0.45);
+}
+
+[data-theme="dusk"] .crt::before {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 40%,
+    rgba(0, 0, 0, 0.5) 85%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+}
+
+[data-theme="dusk"] .crt::after {
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(189, 147, 249, 0.04) 0px,
+      rgba(189, 147, 249, 0.04) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.2) 0px,
+      rgba(0, 0, 0, 0.2) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+}
+
+/* Stone theme - warm amber phosphor */
+[data-theme="stone"] {
+  --crt-glow-color: rgba(255, 186, 120, 0.3);
+  --crt-glow-strong: rgba(255, 186, 120, 0.45);
+}
+
+[data-theme="stone"] .crt::before {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 40%,
+    rgba(0, 0, 0, 0.5) 85%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+}
+
+[data-theme="stone"] .crt::after {
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 186, 120, 0.04) 0px,
+      rgba(255, 186, 120, 0.04) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.2) 0px,
+      rgba(0, 0, 0, 0.2) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+}
+
+/* Phosphor theme - classic P1 green phosphor (most authentic) */
+[data-theme="phosphor"] {
+  --crt-glow-color: rgba(100, 230, 120, 0.35);
+  --crt-glow-strong: rgba(100, 230, 120, 0.55);
+}
+
+[data-theme="phosphor"] .crt {
+  border-radius: 50% / 5%;
+}
+
+[data-theme="phosphor"] .crt::before {
   background: radial-gradient(
     ellipse at center,
     transparent 0%,
     transparent 30%,
-    rgba(0, 0, 0, 0.98) 90%,
-    rgba(0, 0, 0, 1) 100%
+    rgba(4, 10, 5, 0.6) 70%,
+    rgba(3, 8, 4, 0.9) 100%
   );
 }
 
-[data-theme="rose"][data-crt="true"] body {
-  text-shadow: 0 0 4px rgba(255, 128, 180, 0.45);
-}
-
-[data-theme="rose"][data-crt="true"] .link-title,
-[data-theme="rose"][data-crt="true"] .link-group-title,
-[data-theme="rose"][data-crt="true"] h1,
-[data-theme="rose"][data-crt="true"] h2,
-[data-theme="rose"][data-crt="true"] h3 {
-  text-shadow: 0 0 8px rgba(255, 128, 180, 0.6), 0 0 16px rgba(255, 80, 140, 0.4);
-}
-
-[data-theme="rose"] .crt-scanlines {
+[data-theme="phosphor"] .crt::after {
   background: 
     repeating-linear-gradient(
       0deg,
-      rgba(255, 128, 180, 0.15) 0px,
-      rgba(255, 128, 180, 0.15) 1px,
+      rgba(100, 230, 120, 0.06) 0px,
+      rgba(100, 230, 120, 0.06) 1px,
       transparent 1px,
       transparent 2px
     ),
     repeating-linear-gradient(
       0deg,
-      rgba(0, 0, 0, 0.5) 1px,
-      rgba(0, 0, 0, 0.5) 2px,
-      transparent 2px,
-      transparent 4px
-    );
-  mix-blend-mode: lighten;
-}
-
-[data-theme="rose"] .crt-scanlines {
-  background: 
-    repeating-linear-gradient(
-      0deg,
-      rgba(255, 128, 180, 0.08) 0px,
-      rgba(255, 128, 180, 0.08) 1px,
+      rgba(0, 0, 0, 0.25) 0px,
+      rgba(0, 0, 0, 0.25) 1px,
       transparent 1px,
-      transparent 2px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.28) 1px,
-      rgba(0, 0, 0, 0.28) 2px,
-      transparent 2px,
-      transparent 4px
+      transparent 3px
     );
-  mix-blend-mode: lighten;
 }
 
-/* Default dark theme CRT */
-:root:not([data-theme])[data-crt="true"] body,
-[data-theme="default"][data-crt="true"] body {
-  text-shadow: 0 0 2px rgba(88, 166, 255, 0.25);
+/* Light themes - subtle scanlines only */
+[data-theme="pine"] {
+  --crt-glow-color: rgba(90, 140, 100, 0.2);
+  --crt-glow-strong: rgba(90, 140, 100, 0.35);
 }
 
-:root:not([data-theme])[data-crt="true"] .link-title,
-:root:not([data-theme])[data-crt="true"] .link-group-title,
-:root:not([data-theme])[data-crt="true"] h1,
-:root:not([data-theme])[data-crt="true"] h2,
-:root:not([data-theme])[data-crt="true"] h3,
-[data-theme="default"][data-crt="true"] .link-title,
-[data-theme="default"][data-crt="true"] .link-group-title,
-[data-theme="default"][data-crt="true"] h1,
-[data-theme="default"][data-crt="true"] h2,
-[data-theme="default"][data-crt="true"] h3 {
-  text-shadow: 0 0 4px rgba(88, 166, 255, 0.4), 0 0 8px rgba(56, 139, 253, 0.2);
-}
-
-:root:not([data-theme]) .crt-overlay,
-[data-theme="default"] .crt-overlay {
+[data-theme="pine"] .crt::before {
   background: radial-gradient(
     ellipse at center,
     transparent 0%,
-    transparent 30%,
-    rgba(0, 0, 0, 0.98) 90%,
-    rgba(0, 0, 0, 1) 100%
+    transparent 50%,
+    rgba(0, 0, 0, 0.15) 85%,
+    rgba(0, 0, 0, 0.3) 100%
   );
 }
 
-:root:not([data-theme])[data-crt="true"] body,
-[data-theme="default"][data-crt="true"] body {
-  text-shadow: 0 0 3px rgba(88, 166, 255, 0.35);
-}
-
-:root:not([data-theme])[data-crt="true"] .link-title,
-:root:not([data-theme])[data-crt="true"] .link-group-title,
-:root:not([data-theme])[data-crt="true"] h1,
-:root:not([data-theme])[data-crt="true"] h2,
-:root:not([data-theme])[data-crt="true"] h3,
-[data-theme="default"][data-crt="true"] .link-title,
-[data-theme="default"][data-crt="true"] .link-group-title,
-[data-theme="default"][data-crt="true"] h1,
-[data-theme="default"][data-crt="true"] h2,
-[data-theme="default"][data-crt="true"] h3 {
-  text-shadow: 0 0 6px rgba(88, 166, 255, 0.5), 0 0 12px rgba(56, 139, 253, 0.3);
-}
-
-:root:not([data-theme]) .crt-scanlines,
-[data-theme="default"] .crt-scanlines {
+[data-theme="pine"] .crt::after {
   background: 
     repeating-linear-gradient(
       0deg,
-      rgba(88, 166, 255, 0.1) 0px,
-      rgba(88, 166, 255, 0.1) 1px,
+      rgba(90, 140, 100, 0.03) 0px,
+      rgba(90, 140, 100, 0.03) 1px,
       transparent 1px,
       transparent 2px
     ),
     repeating-linear-gradient(
       0deg,
-      rgba(0, 0, 0, 0.4) 1px,
-      rgba(0, 0, 0, 0.4) 2px,
-      transparent 2px,
-      transparent 4px
-    );
-  mix-blend-mode: lighten;
-}
-
-:root:not([data-theme]) .crt-scanlines,
-[data-theme="default"] .crt-scanlines {
-  background: 
-    repeating-linear-gradient(
-      0deg,
-      rgba(88, 166, 255, 0.08) 0px,
-      rgba(88, 166, 255, 0.08) 1px,
+      rgba(0, 0, 0, 0.1) 0px,
+      rgba(0, 0, 0, 0.1) 1px,
       transparent 1px,
-      transparent 2px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.28) 1px,
-      rgba(0, 0, 0, 0.28) 2px,
-      transparent 2px,
-      transparent 4px
+      transparent 3px
     );
-  mix-blend-mode: lighten;
 }
 
-/* Ember theme CRT - warm amber glow */
-[data-theme="ember"] .crt-overlay {
+[data-theme="paper"] {
+  --crt-glow-color: rgba(100, 100, 140, 0.15);
+  --crt-glow-strong: rgba(100, 100, 140, 0.3);
+}
+
+[data-theme="paper"] .crt::before {
   background: radial-gradient(
     ellipse at center,
     transparent 0%,
-    transparent 25%,
-    rgba(0, 0, 0, 0.92) 80%,
-    rgba(0, 0, 0, 1) 100%
+    transparent 50%,
+    rgba(0, 0, 0, 0.15) 85%,
+    rgba(0, 0, 0, 0.3) 100%
   );
 }
 
-[data-theme="ember"][data-crt="true"] body {
-  text-shadow: 0 0 4px rgba(255, 153, 51, 0.45);
-}
-
-[data-theme="ember"][data-crt="true"] .link-title,
-[data-theme="ember"][data-crt="true"] .link-group-title,
-[data-theme="ember"][data-crt="true"] h1,
-[data-theme="ember"][data-crt="true"] h2,
-[data-theme="ember"][data-crt="true"] h3 {
-  text-shadow: 0 0 8px rgba(255, 153, 51, 0.6), 0 0 16px rgba(230, 104, 33, 0.4);
-}
-
-[data-theme="ember"] .crt-scanlines {
+[data-theme="paper"] .crt::after {
   background: 
     repeating-linear-gradient(
       0deg,
-      rgba(255, 153, 51, 0.15) 0px,
-      rgba(255, 153, 51, 0.15) 1px,
+      rgba(100, 100, 140, 0.02) 0px,
+      rgba(100, 100, 140, 0.02) 1px,
       transparent 1px,
       transparent 2px
     ),
     repeating-linear-gradient(
       0deg,
-      rgba(0, 0, 0, 0.5) 1px,
-      rgba(0, 0, 0, 0.5) 2px,
-      transparent 2px,
-      transparent 4px
+      rgba(0, 0, 0, 0.1) 0px,
+      rgba(0, 0, 0, 0.1) 1px,
+      transparent 1px,
+      transparent 3px
     );
-  mix-blend-mode: lighten;
 }
 
-/* Dusk theme CRT - purple glow */
-[data-theme="dusk"] .crt-overlay {
+[data-theme="harbor"] {
+  --crt-glow-color: rgba(80, 130, 170, 0.2);
+  --crt-glow-strong: rgba(80, 130, 170, 0.35);
+}
+
+[data-theme="harbor"] .crt::before {
   background: radial-gradient(
     ellipse at center,
     transparent 0%,
-    transparent 30%,
-    rgba(0, 0, 0, 0.98) 90%,
-    rgba(0, 0, 0, 1) 100%
+    transparent 50%,
+    rgba(0, 0, 0, 0.15) 85%,
+    rgba(0, 0, 0, 0.3) 100%
   );
 }
 
-[data-theme="dusk"][data-crt="true"] body {
-  text-shadow: 0 0 3px rgba(189, 147, 249, 0.35);
-}
-
-[data-theme="dusk"][data-crt="true"] .link-title,
-[data-theme="dusk"][data-crt="true"] .link-group-title,
-[data-theme="dusk"][data-crt="true"] h1,
-[data-theme="dusk"][data-crt="true"] h2,
-[data-theme="dusk"][data-crt="true"] h3 {
-  text-shadow: 0 0 6px rgba(189, 147, 249, 0.5), 0 0 12px rgba(163, 113, 247, 0.3);
-}
-
-[data-theme="dusk"] .crt-scanlines {
+[data-theme="harbor"] .crt::after {
   background: 
     repeating-linear-gradient(
       0deg,
-      rgba(189, 147, 249, 0.1) 0px,
-      rgba(189, 147, 249, 0.1) 1px,
+      rgba(80, 130, 170, 0.03) 0px,
+      rgba(80, 130, 170, 0.03) 1px,
       transparent 1px,
       transparent 2px
     ),
     repeating-linear-gradient(
       0deg,
-      rgba(0, 0, 0, 0.4) 1px,
-      rgba(0, 0, 0, 0.4) 2px,
-      transparent 2px,
-      transparent 4px
-    );
-  mix-blend-mode: lighten;
-}
-
-/* Stone theme CRT - warm neutral glow */
-[data-theme="stone"] .crt-overlay {
-  background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    transparent 30%,
-    rgba(0, 0, 0, 0.98) 90%,
-    rgba(0, 0, 0, 1) 100%
-  );
-}
-
-[data-theme="stone"][data-crt="true"] body {
-  text-shadow: 0 0 3px rgba(255, 186, 120, 0.3);
-}
-
-[data-theme="stone"][data-crt="true"] .link-title,
-[data-theme="stone"][data-crt="true"] .link-group-title,
-[data-theme="stone"][data-crt="true"] h1,
-[data-theme="stone"][data-crt="true"] h2,
-[data-theme="stone"][data-crt="true"] h3 {
-  text-shadow: 0 0 6px rgba(255, 186, 120, 0.45), 0 0 12px rgba(230, 160, 100, 0.25);
-}
-
-[data-theme="stone"] .crt-scanlines {
-  background: 
-    repeating-linear-gradient(
-      0deg,
-      rgba(255, 186, 120, 0.1) 0px,
-      rgba(255, 186, 120, 0.1) 1px,
+      rgba(0, 0, 0, 0.1) 0px,
+      rgba(0, 0, 0, 0.1) 1px,
       transparent 1px,
-      transparent 2px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.4) 1px,
-      rgba(0, 0, 0, 0.4) 2px,
-      transparent 2px,
-      transparent 4px
+      transparent 3px
     );
-  mix-blend-mode: lighten;
-}
-
-/* Phosphor theme CRT - classic P1 green phosphor glow */
-:root[data-theme="phosphor"] .crt-overlay {
-  background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    transparent 10%,
-    rgba(4, 10, 5, 0.92) 70%,
-    rgba(3, 8, 4, 1) 100%
-  );
-}
-
-:root[data-theme="phosphor"][data-crt="true"] body {
-  text-shadow: 0 0 3px rgba(100, 230, 120, 0.28);
-}
-
-:root[data-theme="phosphor"][data-crt="true"] .link-title,
-:root[data-theme="phosphor"][data-crt="true"] .link-group-title,
-:root[data-theme="phosphor"][data-crt="true"] h1,
-:root[data-theme="phosphor"][data-crt="true"] h2,
-:root[data-theme="phosphor"][data-crt="true"] h3 {
-  text-shadow: 0 0 6px rgba(100, 230, 120, 0.45), 0 0 12px rgba(80, 210, 100, 0.25);
-}
-
-:root[data-theme="phosphor"] .crt-scanlines {
-  background: 
-    repeating-linear-gradient(
-      0deg,
-      rgba(100, 230, 120, 0.12) 0px,
-      rgba(100, 230, 120, 0.12) 1px,
-      transparent 1px,
-      transparent 2px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.5) 1px,
-      rgba(0, 0, 0, 0.5) 2px,
-      transparent 2px,
-      transparent 4px
-    );
-  mix-blend-mode: lighten;
-}
-
-/* Pine theme CRT - soft forest green glow for light theme */
-:root[data-theme="pine"] .crt-overlay {
-  background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    transparent 30%,
-    rgba(225, 235, 220, 0.92) 80%,
-    rgba(210, 228, 205, 1) 100%
-  );
-}
-
-:root[data-theme="pine"][data-crt="true"] body {
-  text-shadow: 0 0 3px rgba(90, 140, 100, 0.25);
-}
-
-:root[data-theme="pine"][data-crt="true"] .link-title,
-:root[data-theme="pine"][data-crt="true"] .link-group-title,
-:root[data-theme="pine"][data-crt="true"] h1,
-:root[data-theme="pine"][data-crt="true"] h2,
-:root[data-theme="pine"][data-crt="true"] h3 {
-  text-shadow: 0 0 5px rgba(70, 120, 85, 0.4), 0 0 10px rgba(60, 105, 75, 0.2);
-}
-
-:root[data-theme="pine"] .crt-scanlines {
-  background: 
-    repeating-linear-gradient(
-      0deg,
-      rgba(90, 140, 100, 0.08) 0px,
-      rgba(90, 140, 100, 0.08) 1px,
-      transparent 1px,
-      transparent 2px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(180, 200, 175, 0.3) 1px,
-      rgba(180, 200, 175, 0.3) 2px,
-      transparent 2px,
-      transparent 4px
-    );
-  mix-blend-mode: multiply;
-}
-
-/* Paper theme CRT - warm cream/parchment glow for light theme */
-:root[data-theme="paper"] .crt-overlay {
-  background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    transparent 30%,
-    rgba(235, 230, 220, 0.92) 80%,
-    rgba(220, 215, 205, 1) 100%
-  );
-}
-
-:root[data-theme="paper"][data-crt="true"] body {
-  text-shadow: 0 0 3px rgba(100, 100, 140, 0.2);
-}
-
-:root[data-theme="paper"][data-crt="true"] .link-title,
-:root[data-theme="paper"][data-crt="true"] .link-group-title,
-:root[data-theme="paper"][data-crt="true"] h1,
-:root[data-theme="paper"][data-crt="true"] h2,
-:root[data-theme="paper"][data-crt="true"] h3 {
-  text-shadow: 0 0 5px rgba(80, 80, 120, 0.35), 0 0 10px rgba(70, 70, 110, 0.18);
-}
-
-:root[data-theme="paper"] .crt-scanlines {
-  background: 
-    repeating-linear-gradient(
-      0deg,
-      rgba(100, 100, 140, 0.07) 0px,
-      rgba(100, 100, 140, 0.07) 1px,
-      transparent 1px,
-      transparent 2px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(200, 195, 185, 0.3) 1px,
-      rgba(200, 195, 185, 0.3) 2px,
-      transparent 2px,
-      transparent 4px
-    );
-  mix-blend-mode: multiply;
-}
-
-/* Harbor theme CRT - cool blue-sky glow for light theme */
-:root[data-theme="harbor"] .crt-overlay {
-  background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    transparent 30%,
-    rgba(220, 232, 245, 0.92) 80%,
-    rgba(205, 220, 238, 1) 100%
-  );
-}
-
-:root[data-theme="harbor"][data-crt="true"] body {
-  text-shadow: 0 0 3px rgba(80, 130, 170, 0.25);
-}
-
-:root[data-theme="harbor"][data-crt="true"] .link-title,
-:root[data-theme="harbor"][data-crt="true"] .link-group-title,
-:root[data-theme="harbor"][data-crt="true"] h1,
-:root[data-theme="harbor"][data-crt="true"] h2,
-:root[data-theme="harbor"][data-crt="true"] h3 {
-  text-shadow: 0 0 5px rgba(60, 110, 150, 0.4), 0 0 10px rgba(50, 95, 135, 0.2);
-}
-
-:root[data-theme="harbor"] .crt-scanlines {
-  background: 
-    repeating-linear-gradient(
-      0deg,
-      rgba(80, 130, 170, 0.08) 0px,
-      rgba(80, 130, 170, 0.08) 1px,
-      transparent 1px,
-      transparent 2px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(190, 210, 230, 0.3) 1px,
-      rgba(190, 210, 230, 0.3) 2px,
-      transparent 2px,
-      transparent 4px
-    );
-  mix-blend-mode: multiply;
 }
 
 /* ========== Media Queries ========== */

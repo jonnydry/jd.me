@@ -123,12 +123,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     <ThemeContext.Provider value={value}>
       {children}
       {wiping && <div className="theme-wipe" />}
-      {crtEnabled && (
-        <>
-          <div className="crt-overlay" aria-hidden="true" />
-          <div className="crt-scanlines" aria-hidden="true" />
-        </>
-      )}
+      {crtEnabled && <div className="crt" aria-hidden="true" />}
     </ThemeContext.Provider>
   )
 }
