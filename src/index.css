@@ -2891,5 +2891,7 @@ html::after {
     max-width: none;
     margin-left: auto;
     margin-right: auto;
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
   }
 }
