@@ -14,10 +14,10 @@ function getDayProgress(now: Date): number {
   return minutes / 1440
 }
 
-function msUntilNextHour(now: Date): number {
-  const next = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() + 1, 0, 0, 0)
+function msUntilNextMinute(now: Date): number {
+  const next = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes() + 1, 0, 0)
   const ms = next.getTime() - now.getTime()
-  return ms > 0 ? ms : 36e5
+  return ms > 0 ? ms : 6e4
 }
 
 function applyTimeFlowVariables(now: Date): void {
@@ -53,7 +53,7 @@ export function useTimeOfDay() {
       timeout = window.setTimeout(() => {
         apply()
         schedule()
-      }, msUntilNextHour(now))
+      }, msUntilNextMinute(now))
     }
 
     const handleVisibilityChange = () => {

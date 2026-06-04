@@ -150,6 +150,8 @@
   --time-progress: 0.5;
   --time-glow-x: 0;
   --time-glow-y: 0;
+  --ambient-clear: color-mix(in srgb, var(--bg) 72%, transparent);
+  --ambient-clear-soft: color-mix(in srgb, var(--bg) 26%, transparent);
   --accent: hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit));
   --accent-glow: hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.07);
   --accent-hover: hsl(var(--accent-hue) var(--accent-sat) min(calc(var(--accent-lit) + 7%), 100%));
@@ -354,15 +356,31 @@ body::before {
   inset: 0;
   background:
     radial-gradient(
+      ellipse 44% 52% at 50% 50%,
+      var(--ambient-clear) 0%,
+      var(--ambient-clear-soft) 36%,
+      transparent 66%
+    ),
+    radial-gradient(
       ellipse 80% 50% at calc(50% + (var(--time-glow-x) * 10%)) calc(2% + (var(--time-glow-y) * 5%)),
       hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / calc(0.034 + (var(--time-progress) * 0.008))) 0%,
       transparent 50%
+    ),
+    radial-gradient(
+      ellipse 62% 42% at calc(18% + (var(--time-glow-x) * 5%)) calc(84% - (var(--time-progress) * 5%)),
+      hsl(calc(var(--accent-hue) + 34 + (var(--time-hue-flow) * 0.45)) 82% 60% / 0.026) 0%,
+      transparent 62%
+    ),
+    radial-gradient(
+      ellipse 52% 60% at calc(88% - (var(--time-glow-x) * 4%)) calc(28% + (var(--time-glow-y) * 4%)),
+      hsl(calc(var(--accent-hue) - 28 + (var(--time-hue-flow) * 0.35)) 72% 48% / 0.018) 0%,
+      transparent 58%
     );
   pointer-events: none;
   z-index: 0;
 }
 
-/* Laser-etch accent lines — 8 gradients (down from 16) for lower GPU cost */
+/* Laser-etch accent lines with a faint far plane for depth */
 body::after {
   content: '';
   position: fixed;
@@ -370,6 +388,13 @@ body::after {
   pointer-events: none;
   z-index: 0;
   background:
+    linear-gradient(
+      calc(var(--line-angle-a) + 92deg),
+      transparent 58%,
+      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.035 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 58%,
+      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.035 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 58.05%,
+      transparent 58.05%
+    ),
     linear-gradient(
       var(--line-angle-a),
       transparent 42%,
@@ -425,6 +450,13 @@ body::after {
       hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.05 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 79%,
       hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.05 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 79.03%,
       transparent 79.03%
+    ),
+    linear-gradient(
+      calc(var(--line-angle-b2) + 18deg),
+      transparent 8%,
+      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + (var(--time-hue-flow) * 0.5)) var(--line-sat) var(--line-lit) / calc(0.025 * var(--time-line-dim) * var(--theme-line-boost))) 8%,
+      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + (var(--time-hue-flow) * 0.5)) var(--line-sat) var(--line-lit) / calc(0.025 * var(--time-line-dim) * var(--theme-line-boost))) 8.04%,
+      transparent 8.04%
     );
 }
 
@@ -502,7 +534,7 @@ html.page-hidden * {
     );
 }
 
-:root[data-performance="reduced"] html::after {
+:root[data-performance="reduced"]::after {
   opacity: 0.025;
   background-image: none;
 }
@@ -867,11 +899,11 @@ html::after {
   pointer-events: none;
   background: var(--link-hover-glow);
   transform: translate3d(calc(var(--glow-x, 0) * 1px), calc(var(--glow-y, 0) * 1px), 0);
-  will-change: transform, opacity;
 }
 
 .link-row:hover .link-row-glow {
   opacity: 1;
+  will-change: transform, opacity;
 }
 
 /* Row hover background */
@@ -1377,27 +1409,69 @@ html::after {
 /* ========== Time-of-Day Ambient Glow ========== */
 
 [data-time="morning"] body::before {
-  background: radial-gradient(
-    ellipse 70% 60% at calc(14% + (var(--time-glow-x) * 4%)) calc(90% - (var(--time-progress) * 6%)),
-    hsl(calc(var(--accent-hue) + 30 + (var(--time-hue-flow) * 0.6)) 80% 60% / calc(0.033 + (var(--time-progress) * 0.01))) 0%,
-    transparent 60%
-  );
+  background:
+    radial-gradient(
+      ellipse 44% 52% at 50% 50%,
+      var(--ambient-clear) 0%,
+      var(--ambient-clear-soft) 36%,
+      transparent 66%
+    ),
+    radial-gradient(
+      ellipse 72% 58% at calc(14% + (var(--time-glow-x) * 4%)) calc(90% - (var(--time-progress) * 6%)),
+      hsl(calc(var(--accent-hue) + 36 + (var(--time-hue-flow) * 0.6)) 86% 62% / calc(0.045 + (var(--time-progress) * 0.012))) 0%,
+      hsl(calc(var(--accent-hue) + 36 + (var(--time-hue-flow) * 0.6)) 86% 62% / 0.014) 45%,
+      transparent 66%
+    ),
+    radial-gradient(
+      ellipse 64% 44% at calc(78% - (var(--time-glow-x) * 3%)) calc(12% + (var(--time-glow-y) * 4%)),
+      hsl(calc(var(--accent-hue) - 22 + (var(--time-hue-flow) * 0.35)) 72% 58% / 0.018) 0%,
+      transparent 58%
+    );
 }
 
 [data-time="dusk"] body::before {
-  background: radial-gradient(
-    ellipse 60% 70% at calc(90% - (var(--time-glow-x) * 4%)) calc(30% + (var(--time-glow-y) * 4%)),
-    hsl(calc(var(--accent-hue) + 40 + (var(--time-hue-flow) * 0.55)) 85% 55% / calc(0.038 + (var(--time-line-flow) * 0.007))) 0%,
-    transparent 55%
-  );
+  background:
+    radial-gradient(
+      ellipse 44% 52% at 50% 50%,
+      var(--ambient-clear) 0%,
+      var(--ambient-clear-soft) 36%,
+      transparent 66%
+    ),
+    radial-gradient(
+      ellipse 62% 72% at calc(90% - (var(--time-glow-x) * 4%)) calc(32% + (var(--time-glow-y) * 4%)),
+      hsl(calc(var(--accent-hue) + 42 + (var(--time-hue-flow) * 0.55)) 88% 56% / calc(0.047 + (var(--time-line-flow) * 0.009))) 0%,
+      hsl(calc(var(--accent-hue) + 42 + (var(--time-hue-flow) * 0.55)) 88% 56% / 0.016) 36%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 78% 48% at calc(18% + (var(--time-glow-x) * 4%)) 18%,
+      hsl(calc(var(--accent-hue) - 26 + (var(--time-hue-flow) * 0.35)) 78% 48% / 0.026) 0%,
+      transparent 62%
+    );
 }
 
 [data-time="night"] body::before {
-  background: radial-gradient(
-    ellipse 90% 50% at calc(50% + (var(--time-glow-x) * 8%)) calc(0% + (var(--time-glow-y) * 3%)),
-    hsl(calc(var(--accent-hue) - 20 + (var(--time-hue-flow) * 0.4)) 70% 40% / calc(0.024 + (var(--time-line-flow) * 0.006))) 0%,
-    transparent 45%
-  );
+  background:
+    radial-gradient(circle at 12% 22%, hsl(calc(var(--accent-hue) + 12) 70% 78% / 0.16) 0 0.6px, transparent 1px),
+    radial-gradient(circle at 76% 16%, hsl(calc(var(--accent-hue) - 18) 68% 74% / 0.12) 0 0.5px, transparent 1px),
+    radial-gradient(circle at 88% 62%, hsl(calc(var(--accent-hue) + 24) 66% 76% / 0.1) 0 0.55px, transparent 1px),
+    radial-gradient(
+      ellipse 44% 52% at 50% 50%,
+      var(--ambient-clear) 0%,
+      var(--ambient-clear-soft) 36%,
+      transparent 66%
+    ),
+    radial-gradient(
+      ellipse 92% 52% at calc(50% + (var(--time-glow-x) * 8%)) calc(0% + (var(--time-glow-y) * 3%)),
+      hsl(calc(var(--accent-hue) - 22 + (var(--time-hue-flow) * 0.4)) 72% 42% / calc(0.031 + (var(--time-line-flow) * 0.007))) 0%,
+      hsl(calc(var(--accent-hue) - 22 + (var(--time-hue-flow) * 0.4)) 72% 42% / 0.012) 34%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 52% 46% at calc(18% + (var(--time-glow-x) * 3%)) calc(82% - (var(--time-glow-y) * 4%)),
+      hsl(calc(var(--accent-hue) + 28 + (var(--time-hue-flow) * 0.25)) 64% 36% / 0.018) 0%,
+      transparent 60%
+    );
 }
 
 /* Rose: #000 bg swallows the default ~4% accent wash — match other dark themes’ center bloom */
@@ -1820,11 +1894,11 @@ html::after {
   pointer-events: none;
   background: var(--link-hover-glow);
   transform: translate3d(calc(var(--glow-x, 0) * 1px), calc(var(--glow-y, 0) * 1px), 0);
-  will-change: transform, opacity;
 }
 
 .writing-list-item:hover .writing-list-item-glow {
   opacity: 1;
+  will-change: transform, opacity;
 }
 
 .writing-list-item-top {
