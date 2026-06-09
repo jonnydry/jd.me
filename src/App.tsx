@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useRef, useState } from 'react'
+import { Suspense, lazy, memo, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { profile } from './config/profile'
 import { links, isGroup } from './config/links'
@@ -37,7 +37,7 @@ function NotFoundPage() {
   )
 }
 
-function LinksPage() {
+const LinksPage = memo(function LinksPage() {
   let rowIndex = 0
   const shortcutCount = Math.min(links.length, 9)
 
@@ -70,7 +70,7 @@ function LinksPage() {
       </div>
     </main>
   )
-}
+})
 
 function App() {
   useTimeOfDay()
@@ -79,7 +79,7 @@ function App() {
   const isHomeRoute = normalizedPathname === '/'
   const isResumeRoute = normalizedPathname === '/resume'
   const isWritingRoute = /^\/writing(?:\/[^/]+)?$/.test(normalizedPathname)
-  const metadata = getRouteMetadata(normalizedPathname)
+  const metadata = useMemo(() => getRouteMetadata(normalizedPathname), [normalizedPathname])
   const pageIndex = isWritingRoute ? 2 : isResumeRoute ? 1 : isHomeRoute ? 0 : -1
   const [animated, setAnimated] = useState(false)
   const linksPageRef = useRef<HTMLDivElement>(null)

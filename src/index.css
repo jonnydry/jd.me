@@ -160,7 +160,6 @@
   --link-open-bg: hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.03);
   --link-hover-glow: radial-gradient(circle at center, var(--accent-glow) 0%, transparent 60%);
   --link-ripple: hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.3);
-  animation: colorDrift 54s ease-in-out infinite;
 }
 
 /* ========== Theme: Rose ========== */
@@ -176,7 +175,6 @@
   --line-hue-c: 335;
   --line-hue-d: 335;
   --theme-line-boost: 1.7;
-  animation: colorDriftRose 54s ease-in-out infinite;
 }
 
 /* ========== Theme: Paper ========== */
@@ -196,7 +194,6 @@
   --img-icon-filter: opacity(0.5);
   --img-icon-filter-hover: opacity(1);
   --theme-line-boost: 1.75;
-  animation: colorDriftPaper 82s ease-in-out infinite;
 }
 
 /* ========== Theme: Ember ========== */
@@ -214,7 +211,6 @@
   --line-hue-c: 38;
   --line-hue-d: 54;
   --theme-line-boost: 1.65;
-  animation: colorDriftEmber 63s ease-in-out infinite;
 }
 
 /* ========== Theme: Dusk ========== */
@@ -239,7 +235,6 @@
   --link-open-bg: linear-gradient(to right, hsl(272 78% 62% / 0.03), hsl(28 88% 68% / 0.04));
   --link-hover-glow: radial-gradient(circle at center, hsl(272 78% 62% / 0.08) 0%, hsl(28 88% 68% / 0.05) 35%, transparent 60%);
   --link-ripple: hsl(28 88% 72% / 0.35);
-  animation: colorDriftDusk 69s ease-in-out infinite;
 }
 
 /* ========== Theme: Harbor ========== */
@@ -259,7 +254,6 @@
   --img-icon-filter: opacity(0.5);
   --img-icon-filter-hover: opacity(1);
   --theme-line-boost: 1.75;
-  animation: colorDriftHarbor 78s ease-in-out infinite;
 }
 
 /* ========== Theme: Pine (light) ========== */
@@ -279,7 +273,6 @@
   --img-icon-filter: opacity(0.5);
   --img-icon-filter-hover: opacity(1);
   --theme-line-boost: 1.75;
-  animation: colorDriftPine 66s ease-in-out infinite;
 }
 
 /* ========== Theme: Stone ========== */
@@ -297,7 +290,6 @@
   --line-hue-c: 28;
   --line-hue-d: 28;
   --theme-line-boost: 1.5;
-  animation: colorDriftStone 66s ease-in-out infinite;
 }
 
 /* ========== Theme: Phosphor (classic P1 green phosphor terminal) ========== */
@@ -317,7 +309,6 @@
   --line-sat: 80%;
   --line-lit: 52%;
   --theme-line-boost: 1.6;
-  animation: colorDriftPhosphor 72s ease-in-out infinite;
 }
 
 * {
@@ -384,9 +375,12 @@ body::before {
 body::after {
   content: '';
   position: fixed;
-  inset: 0;
+  inset: -10%;
   pointer-events: none;
   z-index: 0;
+  transform-origin: center;
+  will-change: transform, filter;
+  animation: bgDrift 120s ease-in-out infinite;
   background:
     linear-gradient(
       calc(var(--line-angle-a) + 92deg),
@@ -458,6 +452,14 @@ body::after {
       hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + (var(--time-hue-flow) * 0.5)) var(--line-sat) var(--line-lit) / calc(0.025 * var(--time-line-dim) * var(--theme-line-boost))) 8.04%,
       transparent 8.04%
     );
+}
+
+/* Background drift — GPU-composited transform + filter, no per-frame style recalc.
+   Replaces the old body lineGeometry + :root colorDrift custom-property animations
+   which invalidated every rule consuming --line-angle-* / --accent-hue each frame. */
+@keyframes bgDrift {
+  0%, 100% { transform: rotate(-2.5deg); filter: hue-rotate(-4deg); }
+  50%      { transform: rotate(2.5deg);  filter: hue-rotate(4deg); }
 }
 
 /* Pause all animations when tab is hidden — saves CPU/GPU */
@@ -537,6 +539,10 @@ html.page-hidden * {
 :root[data-performance="reduced"]::after {
   opacity: 0.025;
   background-image: none;
+}
+
+:root[data-performance="reduced"] body::after {
+  animation: none;
 }
 
 :root[data-performance="reduced"] .avatar-modal {
@@ -1585,14 +1591,7 @@ html::after {
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  /* Default / afternoon — gentle drift */
-  body { animation: lineGeometryAfternoon 120s ease-in-out infinite; }
-
-  [data-time="morning"] body { animation: lineGeometryMorning 100s ease-in-out infinite; }
-  [data-time="dusk"] body    { animation: lineGeometryDusk 120s ease-in-out infinite; }
-  [data-time="night"] body   { animation: lineGeometryNight 160s ease-in-out infinite; }
-}
+/* lineGeometry* keyframes removed: animating --line-angle-* inside gradient calc() caused per-frame style invalidation across the whole tree. Replaced by GPU-composited bgDrift on body::after (below). */
 
 @keyframes hintFade {
   0% { opacity: 0; }
