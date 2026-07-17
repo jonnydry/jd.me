@@ -64,7 +64,6 @@ export default function LinkCard({ link, index }: LinkCardProps) {
       onMouseDown={handleMouseDown}
       onClick={handleClick}
     >
-      <span className="link-row-glow" />
       <span className="link-row-index">{String(index + 1).padStart(2, '0')}</span>
       <span className="link-row-icon">
         {iconMask ? (

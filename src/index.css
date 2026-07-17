@@ -43,19 +43,7 @@
   inherits: true;
 }
 
-/* Time-of-day ambient variables */
-@property --time-hue-shift {
-  syntax: '<number>';
-  initial-value: 0;
-  inherits: true;
-}
-
-@property --time-line-dim {
-  syntax: '<number>';
-  initial-value: 1;
-  inherits: true;
-}
-
+/* Time-of-day ambient variables (flow/progress still drive glow placement) */
 @property --time-hue-flow {
   syntax: '<number>';
   initial-value: 0;
@@ -152,6 +140,30 @@
   --time-glow-y: 0;
   --ambient-clear: color-mix(in srgb, var(--bg) 72%, transparent);
   --ambient-clear-soft: color-mix(in srgb, var(--bg) 26%, transparent);
+  /* Precomputed by useTimeOfDay — full hsl() colors, no nested calc in paints */
+  --line-a: transparent;
+  --line-a-soft: transparent;
+  --line-b: transparent;
+  --line-b-soft: transparent;
+  --line-c: transparent;
+  --line-d: transparent;
+  --ambient-primary: transparent;
+  --ambient-secondary: transparent;
+  --star-1: transparent;
+  --star-2: transparent;
+  --star-3: transparent;
+  --drift-rot: 2.5deg;
+  --drift-scale-a: 1.02;
+  --drift-scale-b: 1.04;
+  --drift-duration: 48s;
+  --drift-far-duration: 64s;
+  --breathe-duration: 14s;
+  --breathe-far-duration: 22s;
+  --ambient-drift-duration: 36s;
+  --breathe-opacity-min: 0.82;
+  --breathe-opacity-max: 1;
+  --breathe-far-opacity-min: 0.5;
+  --breathe-far-opacity-max: 0.82;
   --accent: hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit));
   --accent-glow: hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.07);
   --accent-hover: hsl(var(--accent-hue) var(--accent-sat) min(calc(var(--accent-lit) + 7%), 100%));
@@ -340,11 +352,17 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Subtle background depth */
+/* Ambient depth — placement varies by data-time; colors from useTimeOfDay.
+   Slow parallax drift (transform only) so glows feel alive against the lines. */
 body::before {
   content: '';
   position: fixed;
-  inset: 0;
+  inset: -2%;
+  pointer-events: none;
+  z-index: 0;
+  transform-origin: center;
+  will-change: transform, opacity;
+  animation: ambientDrift var(--ambient-drift-duration) ease-in-out infinite;
   background:
     radial-gradient(
       ellipse 44% 52% at 50% 50%,
@@ -353,119 +371,202 @@ body::before {
       transparent 66%
     ),
     radial-gradient(
-      ellipse 80% 50% at calc(50% + (var(--time-glow-x) * 10%)) calc(2% + (var(--time-glow-y) * 5%)),
-      hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / calc(0.034 + (var(--time-progress) * 0.008))) 0%,
-      transparent 50%
+      var(--ambient-primary-shape, ellipse 80% 50%) at var(--ambient-primary-at, 50% 4%),
+      var(--ambient-primary) 0%,
+      transparent var(--ambient-primary-end, 52%)
     ),
     radial-gradient(
-      ellipse 62% 42% at calc(18% + (var(--time-glow-x) * 5%)) calc(84% - (var(--time-progress) * 5%)),
-      hsl(calc(var(--accent-hue) + 34 + (var(--time-hue-flow) * 0.45)) 82% 60% / 0.026) 0%,
-      transparent 62%
-    ),
-    radial-gradient(
-      ellipse 52% 60% at calc(88% - (var(--time-glow-x) * 4%)) calc(28% + (var(--time-glow-y) * 4%)),
-      hsl(calc(var(--accent-hue) - 28 + (var(--time-hue-flow) * 0.35)) 72% 48% / 0.018) 0%,
-      transparent 58%
+      var(--ambient-secondary-shape, ellipse 62% 42%) at var(--ambient-secondary-at, 18% 84%),
+      var(--ambient-secondary) 0%,
+      transparent var(--ambient-secondary-end, 62%)
     );
-  pointer-events: none;
-  z-index: 0;
 }
 
-/* Laser-etch accent lines with a faint far plane for depth */
+/* Near laser strokes — clearer etch, quicker breathe */
 body::after {
   content: '';
   position: fixed;
-  inset: -10%;
+  inset: -4%;
   pointer-events: none;
   z-index: 0;
   transform-origin: center;
-  will-change: transform, filter;
-  animation: bgDrift 120s ease-in-out infinite;
+  will-change: transform, opacity;
+  animation:
+    bgDrift var(--drift-duration) ease-in-out infinite,
+    bgBreathe var(--breathe-duration) ease-in-out infinite;
   background:
-    linear-gradient(
-      calc(var(--line-angle-a) + 92deg),
-      transparent 58%,
-      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.035 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 58%,
-      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.035 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 58.05%,
-      transparent 58.05%
-    ),
     linear-gradient(
       var(--line-angle-a),
       transparent 42%,
-      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.14 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 42%,
-      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.14 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 42.12%,
+      var(--line-a) 42%,
+      var(--line-a) 42.12%,
       transparent 42.12%
-    ),
-    linear-gradient(
-      var(--line-angle-a),
-      transparent 43.8%,
-      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.07 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 43.8%,
-      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.07 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 43.88%,
-      transparent 43.88%
     ),
     linear-gradient(
       var(--line-angle-b1),
       transparent 68%,
-      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.10 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 68%,
-      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.10 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 68.1%,
+      var(--line-b) 68%,
+      var(--line-b) 68.1%,
       transparent 68.1%
-    ),
-    linear-gradient(
-      var(--line-angle-b2),
-      transparent 24%,
-      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.06 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 24%,
-      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.06 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 24.03%,
-      transparent 24.03%
     ),
     linear-gradient(
       var(--line-angle-c),
       transparent 18%,
-      hsl(calc(var(--line-hue-c) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.11 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 18%,
-      hsl(calc(var(--line-hue-c) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.11 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 18.1%,
+      var(--line-c) 18%,
+      var(--line-c) 18.1%,
       transparent 18.1%
+    );
+}
+
+/* Far weave — softer echoes, reverse morph + opposite-phase breathe */
+.bg-lines-far {
+  position: fixed;
+  inset: -4%;
+  pointer-events: none;
+  z-index: 0;
+  transform-origin: center;
+  will-change: transform, opacity;
+  animation:
+    bgDrift var(--drift-far-duration) ease-in-out infinite reverse,
+    bgBreatheFar var(--breathe-far-duration) ease-in-out infinite;
+  animation-delay: 0s, calc(var(--breathe-far-duration) * -0.5);
+  background:
+    linear-gradient(
+      var(--line-angle-a),
+      transparent 43.8%,
+      var(--line-a-soft) 43.8%,
+      var(--line-a-soft) 43.88%,
+      transparent 43.88%
     ),
     linear-gradient(
-      var(--line-angle-c),
-      transparent 16.2%,
-      hsl(calc(var(--line-hue-c) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.05 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 16.2%,
-      hsl(calc(var(--line-hue-c) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.05 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 16.28%,
-      transparent 16.28%
+      var(--line-angle-b2),
+      transparent 24%,
+      var(--line-b-soft) 24%,
+      var(--line-b-soft) 24.05%,
+      transparent 24.05%
     ),
     linear-gradient(
       var(--line-angle-d1),
       transparent 76%,
-      hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.08 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 76%,
-      hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.08 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 76.1%,
+      var(--line-d) 76%,
+      var(--line-d) 76.1%,
       transparent 76.1%
-    ),
-    linear-gradient(
-      var(--line-angle-d2),
-      transparent 79%,
-      hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.05 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 79%,
-      hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.05 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 79.03%,
-      transparent 79.03%
-    ),
-    linear-gradient(
-      calc(var(--line-angle-b2) + 18deg),
-      transparent 8%,
-      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + (var(--time-hue-flow) * 0.5)) var(--line-sat) var(--line-lit) / calc(0.025 * var(--time-line-dim) * var(--theme-line-boost))) 8%,
-      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + (var(--time-hue-flow) * 0.5)) var(--line-sat) var(--line-lit) / calc(0.025 * var(--time-line-dim) * var(--theme-line-boost))) 8.04%,
-      transparent 8.04%
     );
 }
 
-/* Background drift — GPU-composited transform + filter, no per-frame style recalc.
-   Replaces the old body lineGeometry + :root colorDrift custom-property animations
-   which invalidated every rule consuming --line-angle-* / --accent-hue each frame. */
+/* Night stars — separate layer so twinkle doesn’t touch ambient wash */
+.bg-stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  background:
+    radial-gradient(circle at 12% 22%, var(--star-1) 0 0.55px, transparent 1px),
+    radial-gradient(circle at 76% 16%, var(--star-2) 0 0.5px, transparent 1px),
+    radial-gradient(circle at 88% 62%, var(--star-3) 0 0.55px, transparent 1px),
+    radial-gradient(circle at 34% 70%, var(--star-2) 0 0.4px, transparent 1px),
+    radial-gradient(circle at 62% 38%, var(--star-1) 0 0.45px, transparent 1px);
+}
+
+[data-time="night"] .bg-stars {
+  will-change: opacity;
+  animation: starTwinkle 8.5s ease-in-out infinite;
+}
+
+/* Multi-stop morph — feels less mechanical than a single midpoint swing */
 @keyframes bgDrift {
-  0%, 100% { transform: rotate(-2.5deg); filter: hue-rotate(-4deg); }
-  50%      { transform: rotate(2.5deg);  filter: hue-rotate(4deg); }
+  0% {
+    transform: rotate(calc(var(--drift-rot) * -1)) scale(var(--drift-scale-a));
+  }
+  28% {
+    transform:
+      rotate(calc(var(--drift-rot) * 0.55))
+      scale(calc((var(--drift-scale-a) + var(--drift-scale-b)) * 0.5 + 0.006));
+  }
+  52% {
+    transform: rotate(var(--drift-rot)) scale(var(--drift-scale-b));
+  }
+  76% {
+    transform:
+      rotate(calc(var(--drift-rot) * -0.4))
+      scale(calc((var(--drift-scale-a) + var(--drift-scale-b)) * 0.5));
+  }
+  100% {
+    transform: rotate(calc(var(--drift-rot) * -1)) scale(var(--drift-scale-a));
+  }
+}
+
+/* Soft pulse — independent of transform so the two compose cheaply */
+@keyframes bgBreathe {
+  0%, 100% { opacity: var(--breathe-opacity-min); }
+  50% { opacity: var(--breathe-opacity-max); }
+}
+
+@keyframes bgBreatheFar {
+  0%, 100% { opacity: var(--breathe-far-opacity-min); }
+  50% { opacity: var(--breathe-far-opacity-max); }
+}
+
+/* Irregular sparkle — not a metronome */
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.45; }
+  12% { opacity: 0.95; }
+  28% { opacity: 0.35; }
+  41% { opacity: 0.8; }
+  58% { opacity: 0.5; }
+  73% { opacity: 1; }
+  88% { opacity: 0.4; }
+}
+
+/* Ambient moves on a different period than lines → gentle parallax */
+@keyframes ambientDrift {
+  0%, 100% {
+    transform: translate3d(-0.7%, 0.45%, 0) scale(1.012);
+    opacity: 0.94;
+  }
+  50% {
+    transform: translate3d(0.75%, -0.5%, 0) scale(1.028);
+    opacity: 1;
+  }
+}
+
+/* When CRT is on, drop competing line/star motion */
+[data-crt="true"] body::after,
+[data-crt="true"] .bg-lines-far {
+  animation: none;
+  opacity: 1;
+  will-change: auto;
+}
+
+[data-crt="true"] body::before {
+  animation: none;
+  will-change: auto;
+  opacity: 1;
+}
+
+[data-crt="true"] .bg-stars {
+  animation: none;
+  opacity: 0;
+  will-change: auto;
+}
+
+[data-crt="true"] html::after {
+  opacity: 0;
+  background-image: none;
 }
 
 /* Pause all animations when tab is hidden — saves CPU/GPU */
 html.page-hidden,
 html.page-hidden * {
   animation-play-state: paused !important;
+}
+
+html.page-hidden body::before,
+html.page-hidden body::after,
+html.page-hidden .bg-lines-far,
+html.page-hidden .bg-stars {
+  will-change: auto;
 }
 
 :root[data-performance="reduced"] {
@@ -476,64 +577,51 @@ html.page-hidden * {
   animation: none !important;
 }
 
+:root[data-performance="reduced"] body::before {
+  animation: none;
+  will-change: auto;
+  inset: 0;
+  opacity: 1;
+}
+
 :root[data-performance="reduced"] body::after {
+  animation: none;
+  will-change: auto;
+  opacity: 1;
   background:
     linear-gradient(
       var(--line-angle-a),
       transparent 42%,
-      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.14 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 42%,
-      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.14 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 42.12%,
+      var(--line-a) 42%,
+      var(--line-a) 42.12%,
       transparent 42.12%
-    ),
-    linear-gradient(
-      var(--line-angle-a),
-      transparent 43.8%,
-      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.07 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 43.8%,
-      hsl(calc(var(--line-hue-a) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.07 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 43.88%,
-      transparent 43.88%
     ),
     linear-gradient(
       var(--line-angle-b1),
       transparent 68%,
-      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.10 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 68%,
-      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.10 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 68.1%,
+      var(--line-b) 68%,
+      var(--line-b) 68.1%,
       transparent 68.1%
-    ),
-    linear-gradient(
-      var(--line-angle-b2),
-      transparent 24%,
-      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.06 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 24%,
-      hsl(calc(var(--line-hue-b) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.06 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 24.03%,
-      transparent 24.03%
     ),
     linear-gradient(
       var(--line-angle-c),
       transparent 18%,
-      hsl(calc(var(--line-hue-c) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.11 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 18%,
-      hsl(calc(var(--line-hue-c) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.11 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 18.1%,
+      var(--line-c) 18%,
+      var(--line-c) 18.1%,
       transparent 18.1%
-    ),
-    linear-gradient(
-      var(--line-angle-c),
-      transparent 16.2%,
-      hsl(calc(var(--line-hue-c) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.05 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 16.2%,
-      hsl(calc(var(--line-hue-c) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.05 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 16.28%,
-      transparent 16.28%
     ),
     linear-gradient(
       var(--line-angle-d1),
       transparent 76%,
-      hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.08 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 76%,
-      hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.08 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 76.1%,
+      var(--line-d) 76%,
+      var(--line-d) 76.1%,
       transparent 76.1%
-    ),
-    linear-gradient(
-      var(--line-angle-d2),
-      transparent 79%,
-      hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.05 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 79%,
-      hsl(calc(var(--line-hue-d) + var(--time-hue-shift) + var(--time-hue-flow)) var(--line-sat) var(--line-lit) / calc(0.05 * var(--time-line-dim) * var(--theme-line-boost) * var(--time-line-flow))) 79.03%,
-      transparent 79.03%
     );
+}
+
+:root[data-performance="reduced"] .bg-lines-far,
+:root[data-performance="reduced"] .bg-stars {
+  display: none;
 }
 
 :root[data-performance="reduced"]::after {
@@ -541,14 +629,6 @@ html.page-hidden * {
   background-image: none;
 }
 
-:root[data-performance="reduced"] body::after {
-  animation: none;
-}
-
-:root[data-performance="reduced"] .avatar-modal {
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
 
 /* Film grain overlay - disabled in reduced mode (feTurbulence is memory-heavy) */
 html::after {
@@ -772,9 +852,7 @@ html::after {
   align-items: center;
   justify-content: center;
   font-family: 'JetBrains Mono', Consolas, Monaco, 'Courier New', monospace;
-  background: transparent;
-  backdrop-filter: blur(16px) saturate(0.8);
-  -webkit-backdrop-filter: blur(16px) saturate(0.8);
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
   animation: modalFadeIn 0.25s ease-out;
   cursor: pointer;
 }
@@ -845,7 +923,7 @@ html::after {
 }
 
 [data-crt="true"] .avatar-modal-close {
-  text-shadow: 0 0 3px hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.24);
+  text-shadow: 0 0 2px var(--crt-glow);
 }
 
 @keyframes modalFadeIn {
@@ -893,23 +971,29 @@ html::after {
   contain: paint;
 }
 
-/* Mouse-following glow (GPU-accelerated via transform) */
-.link-row-glow {
+/* Single shared glow node (reparented into the hovered row) — O(1) layers */
+.shared-glow {
   position: absolute;
-  width: 640px;
-  height: 640px;
-  left: 0;
-  top: 0;
+  inset: 0;
   opacity: 0;
   transition: opacity 0.15s;
   pointer-events: none;
-  background: var(--link-hover-glow);
-  transform: translate3d(calc(var(--glow-x, 0) * 1px), calc(var(--glow-y, 0) * 1px), 0);
+  z-index: 0;
+  background: radial-gradient(
+    circle 320px at var(--glow-x, 50%) var(--glow-y, 50%),
+    var(--accent-glow) 0%,
+    transparent 60%
+  );
 }
 
-.link-row:hover .link-row-glow {
+.shared-glow--active {
   opacity: 1;
-  will-change: transform, opacity;
+}
+
+.link-row > :not(.shared-glow),
+.writing-list-item > :not(.shared-glow) {
+  position: relative;
+  z-index: 1;
 }
 
 /* Row hover background */
@@ -1194,404 +1278,114 @@ html::after {
   50% { text-shadow: 0 0 22px hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / 0.22); }
 }
 
-@keyframes colorDrift {
-  0%, 100% { --accent-hue: 212; --accent-sat: 100%; --accent-lit: 67%; --line-hue-a: 212; --line-hue-b: 212; --line-hue-c: 212; --line-hue-d: 212; }
-  25%       { --accent-hue: 205; --accent-sat: 100%; --accent-lit: 67%; --line-hue-a: 205; --line-hue-b: 205; --line-hue-c: 205; --line-hue-d: 205; }
-  50%       { --accent-hue: 210; --accent-sat: 10%;  --accent-lit: 96%; --line-hue-a: 210; --line-hue-b: 210; --line-hue-c: 210; --line-hue-d: 210; }
-  75%       { --accent-hue: 222; --accent-sat: 100%; --accent-lit: 67%; --line-hue-a: 222; --line-hue-b: 222; --line-hue-c: 222; --line-hue-d: 222; }
+/* Dead colorDrift* keyframes removed — hues are theme-static; motion is bgDrift. */
+
+/* ========== Time-of-Day ========== */
+/* Angles + ambient placement stay in CSS; colors come from useTimeOfDay. */
+
+[data-time="afternoon"] {
+  --line-angle-a: 150deg;
+  --line-angle-b1: -30deg;
+  --line-angle-b2: 180deg;
+  --line-angle-c: 25deg;
+  --line-angle-d1: -55deg;
+  --ambient-primary-shape: ellipse 80% 50%;
+  --ambient-primary-at: calc(50% + (var(--time-glow-x) * 10%)) calc(3% + (var(--time-glow-y) * 5%));
+  --ambient-primary-end: 52%;
+  --ambient-secondary-shape: ellipse 62% 42%;
+  --ambient-secondary-at: calc(18% + (var(--time-glow-x) * 5%)) calc(84% - (var(--time-progress) * 5%));
+  --ambient-secondary-end: 62%;
+  --drift-rot: 2.8deg;
+  --drift-scale-a: 1.018;
+  --drift-scale-b: 1.048;
+  --drift-duration: 48s;
+  --drift-far-duration: 66s;
+  --breathe-duration: 13s;
+  --breathe-far-duration: 21s;
+  --ambient-drift-duration: 34s;
+  --breathe-opacity-min: 0.84;
+  --breathe-opacity-max: 1;
+  --breathe-far-opacity-min: 0.52;
+  --breathe-far-opacity-max: 0.84;
 }
-
-@keyframes colorDriftRose {
-  0%, 100% { --accent-hue: 335; --accent-sat: 85%; --accent-lit: 65%; --line-hue-a: 335; --line-hue-b: 335; --line-hue-c: 335; --line-hue-d: 335; }
-  25%       { --accent-hue: 345; --accent-sat: 85%; --accent-lit: 65%; --line-hue-a: 345; --line-hue-b: 345; --line-hue-c: 345; --line-hue-d: 345; }
-  50%       { --accent-hue: 330; --accent-sat: 12%; --accent-lit: 95%; --line-hue-a: 330; --line-hue-b: 330; --line-hue-c: 330; --line-hue-d: 330; }
-  75%       { --accent-hue: 315; --accent-sat: 85%; --accent-lit: 65%; --line-hue-a: 315; --line-hue-b: 315; --line-hue-c: 315; --line-hue-d: 315; }
-}
-
-/*
-  Paper lines: each group cycles the same 5 colors but staggered.
-  Line A:  +2 offset (burgundy→plum→orange→navy→teal)
-  Line B:  +4 offset (orange→navy→teal→burgundy→plum)
-  Line C:  reverse   (navy→teal→burgundy→plum→orange)
-  Line D:  reverse+2 (teal→burgundy→plum→orange→navy)
-
-  Accent hue is restricted to the high side of the wheel (175–340°) to avoid CSS numeric
-  interpolation crossing the green zone (80–160°). Amber (30°) and orange (50°) are kept in
-  the line hues for visual richness but removed from --accent-hue to keep text/UI colors clean.
-  Transitions verified: each adjacent pair interpolates at most 165° and stays above 175°.
-*/
-@keyframes colorDriftPaper {
-  0%, 100% {
-    --accent-hue: 215; --accent-sat: 75%; --accent-lit: 40%;
-    --line-hue-a: 340; --line-hue-b: 50;  --line-hue-c: 30;  --line-hue-d: 275;
-  }
-  17% {
-    --accent-hue: 175; --accent-sat: 70%; --accent-lit: 35%;
-    --line-hue-a: 275; --line-hue-b: 30;  --line-hue-c: 50;  --line-hue-d: 340;
-  }
-  33% {
-    --accent-hue: 340; --accent-sat: 75%; --accent-lit: 42%;
-    --line-hue-a: 50;  --line-hue-b: 215; --line-hue-c: 275; --line-hue-d: 262;
-  }
-  50% {
-    --accent-hue: 275; --accent-sat: 65%; --accent-lit: 42%;
-    --line-hue-a: 30;  --line-hue-b: 262; --line-hue-c: 340; --line-hue-d: 215;
-  }
-  67% {
-    --accent-hue: 340; --accent-sat: 65%; --accent-lit: 35%;
-    --line-hue-a: 215; --line-hue-b: 340; --line-hue-c: 262; --line-hue-d: 30;
-  }
-  83% {
-    --accent-hue: 175; --accent-sat: 70%; --accent-lit: 40%;
-    --line-hue-a: 262; --line-hue-b: 275; --line-hue-c: 215; --line-hue-d: 50;
-  }
-}
-
-@keyframes colorDriftEmber {
-  /*
-    Line groups span the full fire spectrum: deep red (4°) → orange (22°) → amber (38°) → gold (54°)
-    Each group rotates through the others so the lines feel like layered flame colors shifting.
-  */
-  0%, 100% {
-    --accent-hue: 28;  --accent-sat: 96%; --accent-lit: 48%;
-    --line-hue-a: 4;   --line-hue-b: 22;  --line-hue-c: 38;  --line-hue-d: 54;
-  }
-  25% {
-    --accent-hue: 42;  --accent-sat: 92%; --accent-lit: 52%;
-    --line-hue-a: 22;  --line-hue-b: 38;  --line-hue-c: 54;  --line-hue-d: 4;
-  }
-  50% {
-    --accent-hue: 14;  --accent-sat: 98%; --accent-lit: 45%;
-    --line-hue-a: 38;  --line-hue-b: 54;  --line-hue-c: 4;   --line-hue-d: 22;
-  }
-  75% {
-    --accent-hue: 54;  --accent-sat: 90%; --accent-lit: 50%;
-    --line-hue-a: 54;  --line-hue-b: 4;   --line-hue-c: 22;  --line-hue-d: 38;
-  }
-}
-
-@keyframes colorDriftDusk {
-  /*
-    Accent stays within the violet/indigo family (258–285°) so text/UI colors never leave the palette.
-    Orange (28°, 38°) lives only in the line hues — it appears in the laser lines crossing the background
-    but never bleeds into the accent color used for text. CSS numeric interpolation between 272° and 33°
-    would pass through green (120–160°), so orange is intentionally excluded from --accent-hue.
-  */
-  0%, 100% {
-    --accent-hue: 272; --accent-sat: 78%; --accent-lit: 62%;
-    --line-hue-a: 278; --line-hue-b: 28;  --line-hue-c: 262; --line-hue-d: 38;
-  }
-  25% {
-    --accent-hue: 258; --accent-sat: 82%; --accent-lit: 58%;
-    --line-hue-a: 28;  --line-hue-b: 262; --line-hue-c: 38;  --line-hue-d: 278;
-  }
-  50% {
-    --accent-hue: 285; --accent-sat: 75%; --accent-lit: 64%;
-    --line-hue-a: 262; --line-hue-b: 38;  --line-hue-c: 278; --line-hue-d: 28;
-  }
-  75% {
-    --accent-hue: 265; --accent-sat: 80%; --accent-lit: 60%;
-    --line-hue-a: 38;  --line-hue-b: 278; --line-hue-c: 28;  --line-hue-d: 262;
-  }
-}
-
-@keyframes colorDriftHarbor {
-  /*
-    Line groups cycle through the nautical palette: navy (220°) → sky blue (205°) → seafoam (175°) → steel (215°)
-    Each group rotates through the others — like light on water shifting between deep blue, pale sky, and sea green.
-  */
-  0%, 100% {
-    --accent-hue: 205; --accent-sat: 68%; --accent-lit: 36%;
-    --line-hue-a: 220; --line-hue-b: 175; --line-hue-c: 205; --line-hue-d: 215;
-  }
-  25% {
-    --accent-hue: 188; --accent-sat: 65%; --accent-lit: 34%;
-    --line-hue-a: 175; --line-hue-b: 215; --line-hue-c: 220; --line-hue-d: 205;
-  }
-  50% {
-    --accent-hue: 220; --accent-sat: 72%; --accent-lit: 32%;
-    --line-hue-a: 205; --line-hue-b: 220; --line-hue-c: 188; --line-hue-d: 175;
-  }
-  75% {
-    --accent-hue: 175; --accent-sat: 62%; --accent-lit: 36%;
-    --line-hue-a: 215; --line-hue-b: 205; --line-hue-c: 175; --line-hue-d: 220;
-  }
-}
-
-@keyframes colorDriftPine {
-  /*
-    Line groups stay in the cool, muted pine/forest range (125–158°) — no yellow-green.
-    Accent tuned for light forest background — muted greens with cool undertones.
-  */
-  0%, 100% {
-    --accent-hue: 138; --accent-sat: 28%; --accent-lit: 38%;
-    --line-hue-a: 125; --line-hue-b: 142; --line-hue-c: 155; --line-hue-d: 132;
-  }
-  25% {
-    --accent-hue: 128; --accent-sat: 30%; --accent-lit: 40%;
-    --line-hue-a: 140; --line-hue-b: 152; --line-hue-c: 130; --line-hue-d: 125;
-  }
-  50% {
-    --accent-hue: 148; --accent-sat: 26%; --accent-lit: 36%;
-    --line-hue-a: 152; --line-hue-b: 130; --line-hue-c: 125; --line-hue-d: 142;
-  }
-  75% {
-    --accent-hue: 132; --accent-sat: 29%; --accent-lit: 39%;
-    --line-hue-a: 130; --line-hue-b: 125; --line-hue-c: 142; --line-hue-d: 155;
-  }
-}
-
-@keyframes colorDriftStone {
-  0%, 100% { --accent-hue: 28;  --accent-sat: 7%;  --accent-lit: 74%; --line-hue-a: 28;  --line-hue-b: 28;  --line-hue-c: 28;  --line-hue-d: 28; }
-  25%       { --accent-hue: 220; --accent-sat: 6%;  --accent-lit: 48%; --line-hue-a: 220; --line-hue-b: 220; --line-hue-c: 220; --line-hue-d: 220; }
-  50%       { --accent-hue: 0;   --accent-sat: 0%;  --accent-lit: 92%; --line-hue-a: 0;   --line-hue-b: 0;   --line-hue-c: 0;   --line-hue-d: 0; }
-  75%       { --accent-hue: 32;  --accent-sat: 9%;  --accent-lit: 62%; --line-hue-a: 32;  --line-hue-b: 32;  --line-hue-c: 32;  --line-hue-d: 32; }
-}
-
-@keyframes colorDriftPhosphor {
-  /*
-    Phosphor: classic P1 green phosphor terminal.
-    Lines drift subtly within the green spectrum (118°-145°) to create
-    a living, breathing terminal effect while maintaining authenticity.
-  */
-  0%, 100% {
-    --accent-hue: 130; --accent-sat: 85%; --accent-lit: 55%;
-    --line-hue-a: 125; --line-hue-b: 135; --line-hue-c: 118; --line-hue-d: 142;
-    --line-sat: 80%; --line-lit: 52%;
-  }
-  25% {
-    --accent-hue: 128; --accent-sat: 87%; --accent-lit: 57%;
-    --line-hue-a: 132; --line-hue-b: 142; --line-hue-c: 125; --line-hue-d: 138;
-    --line-sat: 82%; --line-lit: 54%;
-  }
-  50% {
-    --accent-hue: 133; --accent-sat: 83%; --accent-lit: 53%;
-    --line-hue-a: 118; --line-hue-b: 128; --line-hue-c: 142; --line-hue-d: 132;
-    --line-sat: 78%; --line-lit: 50%;
-  }
-  75% {
-    --accent-hue: 127; --accent-sat: 86%; --accent-lit: 56%;
-    --line-hue-a: 138; --line-hue-b: 145; --line-hue-c: 122; --line-hue-d: 135;
-    --line-sat: 81%; --line-lit: 53%;
-  }
-}
-
-/* ========== Time-of-Day Static Overrides ========== */
-/* These apply as reduced-motion fallback (no geometry animation needed) */
 
 [data-time="morning"] {
-  --time-hue-shift: 15;
-  --time-line-dim: 0.9;
   --line-angle-a: 130deg;
   --line-angle-b1: 50deg;
   --line-angle-b2: 165deg;
   --line-angle-c: 40deg;
   --line-angle-d1: 15deg;
-  --line-angle-d2: 160deg;
+  --ambient-primary-shape: ellipse 72% 58%;
+  --ambient-primary-at: calc(14% + (var(--time-glow-x) * 4%)) calc(88% - (var(--time-progress) * 6%));
+  --ambient-primary-end: 66%;
+  --ambient-secondary-shape: ellipse 64% 44%;
+  --ambient-secondary-at: calc(78% - (var(--time-glow-x) * 3%)) calc(14% + (var(--time-glow-y) * 4%));
+  --ambient-secondary-end: 58%;
+  --drift-rot: 2.3deg;
+  --drift-scale-a: 1.014;
+  --drift-scale-b: 1.038;
+  --drift-duration: 56s;
+  --drift-far-duration: 74s;
+  --breathe-duration: 16s;
+  --breathe-far-duration: 24s;
+  --ambient-drift-duration: 40s;
+  --breathe-opacity-min: 0.86;
+  --breathe-opacity-max: 1;
+  --breathe-far-opacity-min: 0.55;
+  --breathe-far-opacity-max: 0.86;
 }
 
 [data-time="dusk"] {
-  --time-hue-shift: 25;
-  --time-line-dim: 0.75;
   --line-angle-a: -40deg;
   --line-angle-b1: 210deg;
   --line-angle-b2: 175deg;
   --line-angle-c: -50deg;
   --line-angle-d1: 200deg;
-  --line-angle-d2: 185deg;
+  --ambient-primary-shape: ellipse 62% 72%;
+  --ambient-primary-at: calc(90% - (var(--time-glow-x) * 4%)) calc(32% + (var(--time-glow-y) * 4%));
+  --ambient-primary-end: 60%;
+  --ambient-secondary-shape: ellipse 78% 48%;
+  --ambient-secondary-at: calc(18% + (var(--time-glow-x) * 4%)) 18%;
+  --ambient-secondary-end: 62%;
+  --drift-rot: 3.4deg;
+  --drift-scale-a: 1.022;
+  --drift-scale-b: 1.055;
+  --drift-duration: 38s;
+  --drift-far-duration: 52s;
+  --breathe-duration: 11s;
+  --breathe-far-duration: 17s;
+  --ambient-drift-duration: 28s;
+  --breathe-opacity-min: 0.8;
+  --breathe-opacity-max: 1;
+  --breathe-far-opacity-min: 0.48;
+  --breathe-far-opacity-max: 0.88;
 }
 
 [data-time="night"] {
-  --time-hue-shift: -15;
-  --time-line-dim: 0.6;
   --line-angle-a: 175deg;
   --line-angle-b1: -8deg;
   --line-angle-b2: 182deg;
   --line-angle-c: 172deg;
   --line-angle-d1: -3deg;
-  --line-angle-d2: 178deg;
+  --ambient-primary-shape: ellipse 92% 52%;
+  --ambient-primary-at: calc(50% + (var(--time-glow-x) * 8%)) calc(0% + (var(--time-glow-y) * 3%));
+  --ambient-primary-end: 50%;
+  --ambient-secondary-shape: ellipse 52% 46%;
+  --ambient-secondary-at: calc(18% + (var(--time-glow-x) * 3%)) calc(82% - (var(--time-glow-y) * 4%));
+  --ambient-secondary-end: 60%;
+  --drift-rot: 1.6deg;
+  --drift-scale-a: 1.01;
+  --drift-scale-b: 1.028;
+  --drift-duration: 68s;
+  --drift-far-duration: 92s;
+  --breathe-duration: 20s;
+  --breathe-far-duration: 31s;
+  --ambient-drift-duration: 48s;
+  --breathe-opacity-min: 0.78;
+  --breathe-opacity-max: 0.96;
+  --breathe-far-opacity-min: 0.4;
+  --breathe-far-opacity-max: 0.72;
 }
-
-/* ========== Time-of-Day Ambient Glow ========== */
-
-[data-time="morning"] body::before {
-  background:
-    radial-gradient(
-      ellipse 44% 52% at 50% 50%,
-      var(--ambient-clear) 0%,
-      var(--ambient-clear-soft) 36%,
-      transparent 66%
-    ),
-    radial-gradient(
-      ellipse 72% 58% at calc(14% + (var(--time-glow-x) * 4%)) calc(90% - (var(--time-progress) * 6%)),
-      hsl(calc(var(--accent-hue) + 36 + (var(--time-hue-flow) * 0.6)) 86% 62% / calc(0.045 + (var(--time-progress) * 0.012))) 0%,
-      hsl(calc(var(--accent-hue) + 36 + (var(--time-hue-flow) * 0.6)) 86% 62% / 0.014) 45%,
-      transparent 66%
-    ),
-    radial-gradient(
-      ellipse 64% 44% at calc(78% - (var(--time-glow-x) * 3%)) calc(12% + (var(--time-glow-y) * 4%)),
-      hsl(calc(var(--accent-hue) - 22 + (var(--time-hue-flow) * 0.35)) 72% 58% / 0.018) 0%,
-      transparent 58%
-    );
-}
-
-[data-time="dusk"] body::before {
-  background:
-    radial-gradient(
-      ellipse 44% 52% at 50% 50%,
-      var(--ambient-clear) 0%,
-      var(--ambient-clear-soft) 36%,
-      transparent 66%
-    ),
-    radial-gradient(
-      ellipse 62% 72% at calc(90% - (var(--time-glow-x) * 4%)) calc(32% + (var(--time-glow-y) * 4%)),
-      hsl(calc(var(--accent-hue) + 42 + (var(--time-hue-flow) * 0.55)) 88% 56% / calc(0.047 + (var(--time-line-flow) * 0.009))) 0%,
-      hsl(calc(var(--accent-hue) + 42 + (var(--time-hue-flow) * 0.55)) 88% 56% / 0.016) 36%,
-      transparent 60%
-    ),
-    radial-gradient(
-      ellipse 78% 48% at calc(18% + (var(--time-glow-x) * 4%)) 18%,
-      hsl(calc(var(--accent-hue) - 26 + (var(--time-hue-flow) * 0.35)) 78% 48% / 0.026) 0%,
-      transparent 62%
-    );
-}
-
-[data-time="night"] body::before {
-  background:
-    radial-gradient(circle at 12% 22%, hsl(calc(var(--accent-hue) + 12) 70% 78% / 0.16) 0 0.6px, transparent 1px),
-    radial-gradient(circle at 76% 16%, hsl(calc(var(--accent-hue) - 18) 68% 74% / 0.12) 0 0.5px, transparent 1px),
-    radial-gradient(circle at 88% 62%, hsl(calc(var(--accent-hue) + 24) 66% 76% / 0.1) 0 0.55px, transparent 1px),
-    radial-gradient(
-      ellipse 44% 52% at 50% 50%,
-      var(--ambient-clear) 0%,
-      var(--ambient-clear-soft) 36%,
-      transparent 66%
-    ),
-    radial-gradient(
-      ellipse 92% 52% at calc(50% + (var(--time-glow-x) * 8%)) calc(0% + (var(--time-glow-y) * 3%)),
-      hsl(calc(var(--accent-hue) - 22 + (var(--time-hue-flow) * 0.4)) 72% 42% / calc(0.031 + (var(--time-line-flow) * 0.007))) 0%,
-      hsl(calc(var(--accent-hue) - 22 + (var(--time-hue-flow) * 0.4)) 72% 42% / 0.012) 34%,
-      transparent 50%
-    ),
-    radial-gradient(
-      ellipse 52% 46% at calc(18% + (var(--time-glow-x) * 3%)) calc(82% - (var(--time-glow-y) * 4%)),
-      hsl(calc(var(--accent-hue) + 28 + (var(--time-hue-flow) * 0.25)) 64% 36% / 0.018) 0%,
-      transparent 60%
-    );
-}
-
-/* Rose: #000 bg swallows the default ~4% accent wash — match other dark themes’ center bloom */
-[data-theme="rose"][data-time="afternoon"] body::before {
-  background: radial-gradient(
-    ellipse 88% 54% at calc(50% + (var(--time-glow-x) * 10%)) calc(2% + (var(--time-glow-y) * 5%)),
-    hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / calc(0.062 + (var(--time-progress) * 0.015))) 0%,
-    hsl(var(--accent-hue) var(--accent-sat) var(--accent-lit) / calc(0.026 + (var(--time-progress) * 0.006))) 40%,
-    transparent 58%
-  );
-}
-
-[data-theme="rose"][data-time="morning"] body::before {
-  background: radial-gradient(
-    ellipse 72% 62% at calc(14% + (var(--time-glow-x) * 4%)) calc(90% - (var(--time-progress) * 6%)),
-    hsl(calc(var(--accent-hue) + 30 + (var(--time-hue-flow) * 0.6)) 80% 60% / calc(0.052 + (var(--time-progress) * 0.016))) 0%,
-    hsl(calc(var(--accent-hue) + 30 + (var(--time-hue-flow) * 0.6)) 80% 60% / calc(0.018 + (var(--time-progress) * 0.005))) 45%,
-    transparent 62%
-  );
-}
-
-[data-theme="rose"][data-time="dusk"] body::before {
-  background: radial-gradient(
-    ellipse 64% 72% at calc(90% - (var(--time-glow-x) * 4%)) calc(30% + (var(--time-glow-y) * 4%)),
-    hsl(calc(var(--accent-hue) + 40 + (var(--time-hue-flow) * 0.55)) 85% 55% / calc(0.056 + (var(--time-line-flow) * 0.011))) 0%,
-    hsl(calc(var(--accent-hue) + 40 + (var(--time-hue-flow) * 0.55)) 85% 55% / calc(0.022 + (var(--time-line-flow) * 0.004))) 38%,
-    transparent 58%
-  );
-}
-
-[data-theme="rose"][data-time="night"] body::before {
-  background: radial-gradient(
-    ellipse 92% 52% at calc(50% + (var(--time-glow-x) * 8%)) calc(0% + (var(--time-glow-y) * 3%)),
-    hsl(calc(var(--accent-hue) - 20 + (var(--time-hue-flow) * 0.4)) 70% 44% / calc(0.042 + (var(--time-line-flow) * 0.012))) 0%,
-    hsl(calc(var(--accent-hue) - 20 + (var(--time-hue-flow) * 0.4)) 70% 44% / calc(0.016 + (var(--time-line-flow) * 0.004))) 36%,
-    transparent 52%
-  );
-}
-
-/* ========== Geometry Drift Animations ========== */
-
-@keyframes lineGeometryAfternoon {
-  0%, 100% {
-    --line-angle-a: 150deg; --line-angle-b1: -30deg; --line-angle-b2: 180deg;
-    --line-angle-c: 25deg; --line-angle-d1: -55deg; --line-angle-d2: 180deg;
-  }
-  25% {
-    --line-angle-a: 155deg; --line-angle-b1: -33deg; --line-angle-b2: 182deg;
-    --line-angle-c: 21deg; --line-angle-d1: -49deg; --line-angle-d2: 179deg;
-  }
-  50% {
-    --line-angle-a: 147deg; --line-angle-b1: -26deg; --line-angle-b2: 177deg;
-    --line-angle-c: 31deg; --line-angle-d1: -59deg; --line-angle-d2: 182deg;
-  }
-  75% {
-    --line-angle-a: 152deg; --line-angle-b1: -35deg; --line-angle-b2: 184deg;
-    --line-angle-c: 23deg; --line-angle-d1: -52deg; --line-angle-d2: 177deg;
-  }
-}
-
-@keyframes lineGeometryMorning {
-  0%, 100% {
-    --line-angle-a: 130deg; --line-angle-b1: 50deg; --line-angle-b2: 165deg;
-    --line-angle-c: 40deg; --line-angle-d1: 15deg; --line-angle-d2: 160deg;
-  }
-  25% {
-    --line-angle-a: 138deg; --line-angle-b1: 44deg; --line-angle-b2: 168deg;
-    --line-angle-c: 35deg; --line-angle-d1: 22deg; --line-angle-d2: 156deg;
-  }
-  50% {
-    --line-angle-a: 126deg; --line-angle-b1: 57deg; --line-angle-b2: 160deg;
-    --line-angle-c: 48deg; --line-angle-d1: 12deg; --line-angle-d2: 165deg;
-  }
-  75% {
-    --line-angle-a: 133deg; --line-angle-b1: 46deg; --line-angle-b2: 171deg;
-    --line-angle-c: 37deg; --line-angle-d1: 20deg; --line-angle-d2: 158deg;
-  }
-}
-
-@keyframes lineGeometryDusk {
-  0%, 100% {
-    --line-angle-a: -40deg; --line-angle-b1: 210deg; --line-angle-b2: 175deg;
-    --line-angle-c: -50deg; --line-angle-d1: 200deg; --line-angle-d2: 185deg;
-  }
-  25% {
-    --line-angle-a: -45deg; --line-angle-b1: 214deg; --line-angle-b2: 173deg;
-    --line-angle-c: -44deg; --line-angle-d1: 197deg; --line-angle-d2: 188deg;
-  }
-  50% {
-    --line-angle-a: -34deg; --line-angle-b1: 205deg; --line-angle-b2: 179deg;
-    --line-angle-c: -54deg; --line-angle-d1: 205deg; --line-angle-d2: 183deg;
-  }
-  75% {
-    --line-angle-a: -43deg; --line-angle-b1: 213deg; --line-angle-b2: 172deg;
-    --line-angle-c: -47deg; --line-angle-d1: 196deg; --line-angle-d2: 189deg;
-  }
-}
-
-@keyframes lineGeometryNight {
-  0%, 100% {
-    --line-angle-a: 175deg; --line-angle-b1: -8deg; --line-angle-b2: 182deg;
-    --line-angle-c: 172deg; --line-angle-d1: -3deg; --line-angle-d2: 178deg;
-  }
-  33% {
-    --line-angle-a: 178deg; --line-angle-b1: -10deg; --line-angle-b2: 183deg;
-    --line-angle-c: 170deg; --line-angle-d1: 0deg; --line-angle-d2: 177deg;
-  }
-  67% {
-    --line-angle-a: 173deg; --line-angle-b1: -5deg; --line-angle-b2: 180deg;
-    --line-angle-c: 175deg; --line-angle-d1: -5deg; --line-angle-d2: 180deg;
-  }
-}
-
-/* lineGeometry* keyframes removed: animating --line-angle-* inside gradient calc() caused per-frame style invalidation across the whole tree. Replaced by GPU-composited bgDrift on body::after (below). */
 
 @keyframes hintFade {
   0% { opacity: 0; }
@@ -1880,24 +1674,6 @@ html::after {
 .writing-list-item:focus-visible {
   outline: 1px solid var(--accent);
   outline-offset: -1px;
-}
-
-.writing-list-item-glow {
-  position: absolute;
-  width: 640px;
-  height: 640px;
-  left: 0;
-  top: 0;
-  opacity: 0;
-  transition: opacity 0.15s;
-  pointer-events: none;
-  background: var(--link-hover-glow);
-  transform: translate3d(calc(var(--glow-x, 0) * 1px), calc(var(--glow-y, 0) * 1px), 0);
-}
-
-.writing-list-item:hover .writing-list-item-glow {
-  opacity: 1;
-  will-change: transform, opacity;
 }
 
 .writing-list-item-top {
@@ -2247,19 +2023,90 @@ html::after {
 }
 
 /* ========== CRT Monitor Effect ========== */
-
-/* 
-  Authentic CRT simulation using a single container with layered pseudo-elements.
-  Layers (bottom to top):
-  1. Barrel distortion (subtle screen curvature via border-radius)
-  2. Vignette (edge darkening)
-  3. Scanlines (horizontal lines with varying intensity)
-  4. RGB phosphor mask (subpixel pattern)
-  5. Retrace line (occasional horizontal sweep)
-  6. Flicker (subtle brightness variation)
+/*
+  Tokenized terminal phosphor: one overlay recipe, themes only swap --crt-* vars.
+  ::before = center wash + vignette (static)
+  ::after  = dark scan gaps + fine phosphor ticks (background-position + opacity)
 */
 
-/* Base CRT container - full viewport, no border radius */
+/* Defaults — cyan phosphor (also used when data-theme is absent) */
+[data-crt="true"] {
+  --crt-phosphor: 88, 166, 255;
+  --crt-scan: rgba(0, 0, 0, 0.2);
+  --crt-tick: rgba(var(--crt-phosphor), 0.07);
+  --crt-wash: rgba(var(--crt-phosphor), 0.045);
+  --crt-vignette: rgba(0, 0, 0, 0.55);
+  --crt-glow: rgba(var(--crt-phosphor), 0.28);
+}
+
+[data-theme="default"],
+:root:not([data-theme]) {
+  --crt-phosphor: 88, 166, 255;
+  --crt-scan: rgba(0, 0, 0, 0.2);
+  --crt-vignette: rgba(0, 0, 0, 0.55);
+}
+
+[data-theme="rose"] {
+  --crt-phosphor: 255, 128, 180;
+  --crt-scan: rgba(0, 0, 0, 0.22);
+  --crt-vignette: rgba(0, 0, 0, 0.58);
+}
+
+[data-theme="ember"] {
+  --crt-phosphor: 255, 153, 51;
+  --crt-scan: rgba(0, 0, 0, 0.22);
+  --crt-vignette: rgba(0, 0, 0, 0.52);
+}
+
+[data-theme="dusk"] {
+  --crt-phosphor: 189, 147, 249;
+  --crt-scan: rgba(0, 0, 0, 0.2);
+  --crt-vignette: rgba(0, 0, 0, 0.55);
+}
+
+[data-theme="stone"] {
+  --crt-phosphor: 255, 186, 120;
+  --crt-scan: rgba(0, 0, 0, 0.2);
+  --crt-vignette: rgba(0, 0, 0, 0.55);
+}
+
+[data-theme="phosphor"] {
+  --crt-phosphor: 100, 230, 120;
+  --crt-scan: rgba(0, 0, 0, 0.26);
+  --crt-tick: rgba(var(--crt-phosphor), 0.09);
+  --crt-wash: rgba(var(--crt-phosphor), 0.055);
+  --crt-vignette: rgba(3, 8, 4, 0.72);
+  --crt-glow: rgba(var(--crt-phosphor), 0.35);
+}
+
+/* Light themes — gentler so CRT doesn't muddy paper UIs */
+[data-theme="pine"] {
+  --crt-phosphor: 90, 140, 100;
+  --crt-scan: rgba(0, 0, 0, 0.1);
+  --crt-tick: rgba(var(--crt-phosphor), 0.04);
+  --crt-wash: rgba(var(--crt-phosphor), 0.03);
+  --crt-vignette: rgba(0, 0, 0, 0.28);
+  --crt-glow: rgba(var(--crt-phosphor), 0.2);
+}
+
+[data-theme="paper"] {
+  --crt-phosphor: 100, 100, 140;
+  --crt-scan: rgba(0, 0, 0, 0.09);
+  --crt-tick: rgba(var(--crt-phosphor), 0.035);
+  --crt-wash: rgba(var(--crt-phosphor), 0.025);
+  --crt-vignette: rgba(0, 0, 0, 0.26);
+  --crt-glow: rgba(var(--crt-phosphor), 0.18);
+}
+
+[data-theme="harbor"] {
+  --crt-phosphor: 80, 130, 170;
+  --crt-scan: rgba(0, 0, 0, 0.1);
+  --crt-tick: rgba(var(--crt-phosphor), 0.04);
+  --crt-wash: rgba(var(--crt-phosphor), 0.03);
+  --crt-vignette: rgba(0, 0, 0, 0.28);
+  --crt-glow: rgba(var(--crt-phosphor), 0.2);
+}
+
 .crt {
   position: fixed;
   inset: 0;
@@ -2267,54 +2114,71 @@ html::after {
   pointer-events: none;
 }
 
-/* Layer 1: Vignette - subtle edge darkening */
+/* Phosphor wash + edge vignette */
 .crt::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    transparent 60%,
-    rgba(0, 0, 0, 0.25) 90%,
-    rgba(0, 0, 0, 0.45) 100%
-  );
   z-index: 1;
+  background:
+    radial-gradient(
+      ellipse at center,
+      var(--crt-wash) 0%,
+      transparent 42%,
+      transparent 58%,
+      var(--crt-vignette) 100%
+    );
 }
 
-/* Layer 2: Scanlines - thicker, more visible lines */
+/* Dark scan gaps + fine phosphor ticks — compositor-only motion */
 .crt::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: 
-    /* Visible scanlines */
+  z-index: 2;
+  background:
     repeating-linear-gradient(
       0deg,
-      rgba(255, 255, 255, 0.04) 0px,
-      rgba(255, 255, 255, 0.04) 1.5px,
+      var(--crt-scan) 0px,
+      var(--crt-scan) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 1px,
+      var(--crt-tick) 1px,
+      var(--crt-tick) 1.5px,
       transparent 1.5px,
-      transparent 4px
+      transparent 3px
     );
-  mix-blend-mode: soft-light;
-  z-index: 2;
+  background-position: 0 0, 0 1.5px;
+  animation:
+    crtScanDrift 9s linear infinite,
+    crtFlicker 3.2s ease-in-out infinite;
 }
 
-/* Global CRT text glow effects */
-[data-crt="true"] {
-  --crt-glow-color: rgba(128, 255, 200, 0.15);
-  --crt-glow-strong: rgba(128, 255, 200, 0.25);
+@keyframes crtScanDrift {
+  to { background-position: 0 3px, 0 4.5px; }
 }
 
-[data-crt="true"] body {
-  text-shadow: 0 0 2px var(--crt-glow-color);
+@keyframes crtFlicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.94; }
 }
 
+:root[data-performance="reduced"] .crt::after {
+  animation: none;
+}
+
+/* Selective phosphor glow — display text only (no body text-shadow) */
+[data-crt="true"] .name,
 [data-crt="true"] .link-row-title,
 [data-crt="true"] h1,
 [data-crt="true"] h2,
 [data-crt="true"] h3 {
-  text-shadow: 0 0 3px var(--crt-glow-strong);
+  text-shadow: 0 0 2px var(--crt-glow);
 }
 
 /* CRT toggle button styles */
@@ -2359,323 +2223,23 @@ html::after {
   margin-left: 0;
 }
 
-/* ========== Theme-Specific CRT Overrides ========== */
-
-/* Rose theme - pink/magenta phosphor */
-[data-theme="rose"] {
-  --crt-glow-color: rgba(255, 128, 180, 0.3);
-  --crt-glow-strong: rgba(255, 128, 180, 0.45);
-}
-
-[data-theme="rose"] .crt::before {
-  background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    transparent 40%,
-    rgba(0, 0, 0, 0.5) 85%,
-    rgba(0, 0, 0, 0.8) 100%
-  );
-}
-
-[data-theme="rose"] .crt::after {
-  background: 
-    repeating-linear-gradient(
-      0deg,
-      rgba(255, 128, 180, 0.04) 0px,
-      rgba(255, 128, 180, 0.04) 1px,
-      transparent 1px,
-      transparent 2px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.2) 0px,
-      rgba(0, 0, 0, 0.2) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-}
-
-/* Default theme - cyan/blue phosphor */
-[data-theme="default"],
-:root:not([data-theme]) {
-  --crt-glow-color: rgba(88, 166, 255, 0.3);
-  --crt-glow-strong: rgba(88, 166, 255, 0.45);
-}
-
-[data-theme="default"] .crt::before,
-:root:not([data-theme]) .crt::before {
-  background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    transparent 40%,
-    rgba(0, 0, 0, 0.5) 85%,
-    rgba(0, 0, 0, 0.8) 100%
-  );
-}
-
-[data-theme="default"] .crt::after,
-:root:not([data-theme]) .crt::after {
-  background: 
-    repeating-linear-gradient(
-      0deg,
-      rgba(88, 166, 255, 0.04) 0px,
-      rgba(88, 166, 255, 0.04) 1px,
-      transparent 1px,
-      transparent 2px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.2) 0px,
-      rgba(0, 0, 0, 0.2) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-}
-
-/* Ember theme - amber/orange phosphor */
-[data-theme="ember"] {
-  --crt-glow-color: rgba(255, 153, 51, 0.35);
-  --crt-glow-strong: rgba(255, 153, 51, 0.5);
-}
-
-[data-theme="ember"] .crt::before {
-  background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    transparent 35%,
-    rgba(0, 0, 0, 0.45) 85%,
-    rgba(0, 0, 0, 0.75) 100%
-  );
-}
-
-[data-theme="ember"] .crt::after {
-  background: 
-    repeating-linear-gradient(
-      0deg,
-      rgba(255, 153, 51, 0.05) 0px,
-      rgba(255, 153, 51, 0.05) 1px,
-      transparent 1px,
-      transparent 2px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.22) 0px,
-      rgba(0, 0, 0, 0.22) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-}
-
-/* Dusk theme - purple/violet phosphor */
-[data-theme="dusk"] {
-  --crt-glow-color: rgba(189, 147, 249, 0.3);
-  --crt-glow-strong: rgba(189, 147, 249, 0.45);
-}
-
-[data-theme="dusk"] .crt::before {
-  background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    transparent 40%,
-    rgba(0, 0, 0, 0.5) 85%,
-    rgba(0, 0, 0, 0.8) 100%
-  );
-}
-
-[data-theme="dusk"] .crt::after {
-  background: 
-    repeating-linear-gradient(
-      0deg,
-      rgba(189, 147, 249, 0.04) 0px,
-      rgba(189, 147, 249, 0.04) 1px,
-      transparent 1px,
-      transparent 2px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.2) 0px,
-      rgba(0, 0, 0, 0.2) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-}
-
-/* Stone theme - warm amber phosphor */
-[data-theme="stone"] {
-  --crt-glow-color: rgba(255, 186, 120, 0.3);
-  --crt-glow-strong: rgba(255, 186, 120, 0.45);
-}
-
-[data-theme="stone"] .crt::before {
-  background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    transparent 40%,
-    rgba(0, 0, 0, 0.5) 85%,
-    rgba(0, 0, 0, 0.8) 100%
-  );
-}
-
-[data-theme="stone"] .crt::after {
-  background: 
-    repeating-linear-gradient(
-      0deg,
-      rgba(255, 186, 120, 0.04) 0px,
-      rgba(255, 186, 120, 0.04) 1px,
-      transparent 1px,
-      transparent 2px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.2) 0px,
-      rgba(0, 0, 0, 0.2) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-}
-
-/* Phosphor theme - classic P1 green phosphor (most authentic) */
-[data-theme="phosphor"] {
-  --crt-glow-color: rgba(100, 230, 120, 0.35);
-  --crt-glow-strong: rgba(100, 230, 120, 0.55);
-}
-
-
-
-[data-theme="phosphor"] .crt::before {
-  background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    transparent 30%,
-    rgba(4, 10, 5, 0.6) 70%,
-    rgba(3, 8, 4, 0.9) 100%
-  );
-}
-
-[data-theme="phosphor"] .crt::after {
-  background: 
-    repeating-linear-gradient(
-      0deg,
-      rgba(100, 230, 120, 0.06) 0px,
-      rgba(100, 230, 120, 0.06) 1px,
-      transparent 1px,
-      transparent 2px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.25) 0px,
-      rgba(0, 0, 0, 0.25) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-}
-
-/* Light themes - subtle scanlines only */
-[data-theme="pine"] {
-  --crt-glow-color: rgba(90, 140, 100, 0.2);
-  --crt-glow-strong: rgba(90, 140, 100, 0.35);
-}
-
-[data-theme="pine"] .crt::before {
-  background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    transparent 50%,
-    rgba(0, 0, 0, 0.15) 85%,
-    rgba(0, 0, 0, 0.3) 100%
-  );
-}
-
-[data-theme="pine"] .crt::after {
-  background: 
-    repeating-linear-gradient(
-      0deg,
-      rgba(90, 140, 100, 0.03) 0px,
-      rgba(90, 140, 100, 0.03) 1px,
-      transparent 1px,
-      transparent 2px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.1) 0px,
-      rgba(0, 0, 0, 0.1) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-}
-
-[data-theme="paper"] {
-  --crt-glow-color: rgba(100, 100, 140, 0.15);
-  --crt-glow-strong: rgba(100, 100, 140, 0.3);
-}
-
-[data-theme="paper"] .crt::before {
-  background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    transparent 50%,
-    rgba(0, 0, 0, 0.15) 85%,
-    rgba(0, 0, 0, 0.3) 100%
-  );
-}
-
-[data-theme="paper"] .crt::after {
-  background: 
-    repeating-linear-gradient(
-      0deg,
-      rgba(100, 100, 140, 0.02) 0px,
-      rgba(100, 100, 140, 0.02) 1px,
-      transparent 1px,
-      transparent 2px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.1) 0px,
-      rgba(0, 0, 0, 0.1) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-}
-
-[data-theme="harbor"] {
-  --crt-glow-color: rgba(80, 130, 170, 0.2);
-  --crt-glow-strong: rgba(80, 130, 170, 0.35);
-}
-
-[data-theme="harbor"] .crt::before {
-  background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    transparent 50%,
-    rgba(0, 0, 0, 0.15) 85%,
-    rgba(0, 0, 0, 0.3) 100%
-  );
-}
-
-[data-theme="harbor"] .crt::after {
-  background: 
-    repeating-linear-gradient(
-      0deg,
-      rgba(80, 130, 170, 0.03) 0px,
-      rgba(80, 130, 170, 0.03) 1px,
-      transparent 1px,
-      transparent 2px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.1) 0px,
-      rgba(0, 0, 0, 0.1) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-}
-
 /* ========== Media Queries ========== */
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   :root {
     animation: none;
+  }
+  body::before,
+  body::after,
+  .bg-lines-far,
+  .bg-stars {
+    animation: none !important;
+    will-change: auto;
+    opacity: 1;
+  }
+  .bg-stars {
+    opacity: 0;
   }
   .page-slider--animated {
     transition: none;
@@ -2688,8 +2252,11 @@ html::after {
     transition: none;
     transform: none;
   }
-  .link-row-glow {
+  .shared-glow {
     transition: none;
+  }
+  .crt::after {
+    animation: none;
   }
   .resume-section,
   .resume-header {
@@ -2740,8 +2307,7 @@ html::after {
   body {
     animation: none;
   }
-  .link-row-glow,
-  .writing-list-item-glow {
+  .shared-glow {
     display: none;
   }
   .link-row-arrow {

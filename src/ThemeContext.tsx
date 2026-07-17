@@ -122,6 +122,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   return (
     <ThemeContext.Provider value={value}>
       {children}
+      <div className="bg-lines-far" aria-hidden="true" />
+      <div className="bg-stars" aria-hidden="true" />
       {wiping && <div className="theme-wipe" />}
       {crtEnabled && <div className="crt" aria-hidden="true" />}
     </ThemeContext.Provider>

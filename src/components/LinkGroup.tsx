@@ -60,7 +60,6 @@ function ChildRow({ link }: { link: LinkItem }) {
       onMouseDown={handleMouseDown}
       onClick={handleClick}
     >
-      <span className="link-row-glow" />
       <span className="link-row-index" />
       <span className="link-row-icon">
         {iconMask ? (
@@ -119,7 +118,6 @@ export default function LinkGroup({ group, index }: LinkGroupProps) {
         onMouseLeave={glowHandlers.handleMouseLeave}
         onMouseMove={glowHandlers.handleMouseMove}
       >
-        <span className="link-row-glow" />
         <span className="link-row-index">{String(index + 1).padStart(2, '0')}</span>
         <span className="link-row-icon">
           <IconComponent className="link-icon" />

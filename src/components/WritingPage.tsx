@@ -157,7 +157,6 @@ function WritingListItem({ sample, index }: { sample: WritingSample; index: numb
       onMouseLeave={glowHandlers.handleMouseLeave}
       onMouseMove={glowHandlers.handleMouseMove}
     >
-      <span className="writing-list-item-glow" />
       <div className="writing-list-item-top">
         <h3 className="writing-list-item-title">{sample.title}</h3>
         <time className="writing-list-item-date" dateTime={sample.date}>{sample.date}</time>
