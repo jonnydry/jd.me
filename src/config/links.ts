@@ -4,6 +4,8 @@ export interface LinkItem {
   desc?: string
   icon?: 'github' | 'twitter' | 'linkedin' | 'globe' | 'quill' | 'mail' | 'file' | 'monitor' | 'heart' | 'wallet' | 'coffee' | 'gamepad' | 'lighthouse'
   iconSrc?: string
+  /** When true, iconSrc is applied as a CSS mask so the icon follows theme colors. */
+  iconMask?: boolean
   internal?: boolean
 }
 
@@ -24,7 +26,8 @@ export const links: LinkEntry[] = [
     label: 'Live Projects',
     icon: 'monitor',
     children: [
-      { title: 'Sancho Poetry', url: 'https://sanchopoetry.com/', desc: 'Poetic reference and writing tool', iconSrc: '/sanchodarktransVector.svg' },
+      { title: 'Sancho Poetry', url: 'https://sanchopoetry.com/', desc: 'Poetic reference and writing tool', iconSrc: '/sanchodarktransVector.svg', iconMask: true },
+      { title: 'Mash', url: 'https://mashnotes.me', desc: 'Infinite Sticky Stovetop', iconSrc: '/mashnotes-icon.png', iconMask: true },
       { title: 'The Harbor', url: 'https://harborpoetry.com', desc: 'Personal poetry', icon: 'lighthouse' },
       { title: 'EmuPhoria', url: 'https://emuphoria.com', desc: 'Vintage Game Emulator', icon: 'gamepad' },
     ],

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, type CSSProperties } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { LinkItem } from '../config/links'
 import { ArrowRight, IconMap } from './Icons'
@@ -12,7 +12,7 @@ interface LinkCardProps {
 export default function LinkCard({ link, index }: LinkCardProps) {
   const IconComponent = link.icon ? IconMap[link.icon] : ArrowRight
   const iconSrc = link.iconSrc
-  const isSanchoIcon = iconSrc === '/sanchodarktransVector.svg'
+  const iconMask = Boolean(link.iconMask && iconSrc)
   const rowRef = useRef<HTMLAnchorElement>(null)
   const navigate = useNavigate()
 
@@ -67,8 +67,12 @@ export default function LinkCard({ link, index }: LinkCardProps) {
       <span className="link-row-glow" />
       <span className="link-row-index">{String(index + 1).padStart(2, '0')}</span>
       <span className="link-row-icon">
-        {isSanchoIcon ? (
-          <span className="link-icon link-icon--sancho-mask" aria-hidden="true" />
+        {iconMask ? (
+          <span
+            className="link-icon link-icon--mask"
+            style={{ '--icon-mask': `url('${iconSrc}')` } as CSSProperties}
+            aria-hidden="true"
+          />
         ) : iconSrc ? (
           <img src={iconSrc} alt="" className="link-icon link-icon--img" width={24} height={24} />
         ) : (

@@ -963,13 +963,13 @@ html::after {
   transition: filter 0.15s;
 }
 
-.link-icon--sancho-mask {
+.link-icon--mask {
   display: block;
   width: 40px;
   height: 40px;
   background-color: var(--text-muted);
-  -webkit-mask-image: url('/sanchodarktransVector.svg');
-  mask-image: url('/sanchodarktransVector.svg');
+  -webkit-mask-image: var(--icon-mask);
+  mask-image: var(--icon-mask);
   -webkit-mask-size: contain;
   mask-size: contain;
   -webkit-mask-repeat: no-repeat;
@@ -979,11 +979,11 @@ html::after {
   transition: background-color 0.15s;
 }
 
-.link-row:hover .link-icon--sancho-mask {
+.link-row:hover .link-icon--mask {
   background-color: var(--accent);
 }
 
-.link-row--child .link-icon--sancho-mask {
+.link-row--child .link-icon--mask {
   width: 44px;
   height: 44px;
 }

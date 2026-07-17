@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useId, useRef } from 'react'
+import { useState, useCallback, useEffect, useId, useRef, type CSSProperties } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { LinkGroup as LinkGroupType, LinkItem } from '../config/links'
 import { ArrowRight, IconMap } from './Icons'
@@ -14,7 +14,7 @@ function ChildRow({ link }: { link: LinkItem }) {
   const navigate = useNavigate()
   const IconComponent = link.icon ? IconMap[link.icon] : ArrowRight
   const iconSrc = link.iconSrc
-  const isSanchoIcon = iconSrc === '/sanchodarktransVector.svg'
+  const iconMask = Boolean(link.iconMask && iconSrc)
   const rippleRef = useRef<HTMLSpanElement | null>(null)
 
   const glowHandlers = useGlow(rowRef)
@@ -63,8 +63,12 @@ function ChildRow({ link }: { link: LinkItem }) {
       <span className="link-row-glow" />
       <span className="link-row-index" />
       <span className="link-row-icon">
-        {isSanchoIcon ? (
-          <span className="link-icon link-icon--sancho-mask" aria-hidden="true" />
+        {iconMask ? (
+          <span
+            className="link-icon link-icon--mask"
+            style={{ '--icon-mask': `url('${iconSrc}')` } as CSSProperties}
+            aria-hidden="true"
+          />
         ) : iconSrc ? (
           <img src={iconSrc} alt="" className="link-icon link-icon--img" width={24} height={24} />
         ) : (
