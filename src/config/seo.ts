@@ -3,6 +3,9 @@ export const SITE_URL = 'https://jdry.me'
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/avatar.jpg`
 export const DEFAULT_OG_IMAGE_ALT = 'Portrait of Jonny D'
 
+export const HOME_DESCRIPTION =
+  'Personal links, live projects, writing samples, and resume from Jonny D. Featuring Sancho Poetry, Mash, The Harbor, and EmuPhoria.'
+
 type RouteMetadata = {
   title: string
   description: string
@@ -32,8 +35,7 @@ export function getRouteMetadata(pathname: string): RouteMetadata {
   if (pathname === '/') {
     return {
       title: 'Jonny D | Links, Writing, and Projects',
-      description:
-        'Personal links, live projects, writing samples, and resume from Jonny D.',
+      description: HOME_DESCRIPTION,
       path: '/',
       type: 'website',
     }
@@ -43,7 +45,7 @@ export function getRouteMetadata(pathname: string): RouteMetadata {
     return {
       title: 'Jonny D | Resume',
       description:
-        'Resume, experience, skills, and background for Jonny D.',
+        'Resume for Jonathan Drybanski (Jonny D): retail leadership at Whole Foods, teaching, writing, and web projects.',
       path: '/resume',
       type: 'website',
     }
@@ -53,7 +55,7 @@ export function getRouteMetadata(pathname: string): RouteMetadata {
     return {
       title: 'Jonny D | Writing',
       description:
-        'Essays, criticism, fiction, and other writing by Jonny D.',
+        'Essays and literary criticism by Jonny D, including Whitman, Hughes, and Clarice Lispector.',
       path: '/writing',
       type: 'website',
     }
