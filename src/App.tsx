@@ -6,6 +6,7 @@ import { DEFAULT_OG_IMAGE, DEFAULT_OG_IMAGE_ALT, SITE_NAME, SITE_URL, getRouteMe
 import { ThemeProvider } from './ThemeContext'
 import { useTimeOfDay } from './hooks/useTimeOfDay'
 import { normalizePathname } from './utils/path'
+import { SHORTCUT_KEYS } from './utils/shortcut'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import Header from './components/Header'
 import LinkCard from './components/LinkCard'
@@ -38,8 +39,19 @@ function NotFoundPage() {
 }
 
 const LinksPage = memo(function LinksPage() {
-  let rowIndex = 0
-  const shortcutCount = Math.min(links.length, 9)
+  let position = 0
+  const rows = links.map((entry, i) => {
+    if (isGroup(entry)) {
+      const start = position + 1
+      position += entry.collapsible === false ? entry.children.length : 1
+      return <LinkGroupComponent key={`group-${i}`} group={entry} position={start} />
+    }
+    position++
+    return <LinkCard key={entry.url + i} link={entry} position={position} />
+  })
+  const shortcutCount = Math.min(position, SHORTCUT_KEYS.length)
+  const shortcutRange =
+    shortcutCount === SHORTCUT_KEYS.length ? '0-9' : shortcutCount === 1 ? '1' : `1-${shortcutCount}`
 
   return (
     <main className="app">
@@ -49,25 +61,13 @@ const LinksPage = memo(function LinksPage() {
       <div className="terminal">
         <Header {...profile} />
         <section id="links-content" className="links-section" tabIndex={-1}>
-          <div className="links-list">
-            {links.map((entry, i) => {
-              if (isGroup(entry)) {
-                const idx = rowIndex
-                rowIndex++
-                return <LinkGroupComponent key={`group-${i}`} group={entry} index={idx} />
-              } else {
-                const idx = rowIndex
-                rowIndex++
-                return <LinkCard key={entry.url + i} link={entry} index={idx} />
-              }
-            })}
-          </div>
+          <div className="links-list">{rows}</div>
         </section>
         <footer className="links-footer">
           <ThemeToggle placement="up" />
         </footer>
         <p className="keyboard-hint" aria-hidden="true">
-          {shortcutCount === 1 ? 'press 1' : `press 1-${shortcutCount}`} to navigate · t for theme
+          press {shortcutRange} to navigate · t for theme
         </p>
       </div>
     </main>
@@ -173,7 +173,7 @@ function App() {
     })
   }, [pageIndex])
 
-  // Keyboard shortcuts: 1-N activate visible home-page rows
+  // Keyboard shortcuts: digit keys activate numbered home-page rows (0 is the tenth)
   useEffect(() => {
     if (pageIndex !== 0) return
 
@@ -185,13 +185,11 @@ function App() {
         (e.target instanceof HTMLElement && e.target.isContentEditable)
       ) return
       if (e.ctrlKey || e.metaKey || e.altKey) return
+      if (!/^\d$/.test(e.key)) return
 
-      const num = parseInt(e.key, 10)
-      if (num >= 1 && num <= Math.min(links.length, 9)) {
-        const shortcutTarget = document.querySelector<HTMLElement>(`[data-shortcut="${num}"]`)
-        shortcutTarget?.click()
-        shortcutTarget?.focus()
-      }
+      const shortcutTarget = document.querySelector<HTMLElement>(`[data-shortcut="${e.key}"]`)
+      shortcutTarget?.click()
+      shortcutTarget?.focus()
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
