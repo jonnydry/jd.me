@@ -13,6 +13,7 @@ import {
   getRouteMetadata,
 } from '../src/config/seo.ts'
 import { writingSamples } from '../src/config/writing.ts'
+import { formatReadingTime, formatWritingDate } from '../src/utils/writing.ts'
 
 const distDir = path.resolve('dist')
 const templatePath = path.join(distDir, 'index.html')
@@ -291,6 +292,10 @@ function renderWritingBlock(block) {
   }
 }
 
+function renderWritingMeta(sample) {
+  return `<time datetime="${escapeHtml(sample.date)}">${escapeHtml(formatWritingDate(sample.date))}</time> · ${escapeHtml(formatReadingTime(sample))}`
+}
+
 function renderWritingIndexContent() {
   const items = writingSamples
     .map(
@@ -298,6 +303,7 @@ function renderWritingIndexContent() {
       <li>
         <a href="${SITE_URL}/writing/${escapeHtml(sample.slug)}"><strong>${escapeHtml(sample.title)}</strong></a>
         ${sample.subtitle ? `<p>${escapeHtml(sample.subtitle)}</p>` : ''}
+        <p>${renderWritingMeta(sample)}</p>
         <p>${formatInline(sample.excerpt)}</p>
       </li>`
     )
@@ -322,7 +328,7 @@ function renderWritingSampleContent(sample) {
     <header>
       <h1>${escapeHtml(sample.title)}</h1>
       ${sample.subtitle ? `<p>${escapeHtml(sample.subtitle)}</p>` : ''}
-      <p><time datetime="${escapeHtml(sample.date)}">${escapeHtml(sample.date)}</time> · ${sample.tags.map(escapeHtml).join(', ')}</p>
+      <p>${renderWritingMeta(sample)} · ${sample.tags.map(escapeHtml).join(', ')}</p>
     </header>
     ${body}
   </article>
