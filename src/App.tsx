@@ -48,7 +48,6 @@ const LinksPage = memo(function LinksPage() {
       </a>
       <div className="terminal">
         <Header {...profile} />
-        <ThemeToggle />
         <section id="links-content" className="links-section" tabIndex={-1}>
           <div className="links-list">
             {links.map((entry, i) => {
@@ -64,8 +63,11 @@ const LinksPage = memo(function LinksPage() {
             })}
           </div>
         </section>
+        <footer className="links-footer">
+          <ThemeToggle placement="up" />
+        </footer>
         <p className="keyboard-hint" aria-hidden="true">
-          {shortcutCount === 1 ? 'press 1 to navigate' : `press 1-${shortcutCount} to navigate`}
+          {shortcutCount === 1 ? 'press 1' : `press 1-${shortcutCount}`} to navigate · t for theme
         </p>
       </div>
     </main>
