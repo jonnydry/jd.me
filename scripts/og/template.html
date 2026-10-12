@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <style>
   @font-face { font-family: 'JBM'; font-weight: 400; src: url('{{fontDir}}/jetbrains-mono-latin-400-normal.woff2'); }
+  @font-face { font-family: 'JBM'; font-weight: 400; font-style: italic; src: url('{{fontDir}}/jetbrains-mono-latin-400-italic.woff2'); }
   @font-face { font-family: 'JBM'; font-weight: 500; src: url('{{fontDir}}/jetbrains-mono-latin-500-normal.woff2'); }
   @font-face { font-family: 'JBM'; font-weight: 600; src: url('{{fontDir}}/jetbrains-mono-latin-600-normal.woff2'); }
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -58,6 +59,8 @@
   h1 { font-size: 86px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; margin-bottom: 24px; }
   .tagline { font-size: 25px; line-height: 1.5; color: #8b949e; max-width: 680px; }
   .cursor { color: #58a6ff; }
+  .epigraph { font-size: 21px; font-style: italic; color: #8b949e; margin-top: 14px; }
+  .epigraph::before { content: '— '; color: #30363d; }
   .foot {
     height: 64px; border-top: 1px solid #21262d;
     display: flex; align-items: center; justify-content: space-between;
@@ -82,6 +85,7 @@
         <p class="prompt"><b>$</b> whoami</p>
         <h1>{{name}}</h1>
         <p class="tagline">{{tagline}}<span class="cursor">|</span></p>
+        <p class="epigraph">{{epigraph}}</p>
       </div>
     </div>
     <div class="foot">

@@ -11,7 +11,7 @@ npm run dev
 
 ## Customize
 
-- **Profile**: Edit `src/config/profile.ts` — name, handle, tagline, avatar path
+- **Profile**: Edit `src/config/profile.ts` — name, handle, tagline, epigraph, avatar path
 - **Links**: Edit `src/config/links.ts` — add/remove links
 - **Avatar**: Replace `public/avatar-placeholder.svg` with your image (or point `avatar` in profile.ts to your file)
 

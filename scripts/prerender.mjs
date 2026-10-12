@@ -161,6 +161,7 @@ function renderHomeContent() {
       <img class="avatar" src="${escapeHtml(absoluteUrl(profile.avatar))}" alt="${escapeHtml(AVATAR_ALT)}" width="88" height="88" />
       <h1 class="name">${escapeHtml(profile.name)}</h1>
       <p class="tagline">${escapeHtml(profile.tagline)}</p>
+      <p class="epigraph">${escapeHtml(profile.epigraph)}</p>
     </header>
     <nav class="links-list" aria-label="Personal links">
       ${sections}
@@ -293,7 +294,7 @@ function buildHomeJsonLd() {
         alternateName: SITE_NAME,
         url: `${SITE_URL}/`,
         image: absoluteUrl(profile.avatar),
-        description: profile.tagline,
+        description: `${profile.tagline} ${profile.epigraph}`,
         email: resume.email,
         address: {
           '@type': 'PostalAddress',

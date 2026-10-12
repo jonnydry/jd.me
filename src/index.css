@@ -818,6 +818,20 @@ html::after {
   margin: 0 auto;
 }
 
+.epigraph {
+  font-size: 0.72rem;
+  font-style: italic;
+  color: var(--text-muted);
+  max-width: 320px;
+  margin: 0.5rem auto 0;
+}
+
+.epigraph::before {
+  content: '— ';
+  content: '— ' / '';
+  color: var(--border);
+}
+
 /* Typewriter cursor */
 .cursor {
   color: var(--accent);

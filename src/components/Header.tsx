@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom'
 interface HeaderProps {
   name: string
   tagline: string
+  epigraph: string
   avatar: string
 }
 
@@ -101,43 +102,12 @@ function useAvatarTilt<T extends HTMLElement>(ref: React.RefObject<T | null>, sc
   return { handleMouseEnter, handleMouseMove, handleMouseLeave }
 }
 
-export default function Header({ name, tagline, avatar }: HeaderProps) {
-  const [typed, setTyped] = useState('')
-  const [doneTyping, setDoneTyping] = useState(false)
+export default function Header({ name, tagline, epigraph, avatar }: HeaderProps) {
   const [modalOpen, setModalOpen] = useState(false)
   const reducedMotion = useRef(
     typeof window !== 'undefined' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
   )
-
-  useEffect(() => {
-    if (reducedMotion.current) {
-      setTyped(tagline)
-      setDoneTyping(true)
-      return
-    }
-
-    let intervalId: ReturnType<typeof setInterval> | null = null
-    let i = 0
-
-    const timeoutId = setTimeout(() => {
-      intervalId = setInterval(() => {
-        i++
-        if (i <= tagline.length) {
-          setTyped(tagline.slice(0, i))
-        } else {
-          clearInterval(intervalId!)
-          intervalId = null
-          setDoneTyping(true)
-        }
-      }, 45)
-    }, 500)
-
-    return () => {
-      clearTimeout(timeoutId)
-      if (intervalId) clearInterval(intervalId)
-    }
-  }, [tagline])
 
   const closeModal = useCallback(() => setModalOpen(false), [])
 
@@ -245,9 +215,10 @@ export default function Header({ name, tagline, avatar }: HeaderProps) {
       </button>
       <h1 className="name">{name}</h1>
       <p className="tagline">
-        {typed}
-        <span className={`cursor${doneTyping ? ' cursor--blink' : ''}`} aria-hidden="true">|</span>
+        {tagline}
+        <span className="cursor cursor--blink" aria-hidden="true">|</span>
       </p>
+      <p className="epigraph">{epigraph}</p>
 
       {modalOpen && createPortal(
         <div
