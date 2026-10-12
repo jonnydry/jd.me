@@ -5,6 +5,10 @@ import { useScrollProgress } from '../hooks/useScrollProgress'
 import ThemeToggle from './ThemeToggle'
 import { useGlow } from '../hooks/useGlow'
 import { normalizePathname } from '../utils/path'
+import { formatReadingTime, formatWritingDate } from '../utils/writing'
+import '@fontsource/literata/latin-400.css'
+import '@fontsource/literata/latin-400-italic.css'
+import '@fontsource/literata/latin-600.css'
 
 function slugify(text: string) {
   return text
@@ -159,7 +163,11 @@ function WritingListItem({ sample, index }: { sample: WritingSample; index: numb
     >
       <div className="writing-list-item-top">
         <h3 className="writing-list-item-title">{sample.title}</h3>
-        <time className="writing-list-item-date" dateTime={sample.date}>{sample.date}</time>
+        <span className="writing-list-item-date">
+          <time dateTime={sample.date}>{formatWritingDate(sample.date)}</time>
+          <span aria-hidden="true"> · </span>
+          {formatReadingTime(sample)}
+        </span>
       </div>
       <p className="writing-list-item-excerpt">{renderInlineText(sample.excerpt)}</p>
       <div className="writing-list-item-tags">
@@ -253,7 +261,11 @@ export default function WritingPage() {
                 <p className="writing-detail-subtitle">{renderInlineText(sample.subtitle)}</p>
               )}
               <div className="writing-detail-meta">
-                <time className="writing-detail-date" dateTime={sample.date}>{sample.date}</time>
+                <span className="writing-detail-date">
+                  <time dateTime={sample.date}>{formatWritingDate(sample.date)}</time>
+                  <span aria-hidden="true"> · </span>
+                  {formatReadingTime(sample)}
+                </span>
                 <div className="writing-detail-tags">
                   {sample.tags.map((tag) => (
                     <span key={tag} className="writing-tag">{tag}</span>
@@ -261,21 +273,23 @@ export default function WritingPage() {
                 </div>
               </div>
             </header>
-            <nav className="writing-toc" aria-label="Table of contents">
-              <span className="writing-toc-label">Contents</span>
-              <div className="writing-toc-items">
-                {toc.map((entry) => (
-                  <button
-                    type="button"
-                    key={entry.id}
-                    className="writing-toc-link"
-                    onClick={() => handleTocClick(entry.id)}
-                  >
-                    {entry.label}
-                  </button>
-                ))}
-              </div>
-            </nav>
+            {toc.length > 2 && (
+              <nav className="writing-toc" aria-label="Table of contents">
+                <span className="writing-toc-label">Contents</span>
+                <div className="writing-toc-items">
+                  {toc.map((entry) => (
+                    <button
+                      type="button"
+                      key={entry.id}
+                      className="writing-toc-link"
+                      onClick={() => handleTocClick(entry.id)}
+                    >
+                      {entry.label}
+                    </button>
+                  ))}
+                </div>
+              </nav>
+            )}
             <div className="writing-detail-body">
               {sample.body.map((block, i) => (
                 <ContentRenderer key={i} block={block} />
