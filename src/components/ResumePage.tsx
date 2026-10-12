@@ -26,6 +26,12 @@ export default function ResumePage() {
             <a href={`mailto:${resume.email}`} className="resume-email">
               {resume.email}
             </a>
+            <span className="resume-pdf">
+              {' '}&middot;{' '}
+              <a href={resume.pdf} download type="application/pdf" className="resume-email" aria-label="Download resume as PDF">
+                ↓ pdf
+              </a>
+            </span>
           </p>
         </header>
 

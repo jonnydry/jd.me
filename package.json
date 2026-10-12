@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "og": "node --experimental-strip-types scripts/og/render.mjs",
+    "resume:pdf": "node --experimental-strip-types scripts/resume-pdf/render.mjs",
     "test": "vitest",
     "test:run": "vitest run"
   },

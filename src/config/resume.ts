@@ -27,6 +27,7 @@ export interface ResumeData {
   name: string
   location: string
   email: string
+  pdf: string
   education: EducationEntry[]
   experience: ExperienceEntry[]
   additionalExperience: AdditionalEntry[]
@@ -39,6 +40,7 @@ export const resume: ResumeData = {
   name: 'Jonathan Drybanski',
   location: 'Boston, MA 02108',
   email: 'jonny.edry@pm.me',
+  pdf: '/Jonathan-Drybanski-Resume.pdf',
 
   education: [
     {

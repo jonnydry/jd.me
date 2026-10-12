@@ -202,7 +202,7 @@ function renderResumeContent() {
     <p><a href="${SITE_URL}/">← links</a></p>
     <header class="resume-header">
       <h1 class="resume-name">${escapeHtml(resume.name)}</h1>
-      <p class="resume-contact">${escapeHtml(resume.location)} · <a href="mailto:${escapeHtml(resume.email)}">${escapeHtml(resume.email)}</a></p>
+      <p class="resume-contact">${escapeHtml(resume.location)} · <a href="mailto:${escapeHtml(resume.email)}">${escapeHtml(resume.email)}</a><span class="resume-pdf"> · <a href="${escapeHtml(resume.pdf)}" download type="application/pdf">↓ pdf</a></span></p>
     </header>
     <section><h2>Education</h2><ul>${education}</ul></section>
     <section><h2>Professional Experience</h2>${experience}</section>

@@ -2598,3 +2598,179 @@ html::after {
     gap: 0.15rem;
   }
 }
+
+/* ========== Print (resume) ========== */
+@media print {
+  @page {
+    size: letter;
+    margin: 0.55in 0.6in;
+  }
+
+  html::after,
+  body::before,
+  body::after,
+  .bg-lines-far,
+  .bg-stars,
+  .theme-wipe,
+  .crt,
+  .scroll-progress,
+  .resume-back,
+  .theme-toggle,
+  .resume-pdf {
+    display: none !important;
+  }
+
+  html:has(.resume),
+  body:has(.resume) {
+    background: #fff;
+    color: #000;
+  }
+
+  body:has(.resume) {
+    min-height: 0;
+    overflow: visible;
+  }
+
+  /* The slider's translateX is an inline style */
+  .page-slider:has(.resume) {
+    position: static;
+    display: block;
+    transform: none !important;
+    transition: none;
+  }
+
+  .page-slider:has(.resume) > .page {
+    width: auto;
+    height: auto;
+    overflow: visible;
+    contain: none;
+    content-visibility: visible;
+  }
+
+  .page-slider:has(.resume) > .page:not(:has(.resume)) {
+    display: none;
+  }
+
+  .app:has(.resume) {
+    display: block;
+    min-height: 0;
+    padding: 0;
+  }
+
+  .resume {
+    --text: #000;
+    --text-muted: #333;
+    --accent: #000;
+    --border: #888;
+    --surface: transparent;
+    max-width: none;
+    padding: 0;
+  }
+
+  .resume h1,
+  .resume h2 {
+    text-shadow: none;
+  }
+
+  .resume-header,
+  .resume-section {
+    animation: none;
+    content-visibility: visible;
+  }
+
+  .resume-header {
+    margin-bottom: 12pt;
+    padding-bottom: 8pt;
+  }
+
+  .resume-name {
+    font-size: 18pt;
+    margin-bottom: 2pt;
+  }
+
+  .resume-contact {
+    font-size: 9pt;
+  }
+
+  .resume-contact::after {
+    content: ' · jdry.me';
+  }
+
+  .resume-email {
+    color: #000;
+  }
+
+  .resume-section {
+    margin-bottom: 12pt;
+  }
+
+  .resume-section-title {
+    font-size: 8.5pt;
+    margin-bottom: 6pt;
+    padding-bottom: 2pt;
+    border-bottom-color: #000;
+    break-after: avoid;
+  }
+
+  .resume-entry,
+  .resume-role,
+  .resume-simple-list li {
+    break-inside: avoid;
+  }
+
+  .resume-entry {
+    margin-bottom: 6pt;
+  }
+
+  .resume-company {
+    margin-bottom: 8pt;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+  }
+
+  .resume-company-header {
+    margin-bottom: 3pt;
+    padding-bottom: 0;
+    border-bottom: none;
+    break-after: avoid;
+  }
+
+  .resume-role {
+    margin-bottom: 5pt;
+  }
+
+  .resume-role-header {
+    margin-bottom: 1pt;
+  }
+
+  .resume-entry-org {
+    font-size: 10pt;
+    font-weight: 600;
+  }
+
+  .resume-role-title {
+    font-size: 10pt;
+  }
+
+  .resume-entry-location,
+  .resume-entry-period {
+    font-size: 9pt;
+  }
+
+  .resume-entry-detail,
+  .resume-bullets li,
+  .resume-simple-list li {
+    font-size: 10pt;
+    color: #000;
+    line-height: 1.4;
+  }
+
+  .resume-bullets li {
+    margin-bottom: 1pt;
+  }
+
+  .resume-simple-list li {
+    padding: 0 0 1pt 1.1rem;
+  }
+}
