@@ -3,6 +3,7 @@ import path from 'node:path'
 import { links, isGroup } from '../src/config/links.ts'
 import { profile } from '../src/config/profile.ts'
 import { resume } from '../src/config/resume.ts'
+import { SHORTCUT_KEYS } from '../src/utils/shortcut.ts'
 import {
   AVATAR_ALT,
   DEFAULT_OG_IMAGE,
@@ -17,6 +18,10 @@ const distDir = path.resolve('dist')
 const templatePath = path.join(distDir, 'index.html')
 
 const routes = ['/', '/resume', '/writing', ...writingSamples.map((sample) => `/writing/${sample.slug}`)]
+
+const AVATAR_AVIF_SRC_SET = '/avatar-360.avif 360w, /avatar-720.avif 720w'
+const AVATAR_FALLBACK_SRC_SET = '/avatar-360.jpg 360w, /avatar.jpg 720w'
+const AVATAR_SIZES = '(max-width: 640px) 80px, 88px'
 
 function escapeHtml(value) {
   return String(value)
@@ -136,35 +141,85 @@ function buildLinkListItems() {
   return items
 }
 
-function renderLinkItem(item) {
+// The markup below mirrors the client components' classes so the page doesn't move when
+// createRoot replaces it; JS-only controls are rendered invisibly to reserve their space.
+function renderThemeTogglePlaceholder(placement) {
+  return `<div class="theme-toggle theme-toggle--${placement}" style="visibility: hidden"><button type="button" class="theme-trigger"><span class="theme-prompt">theme</span></button><button type="button" class="crt-toggle">CRT</button></div>`
+}
+
+function renderBackLink(href, label) {
+  return `<a class="resume-back" href="${href}"><span class="resume-back-arrow">←</span> ${label}</a>${renderThemeTogglePlaceholder('down')}`
+}
+
+function renderPageShell(content) {
+  return `<div id="main-content" class="page-slider"><div class="page">${content}</div></div>`
+}
+
+function formatPosition(position) {
+  return String(position).padStart(2, '0')
+}
+
+function renderLinkIcon(item) {
+  if (item.iconSrc && item.iconMask) {
+    return `<span class="link-icon link-icon--mask" style="--icon-mask: url('${escapeHtml(item.iconSrc)}')" aria-hidden="true"></span>`
+  }
+  if (item.iconSrc) {
+    return `<img src="${escapeHtml(item.iconSrc)}" alt="" class="link-icon link-icon--img" width="24" height="24" />`
+  }
+  return '<svg class="link-icon" aria-hidden="true"></svg>'
+}
+
+function renderLinkItem(item, position, child = false) {
   const rel = item.internal ? '' : ' rel="noopener noreferrer"'
   const target = item.internal ? '' : ' target="_blank"'
-  const desc = item.desc ? ` — ${escapeHtml(item.desc)}` : ''
-  return `<li><a href="${escapeHtml(absoluteUrl(item.url))}"${target}${rel}>${escapeHtml(item.title)}</a>${desc}</li>`
+  const style = !child && position ? ` style="animation-delay: ${(position - 1) * 60}ms"` : ''
+  const desc = item.desc ? ` <span class="link-row-desc">${escapeHtml(item.desc)}</span>` : ''
+  return `<a class="link-row${child ? ' link-row--child' : ''}" href="${escapeHtml(absoluteUrl(item.url))}"${target}${rel}${style}><span class="link-row-index">${position ? formatPosition(position) : ''}</span> <span class="link-row-icon">${renderLinkIcon(item)}</span> <span class="link-row-text"><span class="link-row-title">${escapeHtml(item.title)}</span>${desc}</span> <span class="link-row-arrow">${item.internal ? '→' : '↗'}</span></a>`
+}
+
+function renderLinkGroup(group, position) {
+  const style = ` style="animation-delay: ${(position - 1) * 60}ms"`
+  const icon = `<span class="link-row-icon">${renderLinkIcon(group)}</span>`
+
+  if (group.collapsible === false) {
+    const children = group.children.map((child, i) => renderLinkItem(child, position + i, true)).join('')
+    return `<section class="link-group link-group--inline"${style}><div class="link-row link-row--label"><span class="link-row-index"></span>${icon}<h2 class="link-row-title">${escapeHtml(group.label)}</h2></div>${children}</section>`
+  }
+
+  const children = group.children.map((child) => renderLinkItem(child, undefined, true)).join('')
+  return `<details class="link-group"${style}><summary class="link-row link-row--group"><span class="link-row-index">${formatPosition(position)}</span> ${icon} <span class="link-row-text"><span class="link-row-title">${escapeHtml(group.label)}</span> <span class="link-row-desc">${group.children.length} links</span></span> <span class="link-row-chevron">▾</span></summary><div class="link-group-children"><div class="link-group-children-inner">${children}</div></div></details>`
 }
 
 function renderHomeContent() {
-  const sections = links
+  let position = 0
+  const rows = links
     .map((entry) => {
       if (isGroup(entry)) {
-        const items = entry.children.map(renderLinkItem).join('')
-        return `<section><h2>${escapeHtml(entry.label)}</h2><ul>${items}</ul></section>`
+        const start = position + 1
+        position += entry.collapsible === false ? entry.children.length : 1
+        return renderLinkGroup(entry, start)
       }
-      return `<section><ul>${renderLinkItem(entry)}</ul></section>`
+      position += 1
+      return renderLinkItem(entry, position)
     })
     .join('')
+  const shortcutCount = Math.min(position, SHORTCUT_KEYS.length)
+  const shortcutRange =
+    shortcutCount === SHORTCUT_KEYS.length ? '0-9' : shortcutCount === 1 ? '1' : `1-${shortcutCount}`
 
   return `
 <main class="app">
   <div class="terminal">
     <header class="header">
-      <img class="avatar" src="${escapeHtml(absoluteUrl(profile.avatar))}" alt="${escapeHtml(AVATAR_ALT)}" width="88" height="88" />
+      <span class="avatar-wrap"><picture><source srcset="${AVATAR_AVIF_SRC_SET}" sizes="${AVATAR_SIZES}" type="image/avif" /><img class="avatar" src="${escapeHtml(profile.avatar)}" srcset="${AVATAR_FALLBACK_SRC_SET}" sizes="${AVATAR_SIZES}" alt="${escapeHtml(AVATAR_ALT)}" width="720" height="720" fetchpriority="high" /></picture></span>
       <h1 class="name">${escapeHtml(profile.name)}</h1>
       <p class="tagline">${escapeHtml(profile.tagline)}</p>
     </header>
-    <nav class="links-list" aria-label="Personal links">
-      ${sections}
+    <nav id="links-content" class="links-section" aria-label="Personal links">
+      <div class="links-list">${rows}</div>
     </nav>
+    <footer class="links-footer">${renderThemeTogglePlaceholder('up')}</footer>
+    <p class="keyboard-hint" aria-hidden="true" style="visibility: hidden">press ${shortcutRange} to navigate · t for theme</p>
   </div>
 </main>`.trim()
 }
@@ -199,7 +254,7 @@ function renderResumeContent() {
   return `
 <main class="app app--top">
   <article class="resume">
-    <p><a href="${SITE_URL}/">← links</a></p>
+    ${renderBackLink(`${SITE_URL}/`, 'links')}
     <header class="resume-header">
       <h1 class="resume-name">${escapeHtml(resume.name)}</h1>
       <p class="resume-contact">${escapeHtml(resume.location)} · <a href="mailto:${escapeHtml(resume.email)}">${escapeHtml(resume.email)}</a></p>
@@ -250,8 +305,8 @@ function renderWritingIndexContent() {
   return `
 <main class="app app--top">
   <article class="writing">
-    <p><a href="${SITE_URL}/">← links</a></p>
-    <h1 class="writing-page-title">Writing</h1>
+    ${renderBackLink(`${SITE_URL}/`, 'links')}
+    <header class="writing-header"><h1 class="writing-page-title">Writing</h1></header>
     <ul>${items}</ul>
   </article>
 </main>`.trim()
@@ -262,7 +317,7 @@ function renderWritingSampleContent(sample) {
   return `
 <main class="app app--top">
   <article class="writing">
-    <p><a href="${SITE_URL}/writing">← writing</a></p>
+    ${renderBackLink(`${SITE_URL}/writing`, 'writing')}
     <header>
       <h1>${escapeHtml(sample.title)}</h1>
       ${sample.subtitle ? `<p>${escapeHtml(sample.subtitle)}</p>` : ''}
@@ -474,7 +529,7 @@ function buildHtml(template, route) {
   }
 
   html = upsertJsonLd(html, jsonLdForRoute(route))
-  html = injectRootContent(html, contentForRoute(route))
+  html = injectRootContent(html, renderPageShell(contentForRoute(route)))
   return html
 }
 
