@@ -12,6 +12,8 @@ export interface LinkItem {
 export interface LinkGroup {
   label: string
   icon?: 'github' | 'twitter' | 'linkedin' | 'globe' | 'quill' | 'mail' | 'file' | 'monitor' | 'heart' | 'wallet' | 'coffee' | 'gamepad' | 'lighthouse'
+  /** When false, children are always shown under a section label instead of a dropdown. */
+  collapsible?: boolean
   children: LinkItem[]
 }
 
@@ -25,6 +27,7 @@ export const links: LinkEntry[] = [
   {
     label: 'Live Projects',
     icon: 'monitor',
+    collapsible: false,
     children: [
       { title: 'Sancho Poetry', url: 'https://sanchopoetry.com/', desc: 'Poetic reference and writing tool', iconSrc: '/sanchodarktransVector.svg', iconMask: true },
       { title: 'Mash', url: 'https://mashnotes.me', desc: 'Infinite Sticky Stovetop', iconSrc: '/mashnotes-icon.png', iconMask: true },
@@ -35,6 +38,7 @@ export const links: LinkEntry[] = [
   {
     label: 'Social',
     icon: 'twitter',
+    collapsible: false,
     children: [
       {
         title: '@JonnyD',

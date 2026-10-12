@@ -3,16 +3,20 @@ import { useNavigate } from 'react-router-dom'
 import type { LinkItem } from '../config/links'
 import { ArrowRight, IconMap } from './Icons'
 import { useGlow } from '../hooks/useGlow'
+import { shortcutKey } from '../utils/shortcut'
 
 interface LinkCardProps {
   link: LinkItem
-  index: number
+  /** 1-based homepage row position; drives the index label and digit shortcut. */
+  position?: number
+  child?: boolean
 }
 
-export default function LinkCard({ link, index }: LinkCardProps) {
+export default function LinkCard({ link, position, child = false }: LinkCardProps) {
   const IconComponent = link.icon ? IconMap[link.icon] : ArrowRight
   const iconSrc = link.iconSrc
   const iconMask = Boolean(link.iconMask && iconSrc)
+  const shortcut = position ? shortcutKey(position) : undefined
   const rowRef = useRef<HTMLAnchorElement>(null)
   const navigate = useNavigate()
 
@@ -51,20 +55,20 @@ export default function LinkCard({ link, index }: LinkCardProps) {
   return (
     <a
       ref={rowRef}
-      data-shortcut={index + 1}
-      aria-keyshortcuts={String(index + 1)}
+      data-shortcut={shortcut}
+      aria-keyshortcuts={shortcut}
       href={link.url}
       target={link.internal ? undefined : '_blank'}
       rel={link.internal ? undefined : 'noopener noreferrer'}
-      className="link-row"
-      style={{ animationDelay: `${index * 60}ms` }}
+      className={`link-row${child ? ' link-row--child' : ''}`}
+      style={!child && position ? { animationDelay: `${(position - 1) * 60}ms` } : undefined}
       onMouseEnter={glowHandlers.handleMouseEnter}
       onMouseLeave={glowHandlers.handleMouseLeave}
       onMouseMove={glowHandlers.handleMouseMove}
       onMouseDown={handleMouseDown}
       onClick={handleClick}
     >
-      <span className="link-row-index">{String(index + 1).padStart(2, '0')}</span>
+      <span className="link-row-index">{position ? String(position).padStart(2, '0') : null}</span>
       <span className="link-row-icon">
         {iconMask ? (
           <span
@@ -78,8 +82,10 @@ export default function LinkCard({ link, index }: LinkCardProps) {
           <IconComponent className="link-icon" />
         )}
       </span>
-      <span className="link-row-title">{link.title}</span>
-      {link.desc && <span className="link-row-desc">{link.desc}</span>}
+      <span className="link-row-text">
+        <span className="link-row-title">{link.title}</span>
+        {link.desc && <span className="link-row-desc">{link.desc}</span>}
+      </span>
       <span className="link-row-arrow">{link.internal ? '→' : '↗'}</span>
     </a>
   )

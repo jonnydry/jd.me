@@ -1002,6 +1002,7 @@ html::after {
 }
 
 .link-row > :not(.shared-glow),
+.link-row-text > *,
 .writing-list-item > :not(.shared-glow) {
   position: relative;
   z-index: 1;
@@ -1121,6 +1122,11 @@ html::after {
   opacity: 1;
 }
 
+/* Title + description; flattened into the row until phones stack them */
+.link-row-text {
+  display: contents;
+}
+
 /* Arrow */
 .link-row-arrow {
   font-size: 0.8rem;
@@ -1226,6 +1232,45 @@ html::after {
 
 .link-row--child .link-row-index {
   display: none;
+}
+
+/* ========== Inline Link Group (section label + always-visible rows) ========== */
+.link-row--label {
+  padding-top: 1rem;
+  padding-bottom: 0.4rem;
+  border-bottom: none;
+  cursor: default;
+}
+
+.link-row--label:hover {
+  background: none;
+}
+
+.link-row--label .link-row-title {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.link-row--label .link-icon,
+.link-row--label:hover .link-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+}
+
+.link-group--inline .link-row--child {
+  padding-left: 0.75rem;
+}
+
+.link-group--inline .link-row--child .link-row-index {
+  display: block;
+}
+
+.link-group--inline .link-row--child .link-row-icon {
+  margin-left: 1.25rem;
 }
 
 .links-footer {
@@ -2475,6 +2520,10 @@ html::after {
     padding: 1rem 0.75rem;
     min-height: 48px;
   }
+  .link-row--label {
+    min-height: 0;
+    padding: 0.9rem 0.75rem 0.35rem;
+  }
   .theme-trigger,
   .crt-toggle,
   .theme-btn {
@@ -2503,11 +2552,24 @@ html::after {
   .header {
     margin-bottom: 2rem;
   }
-  .link-row-desc {
-    display: none;
+  .link-row-text {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    gap: 0.1rem;
+  }
+  .link-row .link-row-desc {
+    margin-left: 0;
+    white-space: normal;
+    font-size: 0.72rem;
+    line-height: 1.35;
   }
   .link-row--child {
     padding-left: 2.5rem;
+  }
+  .link-group--inline .link-row--child .link-row-icon {
+    margin-left: 0.5rem;
   }
   .resume {
     padding: 1.25rem 1rem 2rem;
