@@ -37,6 +37,7 @@ const replacements = {
   host: escapeHtml(new URL(SITE_URL).host),
   name: escapeHtml(profile.name),
   tagline: escapeHtml(profile.tagline),
+  epigraph: escapeHtml(profile.epigraph),
   projects: projects.map((project) => `<span>${escapeHtml(project.title)}</span>`).join('<i>/</i>'),
 }
 
