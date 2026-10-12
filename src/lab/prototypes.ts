@@ -1,5 +1,11 @@
 export const prototypes = [
   {
+    slug: 'subtraction',
+    label: 'subtraction',
+    title: 'Subtraction',
+    summary: 'Today’s homepage minus icons, row numbers, and dividers. The control.',
+  },
+  {
     slug: 'manpage',
     label: 'manpage',
     title: 'Man page',
@@ -16,6 +22,12 @@ export const prototypes = [
     label: 'contents',
     title: 'Contents',
     summary: 'A book’s title page and table of contents, with dotted leaders.',
+  },
+  {
+    slug: 'footnotes',
+    label: 'footnotes',
+    title: 'Footnotes',
+    summary: 'A three-sentence bio whose numbered notes are the links.',
   },
 ] as const
 

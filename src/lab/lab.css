@@ -31,7 +31,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0 0.6em;
+  gap: 0 1.25em;
   margin-bottom: 2.25rem;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.7rem;
@@ -52,11 +52,6 @@
   text-decoration: underline;
   text-decoration-color: var(--accent);
   text-underline-offset: 4px;
-}
-
-.lab-switcher-sep {
-  padding: 0.35rem 0;
-  opacity: 0.5;
 }
 
 @media (min-width: 641px) {
@@ -499,5 +494,173 @@
 
   .toc {
     max-width: 32rem;
+  }
+}
+
+/* ========== Subtraction ========== */
+.sub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sub-terminal {
+  margin: auto 0;
+}
+
+.sub-block + .sub-block {
+  margin-top: 1rem;
+}
+
+.sub-label {
+  margin-bottom: 0.2rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.sub-list {
+  list-style: none;
+}
+
+.sub-row {
+  display: block;
+  padding: 0.5rem 0;
+}
+
+.sub-title {
+  font-weight: 500;
+}
+
+.sub-desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.sub-row:hover .sub-title {
+  color: var(--accent);
+}
+
+.sub-footer {
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 641px) {
+  .sub-row {
+    padding: 0.3rem 0;
+  }
+}
+
+/* ========== Footnotes ========== */
+.fn {
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.fn-sheet {
+  max-width: 34rem;
+  margin: 0 auto;
+}
+
+.fn-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+.fn-avatar {
+  display: block;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.fn-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.fn-tagline {
+  margin-top: 0.2rem;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.fn-bio {
+  margin-bottom: 2rem;
+  font-size: 0.9375rem;
+  line-height: 1.75;
+}
+
+.fn-ref {
+  font-size: 0.68em;
+  line-height: 0;
+  vertical-align: super;
+}
+
+.fn-ref a {
+  padding: 0 0.2em;
+  color: var(--accent);
+}
+
+.fn-ref a:hover {
+  text-decoration: underline;
+}
+
+.fn-notes {
+  list-style: none;
+  font-size: 0.8125rem;
+}
+
+.fn-notes::before {
+  content: '';
+  display: block;
+  width: 5rem;
+  margin-bottom: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.fn-notes li {
+  scroll-margin-top: 1.5rem;
+}
+
+.fn-note {
+  display: grid;
+  grid-template-columns: 2.5ch 1fr;
+  column-gap: 1.25ch;
+  padding: 0.65rem 0;
+  color: var(--text-muted);
+}
+
+.fn-no {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.fn-title {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.fn-note:hover .fn-title,
+.fn-notes li:target .fn-no,
+.fn-notes li:target .fn-title {
+  color: var(--accent);
+}
+
+@media (min-width: 641px) {
+  .fn {
+    font-size: 0.9375rem;
+  }
+
+  .fn-bio {
+    font-size: 1rem;
   }
 }
