@@ -4,8 +4,8 @@ import { links, isGroup } from '../src/config/links.ts'
 import { profile } from '../src/config/profile.ts'
 import { resume } from '../src/config/resume.ts'
 import {
+  AVATAR_ALT,
   DEFAULT_OG_IMAGE,
-  DEFAULT_OG_IMAGE_ALT,
   HOME_DESCRIPTION,
   SITE_NAME,
   SITE_URL,
@@ -158,7 +158,7 @@ function renderHomeContent() {
 <main class="app">
   <div class="terminal">
     <header class="header">
-      <img class="avatar" src="${escapeHtml(absoluteUrl(profile.avatar))}" alt="${escapeHtml(DEFAULT_OG_IMAGE_ALT)}" width="88" height="88" />
+      <img class="avatar" src="${escapeHtml(absoluteUrl(profile.avatar))}" alt="${escapeHtml(AVATAR_ALT)}" width="88" height="88" />
       <h1 class="name">${escapeHtml(profile.name)}</h1>
       <p class="tagline">${escapeHtml(profile.tagline)}</p>
     </header>
@@ -292,7 +292,7 @@ function buildHomeJsonLd() {
         name: resume.name,
         alternateName: SITE_NAME,
         url: `${SITE_URL}/`,
-        image: DEFAULT_OG_IMAGE,
+        image: absoluteUrl(profile.avatar),
         description: profile.tagline,
         email: resume.email,
         address: {

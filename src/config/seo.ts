@@ -1,7 +1,8 @@
 export const SITE_NAME = 'Jonny D'
 export const SITE_URL = 'https://jdry.me'
-export const DEFAULT_OG_IMAGE = `${SITE_URL}/avatar.jpg`
-export const DEFAULT_OG_IMAGE_ALT = 'Portrait of Jonny D'
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/og.png`
+export const DEFAULT_OG_IMAGE_ALT = 'Jonny D: links, writing, and projects at jdry.me'
+export const AVATAR_ALT = 'Portrait of Jonny D'
 
 export const HOME_DESCRIPTION =
   'Personal links, live projects, writing samples, and resume from Jonny D. Featuring Sancho Poetry, Mash, The Harbor, and EmuPhoria.'
