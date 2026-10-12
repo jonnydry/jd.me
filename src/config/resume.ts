@@ -27,6 +27,7 @@ export interface ResumeData {
   name: string
   location: string
   email: string
+  pdf: string
   education: EducationEntry[]
   experience: ExperienceEntry[]
   additionalExperience: AdditionalEntry[]
@@ -39,6 +40,7 @@ export const resume: ResumeData = {
   name: 'Jonathan Drybanski',
   location: 'Boston, MA 02108',
   email: 'jonny.edry@pm.me',
+  pdf: '/Jonathan-Drybanski-Resume.pdf',
 
   education: [
     {
@@ -93,19 +95,6 @@ export const resume: ResumeData = {
       ],
     },
     {
-      company: 'University of Massachusetts Boston & Suffolk University',
-      location: 'Boston, MA',
-      roles: [
-        {
-          title: 'Teaching Assistant',
-          period: '2012 – 2014',
-          bullets: [
-            'Co-taught literature courses, led lectures, graded assignments, and held office hours',
-          ],
-        },
-      ],
-    },
-    {
       company: 'TripAdvisor / Jetsetter',
       location: 'Boston, MA',
       roles: [
@@ -114,6 +103,19 @@ export const resume: ResumeData = {
           period: '2015 – 2017',
           bullets: [
             'B2B sales, technical troubleshooting, refund handling, and premium feature marketing',
+          ],
+        },
+      ],
+    },
+    {
+      company: 'University of Massachusetts Boston & Suffolk University',
+      location: 'Boston, MA',
+      roles: [
+        {
+          title: 'Teaching Assistant',
+          period: '2012 – 2014',
+          bullets: [
+            'Co-taught literature courses, led lectures, graded assignments, and held office hours',
           ],
         },
       ],
