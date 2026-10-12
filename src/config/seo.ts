@@ -62,6 +62,16 @@ export function getRouteMetadata(pathname: string): RouteMetadata {
     }
   }
 
+  if (/^\/lab(?:\/|$)/.test(pathname)) {
+    return {
+      title: 'Jonny D | Lab',
+      description: 'Homepage design prototypes. Preview only.',
+      path: pathname,
+      type: 'website',
+      robots: 'noindex,nofollow',
+    }
+  }
+
   const match = pathname.match(/^\/writing\/(.+)$/)
   if (match) {
     return writingMeta[match[1]] ?? {
