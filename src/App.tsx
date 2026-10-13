@@ -15,6 +15,7 @@ import ThemeToggle from './components/ThemeToggle'
 
 const ResumePage = lazy(() => import('./components/ResumePage'))
 const WritingPage = lazy(() => import('./components/WritingPage'))
+const LabRoutes = lazy(() => import('./lab/LabRoutes'))
 
 const HOME_TAB_TITLES = ['Jonny D | Links, Writing, and Projects', 'Jonny D | vibecoder', 'Jonny D | writer', 'Jonny D | guitar player']
 
@@ -81,6 +82,7 @@ function App() {
   const isHomeRoute = normalizedPathname === '/'
   const isResumeRoute = normalizedPathname === '/resume'
   const isWritingRoute = /^\/writing(?:\/[^/]+)?$/.test(normalizedPathname)
+  const isLabRoute = /^\/lab(?:\/|$)/.test(normalizedPathname)
   const metadata = useMemo(() => getRouteMetadata(normalizedPathname), [normalizedPathname])
   const pageIndex = isWritingRoute ? 2 : isResumeRoute ? 1 : isHomeRoute ? 0 : -1
   const [animated, setAnimated] = useState(false)
@@ -356,6 +358,18 @@ function App() {
   const pageSliderStyle = (pageIndex: number): React.CSSProperties => ({
     transform: `translateX(-${pageIndex * 100}vw)`,
   })
+
+  if (isLabRoute) {
+    return (
+      <ThemeProvider>
+        <ErrorBoundary>
+          <Suspense fallback={null}>
+            <LabRoutes pathname={normalizedPathname} />
+          </Suspense>
+        </ErrorBoundary>
+      </ThemeProvider>
+    )
+  }
 
   if (pageIndex === -1) {
     return (
